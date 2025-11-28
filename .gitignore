@@ -1,0 +1,71 @@
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio settings
+.vs/
+.vscode/
+*.code-workspace
+
+# Build results
+[Aa]rtifacts/
+TestResults/
+*.log
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+# Entity Framework Migrations build artifacts
+Migrations/*Designer.cs
+Migrations/*Snapshot.cs
+
+# ASP.NET secrets
+secrets.json
+*.db
+*.sqlite
+
+# Node.js / Vite / npm / Yarn / pnpm
+aethera.client/node_modules/
+aethera.client/dist/
+aethera.client/.env
+aethera.client/.env.*
+aethera.client/.cache/
+aethera.client/.turbo/
+aethera.client/.parcel-cache/
+aethera.client/npm-debug.log*
+aethera.client/yarn-debug.log*
+aethera.client/yarn-error.log*
+aethera.client/pnpm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Others
+*.swp
+*.bak
+*.tmp
+*.temp
+
+# Ignore local launch/debug settings
+Aethera.Server/Properties/launchSettings.json
+
+# Ignore user secrets
+Aethera.Server/appsettings.Development.json
+
+# Ignore media files
+Aethera.Server/wwwroot

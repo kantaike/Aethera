@@ -1,0 +1,25 @@
+.card {
+  background: #161B22;
+  border: 1px solid #30363D;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.innerGlow {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.03) 0%, transparent 70%);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.blue:hover { border-color: #58A6FF; box-shadow: 0 0 15px rgba(88, 166, 255, 0.15); }
+.gold:hover { border-color: #D4AF37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
+.purple:hover { border-color: #8A2BE2; box-shadow: 0 0 15px rgba(138, 43, 226, 0.15); }

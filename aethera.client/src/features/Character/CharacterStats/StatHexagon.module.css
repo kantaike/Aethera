@@ -1,0 +1,69 @@
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 110px);
+  gap: 20px 10px;
+  padding: 40px;
+  border-radius: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.hexWrapper {
+  position: relative;
+  width: 110px;
+  height: 125px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hexSvg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.polygon {
+  fill: #1e1e1e;
+  stroke-width: 3;
+  transition: all 0.3s ease;
+}
+
+.hexWrapper:hover .polygon {
+  fill: #252525;
+  filter: brightness(1.2);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  pointer-events: none;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #888;
+  letter-spacing: 1px;
+}
+
+.value {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  margin: 4px 0;
+}
+
+.modifier {
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}

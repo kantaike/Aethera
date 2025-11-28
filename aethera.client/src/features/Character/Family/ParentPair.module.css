@@ -1,0 +1,24 @@
+.pairContainer {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Расстояние между мужем и женой */
+  position: relative;
+}
+
+.marriageLine {
+  width: 20px;
+  height: 2px;
+  background: var(--border-gold);
+  box-shadow: 0 0 5px var(--border-gold-bright);
+}
+
+/* Линия вниз к детям должна теперь выходить из центра ПАРЫ */
+.childrenContainer::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-gold);
+}

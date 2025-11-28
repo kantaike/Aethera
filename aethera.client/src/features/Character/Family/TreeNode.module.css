@@ -1,0 +1,67 @@
+
+.nodeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.pairContainer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  margin-bottom: 40px; /* Отступ до линии детей */
+}
+
+/* Линия связи между супругами */
+.marriageLine {
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--border-gold-bright), transparent);
+  box-shadow: 0 0 8px var(--border-gold);
+}
+
+.childrenContainer {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  position: relative;
+  padding-top: 25px;
+}
+
+/* Горизонтальная перекладина ("плечи") над детьми */
+.childrenContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--border-gold);
+  opacity: 0.6;
+}
+
+/* Вертикальный "стебель" от родителей вниз */
+.childrenContainer::before {
+  content: '';
+  position: absolute;
+  top: -40px; /* Соединяет с pairContainer */
+  left: 50%;
+  width: 1px;
+  height: 65px;
+  background: linear-gradient(180deg, var(--border-gold), transparent);
+  opacity: 0.8;
+}
+
+/* Маленькие "отростки" к каждой карточке ребенка */
+.nodeWrapper:not(:only-child)::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  width: 1px;
+  height: 25px;
+  background-color: var(--border-gold);
+  opacity: 0.6;
+}

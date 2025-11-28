@@ -1,0 +1,106 @@
+.listItem {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.card {
+  background: var(--secondary); /* Второстепенный фон */
+  border: 1px solid var(--border); /* Бордер */
+  border-radius: 12px;
+  padding: 16px;
+  width: 200px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+.portraitWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: #0D1117;
+  border: 1px solid #30363D;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(20%) brightness(90%); /* Делаем чуть мрачнее */
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.placeholderIcon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.placeholderText {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.levelBadge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(13, 17, 23, 0.8);
+  color: var(--text);
+  border: 1px solid var(--text);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.name {
+  color: var(--headers); /* Цвет заголовков */
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  color: var(--text); /* Цвет текста */
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+/* Полоска HP в стиле лунного сияния */
+.hpBarContainer {
+  height: 4px;
+  background: #30363D;
+  border-radius: 2px;
+}
+
+.hpBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #1F6FEB, #58A6FF);
+  box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
+  border-radius: 2px;
+}

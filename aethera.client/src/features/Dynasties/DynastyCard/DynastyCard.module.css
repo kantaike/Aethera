@@ -1,0 +1,249 @@
+.shield {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid var(--border);
+}
+
+.shield::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.03) 0%,
+    transparent 50%,
+    rgba(139, 115, 85, 0.05) 100%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.shield:hover {
+  transform: translateY(-4px);
+}
+
+.shield:hover::before {
+  opacity: 1;
+}
+
+/* Parchment base - ancient document / shield feel */
+.parchment {
+  position: relative;
+  padding: 20px;
+  min-height: 180px;
+  background: 
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.02) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      rgba(0, 0, 0, 0.02) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      145deg,
+      #1a1814 0%,
+      #252119 25%,
+      #1e1b16 50%,
+      #252119 75%,
+      #1a1814 100%
+    );
+  background-size: 20px 20px, 20px 20px, 100% 100%;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Tier 1 - larger card */
+.shield.tier1 .parchment {
+  min-height: 280px;
+  padding: 28px;
+}
+
+/* Status: Ruling - gold glow on edges */
+.shield.Ruling {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.shield.Ruling:hover {
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.25), 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.shield.Ruling .statusBadge {
+  background: linear-gradient(135deg, var(--border-gold-bright), var(--border-gold));
+  color: #1a1814;
+}
+
+/* Status: Fallen - grayscale, worn effect */
+.shield.Fallen {
+  filter: grayscale(0.7);
+  opacity: 0.9;
+}
+
+.shield.Fallen .parchment {
+  background: linear-gradient(
+    145deg,
+    #1a1818 0%,
+    #1e1e1e 50%,
+    #161616 100%
+  );
+}
+
+.shield.Fallen:hover {
+  filter: grayscale(0.5);
+  opacity: 1;
+}
+
+.shield.Fallen .statusBadge {
+  background: #333;
+  color: var(--text);
+}
+
+.shield.Fallen .sigilImage,
+.shield.Fallen .sigilPlaceholder {
+  filter: grayscale(0.8);
+}
+
+/* Status: Vassal - default */
+.shield.Vassal .statusBadge {
+  background: rgba(139, 115, 85, 0.4);
+  color: var(--border-gold-bright);
+}
+
+.shield.Vassal:hover {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 15px rgba(139, 115, 85, 0.15);
+}
+
+/* Header row */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.statusBadge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.influence {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: var(--border);
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: var(--border-gold-bright);
+}
+
+/* Sigil - center */
+.sigil {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border-gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.shield.tier1 .sigil {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+}
+
+.sigilImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(20%) contrast(1.1);
+}
+
+.sigilPlaceholder {
+  font-size: 2.5rem;
+  color: var(--border-gold);
+}
+
+.shield.tier1 .sigilPlaceholder {
+  font-size: 3.5rem;
+}
+
+/* Title */
+.title {
+  color: var(--headers);
+  font-size: 1.15rem;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.shield.tier1 .title {
+  font-size: 1.5rem;
+}
+
+/* Motto */
+.motto {
+  font-style: italic;
+  color: var(--text);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0 0 12px 0;
+  opacity: 0.95;
+}
+
+/* Description - Tier 1 only */
+.description {
+  color: var(--text);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Representatives */
+.representatives {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.representativesLabel {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.representativesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.representativesList a {
+  text-decoration: none;
+}

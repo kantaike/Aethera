@@ -1,0 +1,74 @@
+
+.hoverCard {
+  position: absolute;
+  width: 300px;
+  border: 1px solid var(--border-gold);
+  box-shadow: var(--shadow-heavy);
+  backdrop-filter: var(--glass-blur);
+  padding: 15px;
+  z-index: 2000;
+  border-top: 4px solid var(--border-gold-bright);
+}
+
+.sheet {
+  border: 2px solid var(--border-gold);
+  border-radius: 4px;
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-heavy);
+  position: relative; /* Важно для позиционирования псевдоэлементов */
+  overflow: hidden; /* Если уголки выходят за границы */
+}
+
+/* Золотые уголки */
+.sheet::before,
+.sheet::after {
+  content: '';
+  position: absolute;
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-style: solid;
+  border-color: var(--border-gold-bright); /* Яркое золото */
+  border-width: 0;
+  pointer-events: none; /* Чтобы не мешали взаимодействию */
+}
+
+/* Верхний левый угол */
+.sheet::before {
+  top: calc(var(--corner-thickness) * -1); /* Сдвиг, чтобы уголок был на границе */
+  left: calc(var(--corner-thickness) * -1);
+  border-top-width: var(--corner-thickness);
+  border-left-width: var(--corner-thickness);
+}
+
+/* Нижний правый угол */
+.sheet::after {
+  bottom: calc(var(--corner-thickness) * -1);
+  right: calc(var(--corner-thickness) * -1);
+  border-bottom-width: var(--corner-thickness);
+  border-right-width: var(--corner-thickness);
+}
+
+.title {
+  font-family: 'EB Garamond', serif;
+  font-size: 2.5rem;
+  color: var(--text-title);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  border-bottom: 1px solid var(--border-gold);
+  margin-bottom: 20px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.statBox {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: center;
+}

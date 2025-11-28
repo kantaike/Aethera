@@ -1,0 +1,364 @@
+.sheetWrapper {
+  --glow-color: rgba(88, 166, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  background: radial-gradient(
+    circle at 50% 0%,
+    var(--glow-color) 0%,
+    transparent 40%
+  ),
+  var(--primary);
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: rgba(22, 27, 34, 0.6);
+  padding: 24px 30px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  backdrop-filter: var(--glass-blur);
+}
+
+.portraitContainer {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+.mainArt {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--border-gold);
+  z-index: 2;
+  position: relative;
+}
+
+.alignmentGlow {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: var(--glow-color);
+  filter: blur(20px);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.heroSummary {
+  flex: 1;
+  min-width: 200px;
+}
+
+.heroName {
+  color: var(--headers);
+  margin: 0 0 8px 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: var(--text);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.tags span {
+  padding: 4px 10px;
+  background: rgba(48, 54, 61, 0.5);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.vitalityBar {
+  max-width: 320px;
+}
+
+.hpLabel {
+  color: var(--text);
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.tempHp {
+  color: var(--accent-blue);
+  font-size: 0.8rem;
+}
+
+.hpTrack {
+  height: 10px;
+  background: rgba(48, 54, 61, 0.8);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 4px;
+  position: relative;
+}
+
+.hpFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #1a472a, #2d5a3d);
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.hpTemp {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(88, 166, 255, 0.3), rgba(88, 166, 255, 0.5));
+  border-radius: 0 5px 5px 0;
+  transition: width 0.3s ease;
+  /* Positioned after hpFill via inline style */
+}
+
+.combatCircleGrid {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.combatStat {
+  width: 64px;
+  height: 64px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(13, 17, 23, 0.6);
+  transition: var(--transition);
+}
+
+.combatStat:hover {
+  border-color: var(--border-gold);
+}
+
+.combatStat span {
+  font-size: 0.65rem;
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.combatStat strong {
+  font-size: 1.1rem;
+  color: var(--accent-blue);
+}
+
+/* Tabs */
+.tabsSection {
+  background: rgba(22, 27, 34, 0.5);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: rgba(13, 17, 23, 0.4);
+}
+
+.tabButton {
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  border-bottom: 2px solid transparent;
+}
+
+.tabButton:hover {
+  color: var(--border-gold-bright);
+}
+
+.tabActive {
+  color: var(--border-gold-bright);
+  border-bottom-color: var(--border-gold);
+  font-weight: 500;
+}
+
+.tabContent {
+  padding: 28px;
+}
+
+/* Biography tab */
+.biographyTab {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.section {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  color: var(--headers);
+  font-size: 1.1rem;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bioBlock {
+  margin-bottom: 20px;
+}
+
+.bioBlock:last-child {
+  margin-bottom: 0;
+}
+
+.bioSubtitle {
+  color: var(--accent-blue);
+  font-size: 0.9rem;
+  margin: 0 0 8px 0;
+}
+
+.backstoryText {
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  font-size: 1rem;
+}
+
+.emptyBio {
+  color: var(--text);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Stats tab */
+.statsTab {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.statsLayout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.radarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.otherStats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.statBlock {
+  background: rgba(13, 17, 23, 0.4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.smallTitle {
+  color: var(--headers);
+  font-size: 0.95rem;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.statRow span:first-child {
+  opacity: 0.85;
+}
+
+.statRow span:last-child {
+  color: var(--accent-silver);
+  font-weight: 500;
+}
+
+.skillList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skillItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(48, 54, 61, 0.5);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.skillDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-gold);
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .portraitContainer {
+    width: 120px;
+    height: 120px;
+  }
+
+  .combatCircleGrid {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .tabContent {
+    padding: 20px;
+  }
+
+  .statsLayout {
+    grid-template-columns: 1fr;
+  }
+}

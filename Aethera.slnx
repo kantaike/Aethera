@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Aethera.Application/Aethera.Application.csproj" />
+  <Project Path="Aethera.Domain/Aethera.Domain.csproj" />
+  <Project Path="Aethera.Infrastructure/Aethera.Infrastructure.csproj" />
+  <Project Path="Aethera.Server/Aethera.Server.csproj" />
+</Solution>

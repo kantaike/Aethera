@@ -1,0 +1,99 @@
+.loaderWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.fullScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 10, 12, 0.9); /* Глубокий темный фон */
+  z-index: 9999;
+}
+
+.spinnerContainer {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Внешнее кольцо вращается медленно */
+.outerRing {
+  fill: none;
+  stroke: var(--border-gold);
+  stroke-width: 2;
+  stroke-dasharray: 20 10;
+  opacity: 0.6;
+  animation: rotateClockwise 4s linear infinite;
+  transform-origin: center;
+}
+
+/* Внутреннее кольцо вращается быстрее */
+.innerRing {
+  fill: none;
+  stroke: var(--border-gold-bright);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  animation: rotateCounterClockwise 2s linear infinite;
+  transform-origin: center;
+}
+
+.centerRune {
+  fill: var(--border-gold-bright);
+  filter: drop-shadow(0 0 5px var(--border-gold));
+  animation: pulse 1.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Мягкое золотое свечение на фоне */
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
+  filter: blur(10px);
+}
+
+.loadingText {
+  color: var(--border-gold-bright);
+  font-family: serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.9rem;
+  animation: textFade 1.5s ease-in-out infinite;
+}
+
+/* Анимации */
+@keyframes rotateClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotateCounterClockwise {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes textFade {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}

@@ -1,0 +1,33 @@
+.pageWrapper {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: radial-gradient(circle, rgba(35,35,35,1) 0%, rgba(15,15,15,1) 100%);
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.loadingText {
+  color: var(--text-title);
+  font-family: 'EB Garamond', serif;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+.errorText {
+  color: var(--accent);
+  font-weight: bold;
+}
