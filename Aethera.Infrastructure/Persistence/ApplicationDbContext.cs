@@ -3,6 +3,7 @@ using Aethera.Domain.Entities.Basic;
 using Aethera.Domain.Entities.Characters;
 using Aethera.Domain.Entities.Items;
 using Aethera.Domain.Entities.Settlements;
+using Aethera.Domain.Entities.Users;
 using Aethera.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -37,6 +38,9 @@ namespace Aethera.Infrastructure.Persistence
         public DbSet<Country> Countries { get; set; }
         public DbSet<Region> Regions { get; set; }
         public DbSet<Province> Provinces { get; set; }
+
+        // -- Users --
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -264,6 +268,15 @@ namespace Aethera.Infrastructure.Persistence
                       .WithMany()
                       .HasForeignKey(e => e.ParentId)
                       .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // -- Users --
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.HasIndex(e => e.Username).IsUnique();
             });
         }
     }

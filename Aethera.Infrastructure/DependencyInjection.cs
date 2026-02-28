@@ -31,6 +31,7 @@ namespace Aethera.Infrastructure
             services.AddScoped<ISettlementRepository, SettlemmentRepository>();
             services.AddScoped<IAdministrativeUnitRepository, AdministrativeUnitRepository>();
             services.AddScoped<IDynastyRepository, DynastyRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IMapper, AutoMapperWrapper>();

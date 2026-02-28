@@ -21,8 +21,9 @@ namespace Aethera.Application
             .FromAssemblyOf<ICommandHandler<object>>()
             .AddClasses(classes => classes.AssignableToAny(
                 typeof(ICommandHandler<>),
-                typeof(IQueryHandler<,>)))
-            .AsImplementedInterfaces()
+                typeof(IQueryHandler<,>),
+                typeof(Aethera.Application.Users.Commands.LoginUser.LoginUserHandler)))
+            .AsSelfWithInterfaces()
             .WithScopedLifetime());
             services.AddScoped<ICharacterFactory, CharacterFactory>();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
