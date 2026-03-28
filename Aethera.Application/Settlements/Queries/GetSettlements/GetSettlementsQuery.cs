@@ -17,7 +17,7 @@ namespace Aethera.Application.Settlements.Queries.GetSettlements
 
         public async Task<IEnumerable<SettlementDto>> HandleAsync(GetSettlementsQuery query, CancellationToken ct)
         {
-            var settlements = await _repository.Get(ct);
+            var settlements = await _repository.GetAllWithTranslation(ct);
             return settlements.Select(s => new SettlementDto(
                 s.Id,
                 s.Title ?? "Unknown",

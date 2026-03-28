@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import styles from './FantasyLoader.module.css';
-import { LOADING_PHRASES_UA } from './LoadingPhrases';
+import { translations, useLanguage } from '../../i18n/translations';
 
 export const FantasyLoader = ({ fullScreen }: { fullScreen?: boolean }) => {
+  const language = useLanguage();
+  const phrases = translations.loader.phrases[language];
   const [phrase, setPhrase] = useState("");
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * LOADING_PHRASES_UA.length);
-    setPhrase(LOADING_PHRASES_UA[randomIndex]);
-  }, []);
+    const randomIndex = Math.floor(Math.random() * phrases.length);
+    setPhrase(phrases[randomIndex]);
+  }, [phrases]);
 
   return (
     <div className={`${styles.loaderWrapper} ${fullScreen ? styles.fullScreen : ''}`}>

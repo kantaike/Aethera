@@ -1,0 +1,127 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fieldFull {
+  grid-column: 1 / -1;
+}
+
+.label {
+  color: var(--headers);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.hint {
+  margin: -2px 0 0;
+  color: var(--text);
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
+
+.input,
+.textarea,
+.select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 12px 14px;
+  background: rgba(13, 17, 23, 0.88);
+  color: var(--headers);
+  border: 1px solid rgba(244, 228, 188, 0.12);
+  border-radius: 12px;
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--border-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+  transform: translateY(-1px);
+}
+
+.error {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 10px;
+  background: rgba(185, 28, 28, 0.14);
+  color: #fecaca;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.secondaryButton,
+.primaryButton {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondaryButton {
+  border: 1px solid rgba(244, 228, 188, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--headers);
+}
+
+.secondaryButton:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.primaryButton {
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  background: linear-gradient(135deg, #0d3b66, #1f6feb);
+  color: #f8fbff;
+}
+
+.primaryButton:hover {
+  filter: brightness(1.08);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: none;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    flex-direction: column-reverse;
+  }
+}

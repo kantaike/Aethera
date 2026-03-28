@@ -43,7 +43,7 @@ namespace Aethera.Application.Items.Commands.CreateItemCommand
                 _ => new Item(command.Name, command.Description, command.Weight, command.Cost)
             };
 
-            await _repository.Add(item, ct);
+            await _repository.AddWithTranslation(item, ct);
             await _uow.SaveChangesAsync(ct);
         }
     }

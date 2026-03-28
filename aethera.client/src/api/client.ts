@@ -1,5 +1,7 @@
 import axios, { AxiosHeaders } from 'axios';
 import toast from 'react-hot-toast';
+import { getStoredLanguage, translations } from '../i18n/translations';
+import { useAuthStore } from '../store/authStore';
 
 const api = axios.create({
   baseURL: 'https://localhost:44336/api',
@@ -8,12 +10,19 @@ const api = axios.create({
   },
 });
 
-// Add language to every request based on saved preference
+// Add language and auth token to every request based on saved preference and session state.
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
     const language = window.localStorage.getItem('language') || 'en';
+    const token = useAuthStore.getState().token;
     const headers = AxiosHeaders.from(config.headers);
+
     headers.set('Accept-Language', language);
+
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+
     config.headers = headers;
   }
 
@@ -23,9 +32,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message = error.response?.data?.message || 'Could not access server';
+    const language = getStoredLanguage();
+    const t = translations.api.errors[language];
+    const message = error.response?.data?.message || t.defaultMessage;
 
-    toast.error(`Error: ${message}`, {
+    toast.error(`${t.prefix}: ${message}`, {
       style: {
         background: '#1a1a1a',
         color: '#f4e4bc',
@@ -33,9 +44,12 @@ api.interceptors.response.use(
       },
     });
 
-    // 401 handler must be placed here
+    if (error.response?.status === 401) {
+      useAuthStore.getState().clearAuth();
+    }
+
     if (error.response?.status === 404) {
-      console.error('Resource not found');
+      console.error(t.notFound);
     }
     return Promise.reject(error);
   }

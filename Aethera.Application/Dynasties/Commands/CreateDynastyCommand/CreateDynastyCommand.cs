@@ -37,7 +37,7 @@ namespace Aethera.Application.Dynasties.Commands.CreateDynastyCommand
         public async Task HandleAsync(CreateDynastyCommand command, CancellationToken ct)
         {
             var dynasty = new Dynasty(command.Name, command.Description);
-            await _repository.Add(dynasty, ct);
+            await _repository.AddWithTranslation(dynasty, ct);
             await _uow.SaveChangesAsync(ct);
         }
     }

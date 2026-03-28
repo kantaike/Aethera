@@ -1,65 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import styles from './Layout.module.css';
-
-type Language = 'uk' | 'en';
-
-const translations: Record<
-  Language,
-  {
-    menu: string;
-    home: string;
-    characters: string;
-    settlements: string;
-    dynasties: string;
-    items: string;
-    stories: string;
-  }
-> = {
-  uk: {
-    menu: 'Меню',
-    home: 'Головна',
-    characters: 'Персонажі',
-    settlements: 'Поселення',
-    dynasties: 'Династії',
-    items: 'Предмети',
-    stories: 'Історії',
-  },
-  en: {
-    menu: 'Menu',
-    home: 'Home',
-    characters: 'Characters',
-    settlements: 'Settlements',
-    dynasties: 'Dynasties',
-    items: 'Items',
-    stories: 'Stories',
-  },
-};
+import { setStoredLanguage, type Language, translations, useLanguage } from '../i18n/translations';
 
 const Layout = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [language, setLanguage] = useState<Language>('en');
+  const language = useLanguage();
   const location = useLocation();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = window.localStorage.getItem('language') as Language | null;
-      if (stored === 'uk' || stored === 'en') {
-        setLanguage(stored);
-      }
-    }
-  }, []);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLanguageChange = (lang: Language) => {
-    setLanguage(lang);
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('language', lang);
-    }
+    setStoredLanguage(lang);
   };
 
-  const t = translations[language];
+  const t = translations.layout[language];
 
   return (
     <div className={styles.container}>
@@ -130,6 +85,17 @@ const Layout = () => {
         </nav>
 
         <div className={styles.sidebarFooter}>
+          <Link
+            to="/profile"
+            className={`${styles.navLink} ${
+              location.pathname.startsWith('/profile') ? styles.navLinkActive : ''
+            } ${styles.footerProfileLink}`}
+            onClick={() => setSidebarOpen(false)}
+          >
+            <span className={styles.navIcon}>👤</span>
+            <span className={styles.navLabel}>{t.profile}</span>
+          </Link>
+
           <div className={styles.langButtons}>
             <button
               type="button"

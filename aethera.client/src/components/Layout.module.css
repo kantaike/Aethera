@@ -65,8 +65,14 @@
   padding: 10px 8px 14px;
   border-top: 1px solid #333;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   background: rgba(0, 0, 0, 0.3);
+}
+
+.footerProfileLink {
+  margin: 0 2px;
 }
 
 .langSwitcherLabel {
@@ -76,6 +82,7 @@
 .langButtons {
   display: flex;
   gap: 4px;
+  justify-content: center;
 }
 
 .langButton {

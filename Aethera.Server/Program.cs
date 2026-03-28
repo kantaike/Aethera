@@ -3,26 +3,34 @@ using Aethera.Infrastructure;
 using Aethera.Infrastructure.Persistence;
 using Aethera.Server.Common;
 using Aethera.Server.Middleware;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 var storageBaseUrl = builder.Configuration["StorageSettings:DevUrl"];
+
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
     })
-    .AddJsonOptions(options =>
+    .AddNewtonsoftJson(options =>
     {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        options.JsonSerializerOptions.Converters.Add(new ArtUrlConverter(storageBaseUrl));
+        options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
     });
+
+// For System.Text.Json (if needed elsewhere)
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.Converters.Add(new ArtUrlConverter(storageBaseUrl));
+});
 
 // Register Swagger/OpenAPI services
 builder.Services.AddEndpointsApiExplorer();

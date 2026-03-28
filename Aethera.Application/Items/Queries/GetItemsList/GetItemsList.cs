@@ -18,7 +18,7 @@ namespace Aethera.Application.Items.Queries.GetItemsList
 
         public async Task<IEnumerable<ItemDto>> HandleAsync(GetItemsQuery query, CancellationToken ct)
         {
-            var items = await _repository.Get(ct);
+            var items = await _repository.GetAllWithTranslation(ct);
             return items.Select(i => new ItemDto(
                 i.Id,
                 i.Name ?? "Unnamed",

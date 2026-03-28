@@ -9,13 +9,20 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 4px;
+  text-decoration: none;
   transition: var(--transition);
-  cursor: default;
+  cursor: pointer;
 }
 
 .row:hover {
   border-color: var(--border-gold);
   background: rgba(212, 175, 55, 0.05);
+}
+
+.row:focus-visible {
+  outline: none;
+  border-color: var(--border-gold-bright);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16);
 }
 
 .row:nth-child(even) {

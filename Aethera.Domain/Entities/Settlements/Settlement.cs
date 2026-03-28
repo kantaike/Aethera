@@ -21,6 +21,21 @@ namespace Aethera.Domain.Entities.Settlements
             Title = title;
             Description = description;
         }
+
+        public void SetTitle(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentException("Title cannot be empty.", nameof(title));
+            Title = title;
+        }
+
+        public void SetDescription(string description)
+        {
+            if (string.IsNullOrWhiteSpace(description))
+                throw new ArgumentException("Description cannot be empty.", nameof(description));
+            Description = description;
+        }
+
         public void SetPopulation(int population)
         {
             switch (population)
@@ -32,6 +47,12 @@ namespace Aethera.Domain.Entities.Settlements
             }
             Population = population;
         }
+
+        public void SetType(SettlementType type)
+        {
+            Type = type;
+        }
+
         public void SetRuler(Guid rulerId)
         {
             RulerId = rulerId;

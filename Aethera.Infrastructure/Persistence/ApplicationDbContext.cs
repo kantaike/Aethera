@@ -19,17 +19,20 @@ namespace Aethera.Infrastructure.Persistence
         public DbSet<CharacterEntity> CharacterEntities { get; set; }
         public DbSet<CharacterTranslationEntity> CharacterTranslationEntities { get; set; }
         public DbSet<Dynasty> Dynasties { get; set; }
+        public DbSet<DynastyTranslationEntity> DynastyTranslationEntities { get; set; }
         public DbSet<Spell> Spells { get; set; }
         public DbSet<Religion> Religions { get; set; }
 
         // -- Items --
         public DbSet<Item> Items { get; set; }
+        public DbSet<ItemTranslationEntity> ItemTranslationEntities { get; set; }
         public DbSet<Weapon> Weapons { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
         public DbSet<Armor> Armors { get; set; }
 
         // -- Settlements --
         public DbSet<Settlement> Settlements { get; set; }
+        public DbSet<SettlementTranslationEntity> SettlementTranslationEntities { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Castle> Castles { get; set; }
         public DbSet<Village> Villages { get; set; }
@@ -183,6 +186,21 @@ namespace Aethera.Infrastructure.Persistence
                 });
             });
 
+            modelBuilder.Entity<DynastyTranslationEntity>(entity =>
+            {
+                entity.ToTable("DynastyTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.DynastyId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
             modelBuilder.Entity<Spell>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -227,6 +245,21 @@ namespace Aethera.Infrastructure.Persistence
                 });
             });
 
+            modelBuilder.Entity<ItemTranslationEntity>(entity =>
+            {
+                entity.ToTable("ItemTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.ItemId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
             // -- Settlements --
             modelBuilder.Entity<Settlement>(entity =>
             {
@@ -250,6 +283,21 @@ namespace Aethera.Infrastructure.Persistence
                        .HasMaxLength(500)
                        .IsRequired(false);
                 });
+            });
+
+            modelBuilder.Entity<SettlementTranslationEntity>(entity =>
+            {
+                entity.ToTable("SettlementTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.SettlementId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Title).IsRequired();
             });
 
             // -- Administrative units --

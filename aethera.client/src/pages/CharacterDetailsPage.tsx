@@ -4,12 +4,15 @@ import { CharacterSheet } from '../features/Character/CharacterSheet/CharacterSh
 import styles from './Styles/CharacterDetailsPage.module.css';
 import { useCharacter } from '../hooks/useCharacters';
 import { FantasyLoader } from '../components/Loader/FantasyLoader';
+import { translations, useLanguage } from '../i18n/translations';
 
 export default function CharacterDetailsPage() {
-  // 1. Достаем ID из URL (например, /characters/123)
+  const language = useLanguage();
+  const t = translations.pages.entityDetails[language];
+    // 1. Read ID from URL (e.g. /characters/123)
   const { id } = useParams<{ id: string }>();
 
-  // 2. Делаем запрос к API
+    // 2. Fetch character details
 const { data: character, isLoading, isError } = useCharacter(id);
 
   if (isLoading) {
@@ -19,7 +22,7 @@ const { data: character, isLoading, isError } = useCharacter(id);
   if (isError || !character) {
     return (
       <div className={styles.centered}>
-        <div className={styles.errorText}>Character not found.</div>
+        <div className={styles.errorText}>{t.characterNotFound}</div>
       </div>
     );
   }

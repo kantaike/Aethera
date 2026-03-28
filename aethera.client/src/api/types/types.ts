@@ -7,6 +7,25 @@ export type Settlement = components['schemas']['SettlementDto'];
 export type Dynasty = components['schemas']['DynastyDto'];
 export type Item = components['schemas']['ItemDto'];
 export type AdministrativeUnit = components['schemas']['AdministrativeUnitDto'];
+export type ItemType = components['schemas']['ItemType'];
+export type ArmorType = components['schemas']['ArmorType'];
+export type SettlementType = components['schemas']['SettlementType'];
+export type AdministrativeUnitType = components['schemas']['AdministrativeUnitType'];
+export type DynastyStatus = components['schemas']['DynastyStatus'];
 
 //Commands
 export type CreateCharacterRequest = components['schemas']['CreateCharacterCommand'];
+export type CreateDynastyRequest = components['schemas']['CreateDynastyCommand'];
+export type CreateItemRequest = components['schemas']['CreateItemCommand'];
+export type CreateSettlementRequest = components['schemas']['CreateSettlementCommand'];
+export type AddDynastyTranslationRequest = components['schemas']['AddDynastyTranslationCommand'];
+export type AddSettlementTranslationRequest = components['schemas']['AddSettlementTranslationCommand'];
+export type AddItemTranslationRequest = components['schemas']['AddItemTranslationCommand'];
+
+export type EntityPatchOperation = {
+	op: string;
+	path: string;
+	value?: unknown;
+};
+
+export type EntityPatchDocument = EntityPatchOperation[];

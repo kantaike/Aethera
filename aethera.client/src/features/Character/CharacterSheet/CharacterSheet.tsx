@@ -4,6 +4,7 @@ import { FamilyTree } from '../Family/FamilyTree';
 import type { CharacterDetail } from '../../../api/types/types';
 import RadarStats from '../CharacterStats/RadarStats';
 import { renderTextWithLinks } from '../../../components/TextLinks';
+import { translations, useLanguage } from '../../../i18n/translations';
 
 const formatAlignment = (align: string | null | undefined) => {
   if (!align) return '—';
@@ -11,6 +12,8 @@ const formatAlignment = (align: string | null | undefined) => {
 };
 
 export const CharacterSheet = ({ character }: { character: CharacterDetail }) => {
+  const language = useLanguage();
+  const t = translations.features.characterSheet[language];
   const [activeTab, setActiveTab] = useState<'biography' | 'stats'>('biography');
 
   const getAlignmentGlow = (align: string) => {
@@ -58,7 +61,7 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
           <div className={styles.tags}>
             <span>{character.species ?? '—'}</span>
             <span>
-              {character.characterClass ?? '—'} • Level {character.level ?? 0}
+              {character.characterClass ?? '—'} • {t.level} {character.level ?? 0}
             </span>
             {character.size && <span>{character.size}</span>}
             {character.alignment && (
@@ -68,9 +71,9 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
 
           <div className={styles.vitalityBar}>
             <div className={styles.hpLabel}>
-              HP {character.hp?.current ?? 0} / {character.hp?.max ?? 0}
+              {t.hp} {character.hp?.current ?? 0} / {character.hp?.max ?? 0}
               {character.hp?.temp && character.hp.temp > 0 && (
-                <span className={styles.tempHp}> +{character.hp.temp} temp</span>
+                <span className={styles.tempHp}> +{character.hp.temp} {t.temp}</span>
               )}
             </div>
             <div className={styles.hpTrack}>
@@ -115,14 +118,14 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
             className={`${styles.tabButton} ${activeTab === 'biography' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('biography')}
           >
-            Biography
+            {t.biographyTab}
           </button>
           <button
             type="button"
             className={`${styles.tabButton} ${activeTab === 'stats' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('stats')}
           >
-            D&D Stats
+            {t.statsTab}
           </button>
         </div>
 
@@ -130,16 +133,16 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
           {activeTab === 'biography' && (
             <div className={styles.biographyTab}>
               <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Family</h3>
+                <h3 className={styles.sectionTitle}>{t.family}</h3>
                 <FamilyTree character={character} relatives={relatives} />
               </section>
 
               {(character.backstory || character.personality) && (
                 <section className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Backstory & Personality</h3>
+                  <h3 className={styles.sectionTitle}>{t.backstoryAndPersonality}</h3>
                   {character.backstory && (
                     <div className={styles.bioBlock}>
-                      <h4 className={styles.bioSubtitle}>Backstory</h4>
+                      <h4 className={styles.bioSubtitle}>{t.backstory}</h4>
                       <div className={styles.backstoryText}>
                         {renderTextWithLinks(character.backstory)}
                       </div>
@@ -147,7 +150,7 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
                   )}
                   {character.personality && (
                     <div className={styles.bioBlock}>
-                      <h4 className={styles.bioSubtitle}>Personality</h4>
+                      <h4 className={styles.bioSubtitle}>{t.personality}</h4>
                       <div className={styles.backstoryText}>
                         {renderTextWithLinks(character.personality)}
                       </div>
@@ -157,7 +160,7 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
               )}
 
               {!character.backstory && !character.personality && relatives.length === 0 && (
-                <p className={styles.emptyBio}>No biographical information available.</p>
+                <p className={styles.emptyBio}>{t.emptyBio}</p>
               )}
             </div>
           )}
@@ -166,7 +169,7 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
             <div className={styles.statsTab}>
               <div className={styles.statsLayout}>
                 <div className={styles.radarSection}>
-                  <h3 className={styles.sectionTitle}>Ability Scores</h3>
+                  <h3 className={styles.sectionTitle}>{t.abilityScores}</h3>
                   <RadarStats
                     stats={{
                       str: character.strengthScore?.score,
@@ -181,49 +184,49 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
 
                 <div className={styles.otherStats}>
                   <section className={styles.statBlock}>
-                    <h4 className={styles.smallTitle}>Combat</h4>
+                    <h4 className={styles.smallTitle}>{t.combat}</h4>
                     <div className={styles.statGrid}>
                       <div className={styles.statRow}>
-                        <span>Proficiency Bonus</span>
+                        <span>{t.proficiencyBonus}</span>
                         <span>{character.proficiencyBonus ?? '—'}</span>
                       </div>
                       <div className={styles.statRow}>
-                        <span>Armor Class</span>
+                        <span>{t.armorClass}</span>
                         <span>{character.armorClass ?? '—'}</span>
                       </div>
                       <div className={styles.statRow}>
-                        <span>Initiative</span>
+                        <span>{t.initiative}</span>
                         <span>{character.initiative ?? '—'}</span>
                       </div>
                       <div className={styles.statRow}>
-                        <span>Speed</span>
+                        <span>{t.speed}</span>
                         <span>{character.speed ?? '—'} ft</span>
                       </div>
                       <div className={styles.statRow}>
-                        <span>Passive Perception</span>
+                        <span>{t.passivePerception}</span>
                         <span>{character.passivePerception ?? '—'}</span>
                       </div>
                     </div>
                   </section>
 
                   <section className={styles.statBlock}>
-                    <h4 className={styles.smallTitle}>Hit Points</h4>
+                    <h4 className={styles.smallTitle}>{t.hitPoints}</h4>
                     <div className={styles.statGrid}>
                       <div className={styles.statRow}>
-                        <span>Current / Max</span>
+                        <span>{t.currentMax}</span>
                         <span>
                           {character.hp?.current ?? '—'} / {character.hp?.max ?? '—'}
                         </span>
                       </div>
                       {character.hp?.temp != null && character.hp.temp > 0 && (
                         <div className={styles.statRow}>
-                          <span>Temp HP</span>
+                          <span>{t.tempHp}</span>
                           <span>{character.hp.temp}</span>
                         </div>
                       )}
                       {character.hitDice?.sides != null && (
                         <div className={styles.statRow}>
-                          <span>Hit Dice</span>
+                          <span>{t.hitDice}</span>
                           <span>d{character.hitDice.sides}</span>
                         </div>
                       )}
@@ -231,14 +234,14 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
                   </section>
 
                   <section className={styles.statBlock}>
-                    <h4 className={styles.smallTitle}>Death Saves</h4>
+                    <h4 className={styles.smallTitle}>{t.deathSaves}</h4>
                     <div className={styles.statGrid}>
                       <div className={styles.statRow}>
-                        <span>Successes</span>
+                        <span>{t.successes}</span>
                         <span>{character.deathSaveSuccesses ?? '—'}</span>
                       </div>
                       <div className={styles.statRow}>
-                        <span>Failures</span>
+                        <span>{t.failures}</span>
                         <span>{character.deathSaveFailures ?? '—'}</span>
                       </div>
                     </div>
@@ -246,17 +249,17 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
 
                   {(character.experiencePoints != null || character.heroicInspirationCount != null) && (
                     <section className={styles.statBlock}>
-                      <h4 className={styles.smallTitle}>Other</h4>
+                      <h4 className={styles.smallTitle}>{t.other}</h4>
                       <div className={styles.statGrid}>
                         {character.experiencePoints != null && (
                           <div className={styles.statRow}>
-                            <span>Experience Points</span>
+                            <span>{t.experiencePoints}</span>
                             <span>{character.experiencePoints}</span>
                           </div>
                         )}
                         {character.heroicInspirationCount != null && character.heroicInspirationCount > 0 && (
                           <div className={styles.statRow}>
-                            <span>Heroic Inspiration</span>
+                            <span>{t.heroicInspiration}</span>
                             <span>{character.heroicInspirationCount}</span>
                           </div>
                         )}
@@ -268,7 +271,7 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
 
               {(character.skillProficiencies?.length ?? 0) > 0 && (
                 <section className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Skill Proficiencies</h3>
+                  <h3 className={styles.sectionTitle}>{t.skillProficiencies}</h3>
                   <div className={styles.skillList}>
                     {character.skillProficiencies?.map((skill) => (
                       <div key={String(skill)} className={styles.skillItem}>
@@ -281,7 +284,7 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
 
               {(character.languageProficiencies?.length ?? 0) > 0 && (
                 <section className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Languages</h3>
+                  <h3 className={styles.sectionTitle}>{t.languages}</h3>
                   <div className={styles.skillList}>
                     {character.languageProficiencies?.map((lang) => (
                       <div key={String(lang)} className={styles.skillItem}>
@@ -294,7 +297,7 @@ export const CharacterSheet = ({ character }: { character: CharacterDetail }) =>
 
               {character.feats && (
                 <section className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Feats</h3>
+                  <h3 className={styles.sectionTitle}>{t.feats}</h3>
                   <div className={styles.backstoryText}>{character.feats}</div>
                 </section>
               )}

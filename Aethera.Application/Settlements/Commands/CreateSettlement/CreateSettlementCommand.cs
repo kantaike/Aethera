@@ -40,7 +40,7 @@ namespace Aethera.Application.Settlements.Commands.CreateSettlement
             if (command.RulerId is Guid rulerId) settlement.SetRuler(rulerId);
             if (command.ProvinceId is Guid provinceId) settlement.SetProvince(provinceId);
 
-            await _repository.Add(settlement, ct);
+            await _repository.AddWithTranslation(settlement, ct);
             await _uow.SaveChangesAsync(ct);
         }
     }

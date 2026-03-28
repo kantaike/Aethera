@@ -22,6 +22,34 @@ namespace Aethera.Domain.Entities.Items
             Cost = cost;
         }
 
+        public void SetName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Item name cannot be empty.", nameof(name));
+            Name = name;
+        }
+
+        public void SetDescription(string description)
+        {
+            if (string.IsNullOrWhiteSpace(description))
+                throw new ArgumentException("Item description cannot be empty.", nameof(description));
+            Description = description;
+        }
+
+        public void SetWeight(int weight)
+        {
+            if (weight < 0)
+                throw new ArgumentException("Weight cannot be negative.", nameof(weight));
+            Weight = weight;
+        }
+
+        public void SetCost(decimal cost)
+        {
+            if (cost < 0)
+                throw new ArgumentException("Cost cannot be negative.", nameof(cost));
+            Cost = cost;
+        }
+
         public void SetArt(Art art)
         {
             Art = art;

@@ -1,0 +1,119 @@
+.page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.45s ease-out;
+}
+
+.card {
+  width: min(100%, 480px);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(88, 166, 255, 0.12), transparent 45%),
+    radial-gradient(circle at 90% 90%, rgba(212, 175, 55, 0.08), transparent 50%),
+    linear-gradient(165deg, rgba(13, 17, 23, 0.94), rgba(22, 27, 34, 0.98));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-heavy);
+  padding: 28px;
+}
+
+.title {
+  margin: 0;
+  color: var(--headers);
+  font-size: clamp(1.7rem, 2vw, 2.1rem);
+}
+
+.subtitle {
+  margin: 8px 0 22px;
+  color: var(--text);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(13, 17, 23, 0.85);
+  color: var(--headers);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.input::placeholder {
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--border-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14);
+  transform: translateY(-1px);
+}
+
+.submitButton {
+  margin-top: 4px;
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  background: linear-gradient(135deg, #0d3b66, #1f6feb);
+  color: #f8fbff;
+  font-weight: 600;
+}
+
+.submitButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.error {
+  margin: 0;
+  padding: 10px 12px;
+  background: rgba(185, 28, 28, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  border-radius: 10px;
+  color: #fecaca;
+  font-size: 0.92rem;
+}
+
+.footer {
+  margin-top: 18px;
+  color: var(--text);
+}
+
+.footerLink {
+  color: var(--accent-blue);
+}
+
+.footerLink:hover {
+  color: var(--accent-silver);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    align-items: flex-start;
+    padding-top: 16px;
+  }
+
+  .card {
+    border-radius: 14px;
+    padding: 20px;
+  }
+}

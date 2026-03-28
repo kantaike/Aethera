@@ -1,0 +1,91 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 3vh, 24px);
+  background:
+    radial-gradient(circle at top, rgba(88, 166, 255, 0.14), transparent 30%),
+    rgba(6, 9, 14, 0.78);
+  backdrop-filter: blur(10px);
+  overflow-y: auto;
+}
+
+.dialog {
+  width: min(560px, calc(100vw - clamp(24px, 6vw, 48px)));
+  margin: auto 0;
+  border: 1px solid rgba(244, 228, 188, 0.16);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(212, 175, 55, 0.12), transparent 32%),
+    radial-gradient(circle at bottom left, rgba(88, 166, 255, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(12, 17, 28, 0.98), rgba(18, 23, 34, 0.98));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid rgba(244, 228, 188, 0.08);
+}
+
+.title {
+  margin: 0;
+  color: var(--headers);
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--text);
+}
+
+.closeButton {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  padding: 0;
+  border: 1px solid rgba(244, 228, 188, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--headers);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  border-color: rgba(212, 175, 55, 0.38);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.content {
+  padding: 22px 24px 24px;
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .dialog {
+    width: min(100%, calc(100vw - 24px));
+    margin: 0;
+    border-radius: 16px;
+  }
+
+  .header,
+  .content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

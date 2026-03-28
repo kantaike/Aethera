@@ -15,6 +15,29 @@
   opacity: 0.9;
 }
 
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.createButton {
+  padding: 12px 18px;
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0d3b66, #1f6feb);
+  color: #f8fbff;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.createButton:hover {
+  filter: brightness(1.08);
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -160,6 +183,11 @@
 }
 
 @media (max-width: 768px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .filters {
     flex-direction: column;
     align-items: stretch;

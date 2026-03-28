@@ -1,9 +1,12 @@
 ﻿using Aethera.Application.Common.Interfaces;
+using Aethera.Application.Items.Commands.AddTranslation;
 using Aethera.Application.Items.Commands.CreateItemCommand;
+using Aethera.Application.Items.Commands.PatchItem;
 using Aethera.Application.Items.Queries.GetItemDetails;
 using Aethera.Application.Items.Queries.GetItemsList;
 using Aethera.Domain.Entities.Items;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aethera.Server.Controllers
@@ -38,6 +41,28 @@ namespace Aethera.Server.Controllers
         {
             var item = await handler.HandleAsync(new GetItemByIdQuery(id), ct);
             return item != null ? Ok(item) : NotFound();
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchItem(
+            Guid id,
+            [FromBody] JsonPatchDocument<ItemPatchDto> patchDocument,
+            [FromServices] ICommandHandler<PatchItemCommand> handler,
+            CancellationToken ct)
+        {
+            var command = new PatchItemCommand { ItemId = id, PatchDocument = patchDocument };
+            await handler.HandleAsync(command, ct);
+            return Ok(new { message = "Item updated successfully" });
+        }
+
+        [HttpPost("AddTranslation")]
+        public async Task<IActionResult> AddTranslation(
+            [FromBody] AddItemTranslationCommand command,
+            [FromServices] ICommandHandler<AddItemTranslationCommand> handler,
+            CancellationToken ct)
+        {
+            await handler.HandleAsync(command, ct);
+            return Ok(new { message = "Translation added" });
         }
     }
 }

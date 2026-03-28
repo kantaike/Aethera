@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './RelativeCard.module.css';
 import { CharacterMiniCard } from '../CharacterMiniCard/CharacterMiniCard';
+import { translations, useLanguage } from '../../../i18n/translations';
 
 interface RelativeCardProps {
   id: string;
@@ -8,7 +9,9 @@ interface RelativeCardProps {
 }
 
 export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
-  // Логика иконок теперь живет только здесь
+  const language = useLanguage();
+  const t = translations.features.relativeCard[language];
+  // Icon mapping for relationship roles
   const getRoleIcon = (roleName: string | null) => {
     const r = roleName?.toLowerCase() || '';
     if (r.includes('parent') || r.includes('father') || r.includes('mother')) return '▲';
@@ -18,7 +21,7 @@ export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
   };
 
   const formatRole = (r: string) => {
-    if (r === 'SELF' || r === 'MAIN') return 'Current';
+    if (r === 'SELF' || r === 'MAIN') return t.current;
     return r
       .toLowerCase()
       .replace(/-/g, ' ')

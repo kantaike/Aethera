@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { useItem } from '../../hooks/useItems';
 import { EntityLink } from './EntityLink';
 import styles from './TextLinks.module.css';
+import { translations, useLanguage } from '../../i18n/translations';
 
 type ItemLinkProps = {
   id: string;
@@ -9,27 +10,29 @@ type ItemLinkProps = {
 };
 
 export function Item({ id, children }: ItemLinkProps) {
+  const language = useLanguage();
+  const t = translations.features.textLinks[language];
   const { data, isLoading, isError } = useItem(id);
-  const label = children ?? data?.name ?? 'Item';
+  const label = children ?? data?.name ?? t.fallback.item;
 
   const preview = (
     <div className={styles.previewRow}>
       <img
         className={styles.previewImage}
         src={data?.art?.filePath ?? ''}
-        alt={typeof label === 'string' ? label : data?.name ?? 'Item'}
+        alt={typeof label === 'string' ? label : data?.name ?? t.fallback.item}
       />
       <div>
         <div className={styles.previewTitle}>{data?.name ?? '—'}</div>
         <div className={styles.previewSubtitle}>
-          {isLoading ? 'Loading…' : isError ? 'Not found' : (data?.type ?? 'Open item')}
+          {isLoading ? t.loading : isError ? t.notFound : (data?.type ?? t.openItem)}
         </div>
       </div>
     </div>
   );
 
   return (
-    <EntityLink to={`/items/${id}`} preview={preview} ariaLabel={`Item ${String(label)}`}>
+    <EntityLink to={`/items/${id}`} preview={preview} ariaLabel={`${t.fallback.item} ${String(label)}`}>
       {label}
     </EntityLink>
   );

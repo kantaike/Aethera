@@ -1,0 +1,96 @@
+.page {
+  padding: 32px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: min(100%, 640px);
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(88, 166, 255, 0.14), transparent 32%),
+    linear-gradient(180deg, rgba(12, 17, 28, 0.95), rgba(20, 24, 36, 0.98));
+  box-shadow: var(--shadow-heavy);
+}
+
+.title {
+  margin: 0;
+  color: var(--headers);
+}
+
+.subtitle {
+  margin: 8px 0 6px;
+  color: var(--headers);
+}
+
+.summary {
+  margin: 0 0 20px;
+  color: var(--text);
+}
+
+.details {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(244, 228, 188, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.label {
+  margin: 0;
+  color: var(--text);
+}
+
+.value {
+  margin: 0;
+  color: var(--headers);
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text);
+}
+
+.logoutButton {
+  margin-top: 24px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(244, 228, 188, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--headers);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.logoutButton:hover {
+  background: rgba(255, 80, 80, 0.12);
+  border-color: rgba(255, 80, 80, 0.4);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 20px 16px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
