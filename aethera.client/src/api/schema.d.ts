@@ -1016,6 +1016,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/Stories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StoryDto"][];
+                        "application/json": components["schemas"]["StoryDto"][];
+                        "text/json": components["schemas"]["StoryDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["CreateStoryCommand"];
+                    "application/json": components["schemas"]["CreateStoryCommand"];
+                    "text/json": components["schemas"]["CreateStoryCommand"];
+                    "application/*+json": components["schemas"]["CreateStoryCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Stories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1195,6 +1291,13 @@ export interface components {
             /** Format: uuid */
             provinceId?: string | null;
         };
+        CreateStoryCommand: {
+            title?: string | null;
+            description?: string | null;
+            content?: string | null;
+            /** Format: uuid */
+            authorId?: string;
+        };
         Dice: {
             /** Format: int32 */
             readonly sides?: number;
@@ -1223,7 +1326,7 @@ export interface components {
         /** @enum {string} */
         DynastyStatus: "Ruling" | "Fallen" | "Vassal";
         /** @enum {string} */
-        EntityArtType: "Character" | "Item" | "Settlement" | "Dynasty";
+        EntityArtType: "Character" | "Item" | "Settlement" | "Dynasty" | "Story";
         /** @enum {string} */
         EntityState: "Updated" | "Disabled" | "Deleted";
         EquipItemCommand: {
@@ -1348,6 +1451,13 @@ export interface components {
         Skill: "Acrobatics" | "AnimalHandling" | "Arcana" | "Athletics" | "Deception" | "History" | "Insight" | "Intimidation" | "Investigation" | "Medicine" | "Nature" | "Perception" | "Performance" | "Persuasion" | "Religion" | "SleightOfHand" | "Stealth" | "Survival";
         /** @enum {string} */
         Species: "Human" | "Elf" | "Dwarf" | "Halfling" | "Orc" | "Gnome" | "Tiefling" | "Dragonborn";
+        StoryDto: {
+            /** Format: uuid */
+            id?: string;
+            title?: string | null;
+            description?: string | null;
+            art?: components["schemas"]["Art"];
+        };
     };
     responses: never;
     parameters: never;

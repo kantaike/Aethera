@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
-import { useAddSettlementTranslation, usePatchSettlement, useSettlement } from '../hooks/useSettlements';
+import { useAddSettlementTranslation, usePatchSettlement, useSettlement, useUploadSettlementArt } from '../hooks/useSettlements';
 import { FantasyLoader } from '../components/Loader/FantasyLoader';
 import styles from './Styles/EntityDetailsPage.module.css';
 import { translations, useLanguage } from '../i18n/translations';
@@ -11,6 +11,7 @@ import { createReplaceOperation } from '../api/patch';
 import type { SettlementType } from '../api/types/types';
 import { Modal } from '../components/Modal/Modal';
 import formStyles from '../components/Modal/EntityForm.module.css';
+import { validateArtFile } from '../utils/artValidation';
 
 const SETTLEMENT_TYPES: SettlementType[] = ['City', 'Castle', 'Village'];
 
@@ -32,6 +33,8 @@ export function SettlementDetailsPage() {
   const { data, isLoading, isError } = useSettlement(id);
   const { mutateAsync: patchSettlement, isPending: isSaving, error: saveError } = usePatchSettlement();
   const { mutate: addSettlementTranslation, isPending: isAddingTranslation, error: addTranslationError } = useAddSettlementTranslation();
+  const { mutate: uploadSettlementArt, isPending: isUploadingArt, error: uploadArtError } = useUploadSettlementArt();
+  const artInputRef = useRef<HTMLInputElement>(null);
   const [editingField, setEditingField] = useState<EditableSettlementField | null>(null);
   const [isTranslateOpen, setIsTranslateOpen] = useState(false);
   const [translationFormError, setTranslationFormError] = useState('');
@@ -61,6 +64,7 @@ export function SettlementDetailsPage() {
     const key = (data.type ?? 'City') as keyof typeof t.settlement.typeLabels;
     return t.settlement.typeLabels[key] ?? data.type ?? t.settlementFallbackType;
   }, [data, t.settlement.typeLabels, t.settlementFallbackType]);
+  const artSrc = data?.art?.filePath;
 
   if (isLoading) return <FantasyLoader />;
   if (isError || !data) {
@@ -147,10 +151,69 @@ export function SettlementDetailsPage() {
     });
   };
 
+  const handleArtSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!id) {
+      return;
+    }
+
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const validationError = validateArtFile(file);
+    if (validationError === 'size') {
+      toast.error(t.artTooLarge);
+      event.target.value = '';
+      return;
+    }
+
+    if (validationError === 'type') {
+      toast.error(t.artInvalidType);
+      event.target.value = '';
+      return;
+    }
+
+    uploadSettlementArt(
+      { id, file },
+      {
+        onSuccess: () => {
+          toast.success(t.artUploadSuccess);
+          event.target.value = '';
+        },
+      }
+    );
+  };
+
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.header}>
-        <img className={styles.image} src={data.art?.filePath ?? ''} alt={title} />
+        <div className={styles.imageWrap}>
+          {artSrc ? (
+            <img className={styles.image} src={artSrc} alt={title} />
+          ) : (
+            <div className={`${styles.imagePlaceholder} ${styles.placeholderSettlement}`}>
+              <span className={styles.imagePlaceholderIcon}>🏰</span>
+              <span className={styles.imagePlaceholderText}>{t.noArt}</span>
+            </div>
+          )}
+          {isMaster ? (
+            <>
+              <input
+                ref={artInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp,image/tiff"
+                onChange={handleArtSelected}
+                hidden
+              />
+              <div className={styles.imageOverlay}>
+                <button type="button" className={styles.imageOverlayButton} onClick={() => artInputRef.current?.click()} disabled={isUploadingArt}>
+                  {isUploadingArt ? t.uploadingArt : t.uploadArt}
+                </button>
+              </div>
+            </>
+          ) : null}
+        </div>
         <div className={styles.headerTopRow}>
           <div className={styles.headerMeta}>
             <h1 className={styles.title}>{renderTextWithLinks(title)}</h1>
@@ -281,6 +344,7 @@ export function SettlementDetailsPage() {
         </section>
 
         {saveError ? <p className={styles.saveError}>{t.saveError}</p> : null}
+        {uploadArtError ? <p className={styles.saveError}>{t.saveError}</p> : null}
       </article>
 
       <Modal open={isTranslateOpen} onClose={closeTranslateModal} title={t.translationModal.title} subtitle={t.translationModal.subtitle}>

@@ -14,6 +14,6 @@ namespace Aethera.Application.Items.Queries.GetItemDetails
         public GetItemByIdHandler(IItemRepository repository) => _repository = repository;
 
         public async Task<Item?> HandleAsync(GetItemByIdQuery query, CancellationToken ct)
-            => await _repository.GetWithTranslation(query.Id, ct);
+            => await _repository.Get(query.Id, ct);
     }
 }

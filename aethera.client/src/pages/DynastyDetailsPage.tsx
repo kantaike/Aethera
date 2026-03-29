@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
-import { useAddDynastyTranslation, useDynasty, usePatchDynasty } from '../hooks/useDynasties';
+import { useAddDynastyTranslation, useDynasty, usePatchDynasty, useUploadDynastyArt } from '../hooks/useDynasties';
 import { FantasyLoader } from '../components/Loader/FantasyLoader';
 import styles from './Styles/EntityDetailsPage.module.css';
 import { translations, useLanguage } from '../i18n/translations';
@@ -11,6 +11,7 @@ import { createReplaceOperation } from '../api/patch';
 import type { DynastyStatus } from '../api/types/types';
 import { Modal } from '../components/Modal/Modal';
 import formStyles from '../components/Modal/EntityForm.module.css';
+import { validateArtFile } from '../utils/artValidation';
 
 const DYNASTY_STATUSES: DynastyStatus[] = ['Ruling', 'Fallen', 'Vassal'];
 
@@ -34,6 +35,8 @@ export function DynastyDetailsPage() {
   const { data, isLoading, isError } = useDynasty(id);
   const { mutateAsync: patchDynasty, isPending: isSaving, error: saveError } = usePatchDynasty();
   const { mutate: addDynastyTranslation, isPending: isAddingTranslation, error: addTranslationError } = useAddDynastyTranslation();
+  const { mutate: uploadDynastyArt, isPending: isUploadingArt, error: uploadArtError } = useUploadDynastyArt();
+  const artInputRef = useRef<HTMLInputElement>(null);
   const [editingField, setEditingField] = useState<EditableDynastyField | null>(null);
   const [isTranslateOpen, setIsTranslateOpen] = useState(false);
   const [translationFormError, setTranslationFormError] = useState('');
@@ -70,6 +73,7 @@ export function DynastyDetailsPage() {
     const key = (data?.status ?? 'Vassal') as keyof typeof t.dynasty.statusLabels;
     return t.dynasty.statusLabels[key] ?? data?.status ?? t.noValue;
   }, [data?.status, t.dynasty.statusLabels, t.noValue]);
+  const artSrc = data?.art?.filePath;
 
   if (isLoading) return <FantasyLoader />;
   if (isError || !data) {
@@ -162,10 +166,69 @@ export function DynastyDetailsPage() {
     });
   };
 
+  const handleArtSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!id) {
+      return;
+    }
+
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const validationError = validateArtFile(file);
+    if (validationError === 'size') {
+      toast.error(t.artTooLarge);
+      event.target.value = '';
+      return;
+    }
+
+    if (validationError === 'type') {
+      toast.error(t.artInvalidType);
+      event.target.value = '';
+      return;
+    }
+
+    uploadDynastyArt(
+      { id, file },
+      {
+        onSuccess: () => {
+          toast.success(t.artUploadSuccess);
+          event.target.value = '';
+        },
+      }
+    );
+  };
+
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.header}>
-        <img className={styles.image} src={data.art?.filePath ?? ''} alt={data.name ?? ''} />
+        <div className={styles.imageWrap}>
+          {artSrc ? (
+            <img className={styles.image} src={artSrc} alt={data.name ?? ''} />
+          ) : (
+            <div className={`${styles.imagePlaceholder} ${styles.placeholderDynasty}`}>
+              <span className={styles.imagePlaceholderIcon}>⚜</span>
+              <span className={styles.imagePlaceholderText}>{t.noArt}</span>
+            </div>
+          )}
+          {isMaster ? (
+            <>
+              <input
+                ref={artInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp,image/tiff"
+                onChange={handleArtSelected}
+                hidden
+              />
+              <div className={styles.imageOverlay}>
+                <button type="button" className={styles.imageOverlayButton} onClick={() => artInputRef.current?.click()} disabled={isUploadingArt}>
+                  {isUploadingArt ? t.uploadingArt : t.uploadArt}
+                </button>
+              </div>
+            </>
+          ) : null}
+        </div>
         <div className={styles.headerTopRow}>
           <div className={styles.headerMeta}>
             <h1 className={styles.title}>{renderTextWithLinks(data.name ?? '')}</h1>
@@ -352,6 +415,7 @@ export function DynastyDetailsPage() {
         </section>
 
         {saveError ? <p className={styles.saveError}>{t.saveError}</p> : null}
+        {uploadArtError ? <p className={styles.saveError}>{t.saveError}</p> : null}
       </article>
 
       <Modal open={isTranslateOpen} onClose={closeTranslateModal} title={t.translationModal.title} subtitle={t.translationModal.subtitle}>

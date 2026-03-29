@@ -5,10 +5,6 @@ using System.Text;
 
 namespace Aethera.Infrastructure.Entities
 {
-    /// <summary>
-    /// Stores localized/translatable fields for a Character.
-    /// Each record represents a single culture/locale for a character.
-    /// </summary>
     public class CharacterTranslationEntity : Entity, ITranslationEntity
     {
         // Foreign key to the Character entity this translation belongs to

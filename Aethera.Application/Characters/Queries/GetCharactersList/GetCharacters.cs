@@ -24,7 +24,7 @@ namespace Aethera.Application.Characters.Queries.GetCharactersList
 
         public async Task<IEnumerable<CharacterPreview>> HandleAsync(GetCharactersQuery query, CancellationToken ct = default)
         {
-            var characters = await _repository.GetAllWithTranslation(ct);
+            var characters = await _repository.Get(ct);
 
             return characters.Select(character => new CharacterPreview(
                 character.Id,

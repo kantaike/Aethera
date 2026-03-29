@@ -12,6 +12,18 @@ export type ArmorType = components['schemas']['ArmorType'];
 export type SettlementType = components['schemas']['SettlementType'];
 export type AdministrativeUnitType = components['schemas']['AdministrativeUnitType'];
 export type DynastyStatus = components['schemas']['DynastyStatus'];
+export type StoryPreview = components['schemas']['StoryDto'];
+export type Art = components['schemas']['Art'];
+export type EntityArtType = components['schemas']['EntityArtType'];
+
+export interface StoryDetail {
+  id: string;
+  title: string | null;
+  description: string | null;
+  content: string | null;
+  authorId: string | null;
+  art?: Art | null;
+}
 
 //Commands
 export type CreateCharacterRequest = components['schemas']['CreateCharacterCommand'];
@@ -21,6 +33,7 @@ export type CreateSettlementRequest = components['schemas']['CreateSettlementCom
 export type AddDynastyTranslationRequest = components['schemas']['AddDynastyTranslationCommand'];
 export type AddSettlementTranslationRequest = components['schemas']['AddSettlementTranslationCommand'];
 export type AddItemTranslationRequest = components['schemas']['AddItemTranslationCommand'];
+export type CreateStoryRequest = components['schemas']['CreateStoryCommand'];
 
 export type EntityPatchOperation = {
 	op: string;

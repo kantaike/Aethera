@@ -14,7 +14,7 @@ namespace Aethera.Infrastructure.Repositories
     internal class ItemRepository(ApplicationDbContext context, ICultureProvider cultureProvider)
         : Repository<Item>(context, cultureProvider), IItemRepository
     {
-        public async Task<Item> AddWithTranslation(Item item, CancellationToken ct)
+        public override async Task Add(Item item, CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 
@@ -29,11 +29,9 @@ namespace Aethera.Infrastructure.Repositories
             };
 
             _context.Set<ItemTranslationEntity>().Add(translationEntity);
-
-            return item;
         }
 
-        public async Task<Item> GetWithTranslation(Guid id, CancellationToken ct)
+        public override async Task<Item> Get(Guid id, CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 
@@ -54,7 +52,7 @@ namespace Aethera.Infrastructure.Repositories
             return item;
         }
 
-        public async Task<IEnumerable<Item>> GetAllWithTranslation(CancellationToken ct)
+        public override async Task<IEnumerable<Item>> Get(CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 

@@ -1,0 +1,124 @@
+.container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.mainTitle {
+  color: var(--headers);
+  margin: 0 0 8px 0;
+  font-size: 2.25rem;
+}
+
+.subtitle {
+  color: var(--text);
+  margin: 0 0 24px 0;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.createButton {
+  padding: 12px 18px;
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0d3b66, #1f6feb);
+  color: #f8fbff;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.createButton:hover {
+  filter: brightness(1.08);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 16px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--headers);
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.searchInput::placeholder {
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--border-gold);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.listItem {
+  animation: fadeInUp 0.35s ease-out both;
+}
+
+.listItem:nth-child(1) { animation-delay: 0.02s; }
+.listItem:nth-child(2) { animation-delay: 0.06s; }
+.listItem:nth-child(3) { animation-delay: 0.1s; }
+.listItem:nth-child(4) { animation-delay: 0.14s; }
+.listItem:nth-child(5) { animation-delay: 0.18s; }
+.listItem:nth-child(n+6) { animation-delay: 0.22s; }
+
+.empty {
+  color: var(--text);
+  opacity: 0.7;
+  margin-top: 40px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

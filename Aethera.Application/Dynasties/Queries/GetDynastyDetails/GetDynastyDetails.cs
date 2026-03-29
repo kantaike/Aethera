@@ -17,7 +17,7 @@ namespace Aethera.Application.Dynasties.Queries.GetDynastyById
 
         public async Task<DynastyDto?> HandleAsync(GetDynastyByIdQuery query, CancellationToken ct)
         {
-            var dynasty = await repository.GetWithTranslation(query.Id, ct);
+            var dynasty = await repository.Get(query.Id, ct);
             var derived = await DynastyCalculator.CalculateAsync(dynasty,
                                                                       characterRepository,
                                                                       administrativeUnitRepository,

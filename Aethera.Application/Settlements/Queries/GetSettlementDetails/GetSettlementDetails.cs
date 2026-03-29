@@ -14,6 +14,6 @@ namespace Aethera.Application.Settlements.Queries.GetSettlementDetails
         public GetSettlementByIdHandler(ISettlementRepository repository) => _repository = repository;
 
         public async Task<Settlement?> HandleAsync(GetSettlementByIdQuery query, CancellationToken ct)
-            => await _repository.GetWithTranslation(query.Id, ct);
+            => await _repository.Get(query.Id, ct);
     }
 }

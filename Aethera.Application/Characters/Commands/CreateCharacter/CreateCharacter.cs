@@ -121,7 +121,7 @@ namespace Aethera.Application.Characters.Commands.CreateCharacter
                 }
             });
 
-            await _repository.AddWithTranslation(character, ct);
+            await _repository.Add(character, ct);
 
             await _uow.SaveChangesAsync(ct);
         }

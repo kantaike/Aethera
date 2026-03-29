@@ -14,7 +14,7 @@ namespace Aethera.Infrastructure.Repositories
     internal class SettlemmentRepository(ApplicationDbContext context, ICultureProvider cultureProvider)
         : Repository<Settlement>(context, cultureProvider), ISettlementRepository
     {
-        public async Task<Settlement> AddWithTranslation(Settlement settlement, CancellationToken ct)
+        public override async Task Add(Settlement settlement, CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 
@@ -29,11 +29,9 @@ namespace Aethera.Infrastructure.Repositories
             };
 
             _context.Set<SettlementTranslationEntity>().Add(translationEntity);
-
-            return settlement;
         }
 
-        public async Task<Settlement> GetWithTranslation(Guid id, CancellationToken ct)
+        public override async Task<Settlement> Get(Guid id, CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 
@@ -54,7 +52,7 @@ namespace Aethera.Infrastructure.Repositories
             return settlement;
         }
 
-        public async Task<IEnumerable<Settlement>> GetAllWithTranslation(CancellationToken ct)
+        public override async Task<IEnumerable<Settlement>> Get(CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 

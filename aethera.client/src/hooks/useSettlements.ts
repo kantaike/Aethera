@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { artApi } from '../api/art';
 import { settlementsApi } from '../api/world';
 import type { AddSettlementTranslationRequest, CreateSettlementRequest, EntityPatchOperation } from '../api/types/types';
 
@@ -47,6 +48,19 @@ export const useAddSettlementTranslation = () => {
 
   return useMutation({
     mutationFn: (data: AddSettlementTranslationRequest) => settlementsApi.addTranslation(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['settlements'] });
+      queryClient.invalidateQueries({ queryKey: ['settlement', variables.id] });
+    },
+  });
+};
+
+export const useUploadSettlementArt = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, file }: { id: string; file: File }) =>
+      artApi.upload('Settlement', id, file),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['settlements'] });
       queryClient.invalidateQueries({ queryKey: ['settlement', variables.id] });

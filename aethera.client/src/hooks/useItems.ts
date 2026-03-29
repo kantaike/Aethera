@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { artApi } from '../api/art';
 import { itemsApi } from '../api/items';
 import type { AddItemTranslationRequest, CreateItemRequest, EntityPatchOperation } from '../api/types/types';
 
@@ -47,6 +48,19 @@ export const useAddItemTranslation = () => {
 
   return useMutation({
     mutationFn: (data: AddItemTranslationRequest) => itemsApi.addTranslation(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+      queryClient.invalidateQueries({ queryKey: ['item', variables.id] });
+    },
+  });
+};
+
+export const useUploadItemArt = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, file }: { id: string; file: File }) =>
+      artApi.upload('Item', id, file),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
       queryClient.invalidateQueries({ queryKey: ['item', variables.id] });

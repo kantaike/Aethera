@@ -10,7 +10,8 @@ namespace Aethera.Domain.Common
         Character,
         Item,
         Settlement,
-        Dynasty
+        Dynasty,
+        Story
     }
     public interface IHasArt
     {

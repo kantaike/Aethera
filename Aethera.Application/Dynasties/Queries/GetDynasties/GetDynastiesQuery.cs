@@ -23,7 +23,7 @@ namespace Aethera.Application.Dynasties.Queries.GetDynasties
     {
         public async Task<IEnumerable<DynastyDto>> HandleAsync(GetDynastiesQuery query, CancellationToken ct)
         {
-            var dynasties = (await repository.GetAllWithTranslation(ct)).ToList();
+            var dynasties = (await repository.Get(ct)).ToList();
 
             var result = new List<DynastyDto>();
 

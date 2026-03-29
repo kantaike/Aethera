@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
-import { useAddItemTranslation, useItem, usePatchItem } from '../hooks/useItems';
+import { useAddItemTranslation, useItem, usePatchItem, useUploadItemArt } from '../hooks/useItems';
 import { FantasyLoader } from '../components/Loader/FantasyLoader';
 import styles from './Styles/EntityDetailsPage.module.css';
 import { translations, useLanguage } from '../i18n/translations';
@@ -11,6 +11,7 @@ import { createReplaceOperation } from '../api/patch';
 import type { ItemType } from '../api/types/types';
 import { Modal } from '../components/Modal/Modal';
 import formStyles from '../components/Modal/EntityForm.module.css';
+import { validateArtFile } from '../utils/artValidation';
 
 const ITEM_TYPES: ItemType[] = ['Item', 'Equipment', 'Armor', 'Weapon'];
 
@@ -33,6 +34,8 @@ export function ItemDetailsPage() {
   const { data, isLoading, isError } = useItem(id);
   const { mutateAsync: patchItem, isPending: isSaving, error: saveError } = usePatchItem();
   const { mutate: addItemTranslation, isPending: isAddingTranslation, error: addTranslationError } = useAddItemTranslation();
+  const { mutate: uploadItemArt, isPending: isUploadingArt, error: uploadArtError } = useUploadItemArt();
+  const artInputRef = useRef<HTMLInputElement>(null);
   const [editingField, setEditingField] = useState<EditableItemField | null>(null);
   const [isTranslateOpen, setIsTranslateOpen] = useState(false);
   const [translationFormError, setTranslationFormError] = useState('');
@@ -66,6 +69,7 @@ export function ItemDetailsPage() {
     const key = (data?.type ?? 'Item') as keyof typeof t.item.typeLabels;
     return t.item.typeLabels[key] ?? data?.type ?? t.itemFallbackType;
   }, [data?.type, t.item.typeLabels, t.itemFallbackType]);
+  const artSrc = data?.art?.filePath;
 
   if (isLoading) return <FantasyLoader />;
   if (isError || !data) {
@@ -126,6 +130,40 @@ export function ItemDetailsPage() {
     });
   };
 
+  const handleArtSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!id) {
+      return;
+    }
+
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const validationError = validateArtFile(file);
+    if (validationError === 'size') {
+      toast.error(t.artTooLarge);
+      event.target.value = '';
+      return;
+    }
+
+    if (validationError === 'type') {
+      toast.error(t.artInvalidType);
+      event.target.value = '';
+      return;
+    }
+
+    uploadItemArt(
+      { id, file },
+      {
+        onSuccess: () => {
+          toast.success(t.artUploadSuccess);
+          event.target.value = '';
+        },
+      }
+    );
+  };
+
   const handleAddTranslation = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -156,7 +194,32 @@ export function ItemDetailsPage() {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.header}>
-        <img className={styles.image} src={data.art?.filePath ?? ''} alt={data.name ?? ''} />
+        <div className={styles.imageWrap}>
+          {artSrc ? (
+            <img className={styles.image} src={artSrc} alt={data.name ?? ''} />
+          ) : (
+            <div className={`${styles.imagePlaceholder} ${styles.placeholderItem}`}>
+              <span className={styles.imagePlaceholderIcon}>⚔</span>
+              <span className={styles.imagePlaceholderText}>{t.noArt}</span>
+            </div>
+          )}
+          {isMaster ? (
+            <>
+              <input
+                ref={artInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp,image/tiff"
+                onChange={handleArtSelected}
+                hidden
+              />
+              <div className={styles.imageOverlay}>
+                <button type="button" className={styles.imageOverlayButton} onClick={() => artInputRef.current?.click()} disabled={isUploadingArt}>
+                  {isUploadingArt ? t.uploadingArt : t.uploadArt}
+                </button>
+              </div>
+            </>
+          ) : null}
+        </div>
         <div className={styles.headerTopRow}>
           <div className={styles.headerMeta}>
             <h1 className={styles.title}>{renderTextWithLinks(data.name ?? '')}</h1>
@@ -331,6 +394,7 @@ export function ItemDetailsPage() {
         </section>
 
         {saveError ? <p className={styles.saveError}>{t.saveError}</p> : null}
+        {uploadArtError ? <p className={styles.saveError}>{t.saveError}</p> : null}
       </article>
 
       <Modal open={isTranslateOpen} onClose={closeTranslateModal} title={t.translationModal.title} subtitle={t.translationModal.subtitle}>

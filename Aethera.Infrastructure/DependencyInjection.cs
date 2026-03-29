@@ -23,7 +23,6 @@ namespace Aethera.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString, b =>
                     b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-            services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICharacterRepository, CharacterRepository>();
@@ -32,9 +31,9 @@ namespace Aethera.Infrastructure
             services.AddScoped<IAdministrativeUnitRepository, AdministrativeUnitRepository>();
             services.AddScoped<IDynastyRepository, DynastyRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IStoryRepository, StoryRepository>();
 
             services.AddScoped<IFileService, FileService>();
-            services.AddScoped<IMapper, AutoMapperWrapper>();
             services.AddScoped<ICultureProvider, CultureProvider>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -324,6 +324,15 @@ namespace Aethera.Domain.Entities.Characters
         {
             Art = art;
         }
+
+        // --- Translatable fields (set via repository after loading translation) ---
+        public void ApplyTranslation(string? name, string? feats, string? backstory, string? personality)
+        {
+            if (name != null) Name = name;
+            if (feats != null) Feats = feats;
+            if (backstory != null) Backstory = backstory;
+            if (personality != null) Personality = personality;
+        }
     }
     public record AttributeScore(int Score)
     {

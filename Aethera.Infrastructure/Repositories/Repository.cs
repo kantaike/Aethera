@@ -20,7 +20,7 @@ namespace Aethera.Infrastructure.Repositories
             _entities = _context.Set<Entity>();
             _cultureProvider = cultureProvider;
         }
-        public async Task Add(Entity entity, CancellationToken ct)
+        public virtual async Task Add(Entity entity, CancellationToken ct)
         {
             await _entities.AddAsync(entity, ct);
         }
@@ -30,14 +30,14 @@ namespace Aethera.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Entity> Get(Guid id, CancellationToken ct)
+        public virtual async Task<Entity> Get(Guid id, CancellationToken ct)
         {
             var entity = await _entities.FindAsync(id, ct) 
                 ?? throw new KeyNotFoundException($"{typeof(Entity)} with id {id} not found.");
             return entity;
         }
 
-        public async Task<IEnumerable<Entity>> Get(CancellationToken ct)
+        public virtual async Task<IEnumerable<Entity>> Get(CancellationToken ct)
         {
             return await _entities.ToListAsync();
         }

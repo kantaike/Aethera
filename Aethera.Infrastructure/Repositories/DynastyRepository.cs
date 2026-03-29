@@ -14,7 +14,7 @@ namespace Aethera.Infrastructure.Repositories
     internal class DynastyRepository(ApplicationDbContext context, ICultureProvider cultureProvider)
         : Repository<Dynasty>(context, cultureProvider), IDynastyRepository
     {
-        public async Task<Dynasty> AddWithTranslation(Dynasty dynasty, CancellationToken ct)
+        public override async Task Add(Dynasty dynasty, CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 
@@ -30,11 +30,9 @@ namespace Aethera.Infrastructure.Repositories
             };
 
             _context.Set<DynastyTranslationEntity>().Add(translationEntity);
-
-            return dynasty;
         }
 
-        public async Task<Dynasty> GetWithTranslation(Guid id, CancellationToken ct)
+        public override async Task<Dynasty> Get(Guid id, CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 
@@ -57,7 +55,7 @@ namespace Aethera.Infrastructure.Repositories
             return dynasty;
         }
 
-        public async Task<IEnumerable<Dynasty>> GetAllWithTranslation(CancellationToken ct)
+        public override async Task<IEnumerable<Dynasty>> Get(CancellationToken ct)
         {
             var culture = _cultureProvider.Culture;
 

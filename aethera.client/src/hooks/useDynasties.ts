@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { artApi } from '../api/art';
 import { dynastiesApi } from '../api/world';
 import type { AddDynastyTranslationRequest, CreateDynastyRequest, EntityPatchOperation } from '../api/types/types';
 
@@ -47,6 +48,19 @@ export const useAddDynastyTranslation = () => {
 
   return useMutation({
     mutationFn: (data: AddDynastyTranslationRequest) => dynastiesApi.addTranslation(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['dynasties'] });
+      queryClient.invalidateQueries({ queryKey: ['dynasty', variables.id] });
+    },
+  });
+};
+
+export const useUploadDynastyArt = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, file }: { id: string; file: File }) =>
+      artApi.upload('Dynasty', id, file),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['dynasties'] });
       queryClient.invalidateQueries({ queryKey: ['dynasty', variables.id] });

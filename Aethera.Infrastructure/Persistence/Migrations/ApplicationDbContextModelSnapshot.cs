@@ -74,6 +74,116 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.Character", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<int?>("Alignment")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("BackgroundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Backstory")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Class")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("DeathSaveFailures")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("DeathSaveSuccesses")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DynastyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("EntityState")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("EquipedArmorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("EquipedWeaponId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long?>("ExperiencePoints")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("FatherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Feats")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("HeroicInspirationCount")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("HometownId")
+                        .HasColumnType("uuid");
+
+                    b.PrimitiveCollection<int[]>("LanguageProficiencies")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("MotherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Personality")
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<List<string>>("SavingThrowProficiencies")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.PrimitiveCollection<int[]>("SkillProficiencies")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<int>("Species")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Speed")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SubClass")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DynastyId");
+
+                    b.HasIndex("FatherId");
+
+                    b.HasIndex("HometownId");
+
+                    b.HasIndex("MotherId");
+
+                    b.ToTable("Characters", (string)null);
+                });
+
             modelBuilder.Entity("Aethera.Domain.Entities.Characters.Dynasty", b =>
                 {
                     b.Property<Guid>("Id")
@@ -271,6 +381,49 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("Aethera.Domain.Entities.Stories.Story", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Culture")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("EntityState")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Stories");
+                });
+
             modelBuilder.Entity("Aethera.Domain.Entities.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -295,104 +448,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Aethera.Infrastructure.Entities.CharacterEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<int?>("Alignment")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("BackgroundId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("Class")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("DeathSaveFailures")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("DeathSaveSuccesses")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DynastyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("EntityState")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("EquipedArmorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("EquipedWeaponId")
-                        .HasColumnType("uuid");
-
-                    b.Property<long?>("ExperiencePoints")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("FatherId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("HeroicInspirationCount")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("HometownId")
-                        .HasColumnType("uuid");
-
-                    b.PrimitiveCollection<int[]>("LanguageProficiencies")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("MotherId")
-                        .HasColumnType("uuid");
-
-                    b.PrimitiveCollection<List<string>>("SavingThrowProficiencies")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.PrimitiveCollection<int[]>("SkillProficiencies")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<int>("Species")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Speed")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("SubClass")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DynastyId");
-
-                    b.HasIndex("FatherId");
-
-                    b.HasIndex("HometownId");
-
-                    b.HasIndex("MotherId");
-
-                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("Aethera.Infrastructure.Entities.CharacterTranslationEntity", b =>
@@ -715,10 +770,228 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("RulerId")
                         .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.Character", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Dynasty", null)
+                        .WithMany()
+                        .HasForeignKey("DynastyId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
+                        .WithMany()
+                        .HasForeignKey("FatherId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Aethera.Domain.Entities.Settlements.Settlement", null)
+                        .WithMany()
+                        .HasForeignKey("HometownId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
+                        .WithMany()
+                        .HasForeignKey("MotherId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.OwnsOne("Aethera.Domain.Entities.Basic.Dice", "HitDice", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Sides")
+                                .HasColumnType("integer")
+                                .HasColumnName("HitDice_DiceSides");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.ValueObjects.Art", "Art", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("FilePath")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("Art_FilePath");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Charisma", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Score")
+                                .HasColumnType("integer")
+                                .HasColumnName("Charisma_Score");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Constitution", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Score")
+                                .HasColumnType("integer")
+                                .HasColumnName("Constitution_Score");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Dexterity", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Score")
+                                .HasColumnType("integer")
+                                .HasColumnName("Dexterity_Score");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Intelligence", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Score")
+                                .HasColumnType("integer")
+                                .HasColumnName("Intelligence_Score");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Strength", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Score")
+                                .HasColumnType("integer")
+                                .HasColumnName("Strength_Score");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Wisdom", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Score")
+                                .HasColumnType("integer")
+                                .HasColumnName("Wisdom_Score");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.OwnsOne("Aethera.Domain.Entities.Characters.HitPoints", "HP", b1 =>
+                        {
+                            b1.Property<Guid>("CharacterId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int?>("Current")
+                                .HasColumnType("integer")
+                                .HasColumnName("HP_Current");
+
+                            b1.Property<int?>("Max")
+                                .HasColumnType("integer")
+                                .HasColumnName("HP_Maximum");
+
+                            b1.Property<int?>("Temp")
+                                .HasColumnType("integer")
+                                .HasColumnName("HP_Temporary");
+
+                            b1.HasKey("CharacterId");
+
+                            b1.ToTable("Characters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
+                    b.Navigation("Art");
+
+                    b.Navigation("Charisma")
+                        .IsRequired();
+
+                    b.Navigation("Constitution")
+                        .IsRequired();
+
+                    b.Navigation("Dexterity")
+                        .IsRequired();
+
+                    b.Navigation("HP");
+
+                    b.Navigation("HitDice");
+
+                    b.Navigation("Intelligence")
+                        .IsRequired();
+
+                    b.Navigation("Strength")
+                        .IsRequired();
+
+                    b.Navigation("Wisdom")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Aethera.Domain.Entities.Characters.Dynasty", b =>
@@ -831,7 +1104,7 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("RulerId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -857,76 +1130,16 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Navigation("Art");
                 });
 
-            modelBuilder.Entity("Aethera.Infrastructure.Entities.CharacterEntity", b =>
+            modelBuilder.Entity("Aethera.Domain.Entities.Stories.Story", b =>
                 {
-                    b.HasOne("Aethera.Domain.Entities.Characters.Dynasty", null)
+                    b.HasOne("Aethera.Domain.Entities.Users.User", null)
                         .WithMany()
-                        .HasForeignKey("DynastyId")
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
-                        .WithMany()
-                        .HasForeignKey("FatherId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Aethera.Domain.Entities.Settlements.Settlement", null)
-                        .WithMany()
-                        .HasForeignKey("HometownId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
-                        .WithMany()
-                        .HasForeignKey("MotherId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.OwnsOne("Aethera.Domain.Entities.Basic.Dice", "HitDice", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Sides")
-                                .HasColumnType("integer")
-                                .HasColumnName("HitDice_DiceSides");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
-
-                    b.OwnsOne("Aethera.Domain.Entities.Characters.HitPoints", "HP", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int?>("Current")
-                                .HasColumnType("integer")
-                                .HasColumnName("HP_Current");
-
-                            b1.Property<int?>("Max")
-                                .HasColumnType("integer")
-                                .HasColumnName("HP_Maximum");
-
-                            b1.Property<int?>("Temp")
-                                .HasColumnType("integer")
-                                .HasColumnName("HP_Temporary");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
 
                     b.OwnsOne("Aethera.Domain.ValueObjects.Art", "Art", b1 =>
                         {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
+                            b1.Property<Guid>("StoryId")
                                 .HasColumnType("uuid");
 
                             b1.Property<string>("FilePath")
@@ -934,151 +1147,21 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                                 .HasColumnType("character varying(500)")
                                 .HasColumnName("Art_FilePath");
 
-                            b1.HasKey("CharacterEntityId");
+                            b1.HasKey("StoryId");
 
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
-
-                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Charisma", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Score")
-                                .HasColumnType("integer")
-                                .HasColumnName("Charisma_Score");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
+                            b1.ToTable("Stories");
 
                             b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
-
-                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Constitution", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Score")
-                                .HasColumnType("integer")
-                                .HasColumnName("Constitution_Score");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
-
-                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Dexterity", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Score")
-                                .HasColumnType("integer")
-                                .HasColumnName("Dexterity_Score");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
-
-                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Intelligence", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Score")
-                                .HasColumnType("integer")
-                                .HasColumnName("Intelligence_Score");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
-
-                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Strength", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Score")
-                                .HasColumnType("integer")
-                                .HasColumnName("Strength_Score");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
-                        });
-
-                    b.OwnsOne("Aethera.Domain.Entities.Characters.AttributeScore", "Wisdom", b1 =>
-                        {
-                            b1.Property<Guid>("CharacterEntityId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Score")
-                                .HasColumnType("integer")
-                                .HasColumnName("Wisdom_Score");
-
-                            b1.HasKey("CharacterEntityId");
-
-                            b1.ToTable("Characters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CharacterEntityId");
+                                .HasForeignKey("StoryId");
                         });
 
                     b.Navigation("Art");
-
-                    b.Navigation("Charisma")
-                        .IsRequired();
-
-                    b.Navigation("Constitution")
-                        .IsRequired();
-
-                    b.Navigation("Dexterity")
-                        .IsRequired();
-
-                    b.Navigation("HP");
-
-                    b.Navigation("HitDice");
-
-                    b.Navigation("Intelligence")
-                        .IsRequired();
-
-                    b.Navigation("Strength")
-                        .IsRequired();
-
-                    b.Navigation("Wisdom")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Aethera.Infrastructure.Entities.CharacterTranslationEntity", b =>
                 {
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
-                        .WithMany("Translations")
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
+                        .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1092,7 +1175,7 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1101,7 +1184,7 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CharacterEquipments", b =>
                 {
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1116,7 +1199,7 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CharacterItems", b =>
                 {
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1131,7 +1214,7 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CharacterSpells", b =>
                 {
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1146,7 +1229,7 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CharacterWeapons", b =>
                 {
-                    b.HasOne("Aethera.Infrastructure.Entities.CharacterEntity", null)
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1187,11 +1270,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("Damage");
-                });
-
-            modelBuilder.Entity("Aethera.Infrastructure.Entities.CharacterEntity", b =>
-                {
-                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }
