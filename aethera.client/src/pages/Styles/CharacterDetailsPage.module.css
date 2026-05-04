@@ -4,6 +4,15 @@
   justify-content: center;
   align-items: flex-start;
   background: radial-gradient(circle, rgba(35,35,35,1) 0%, rgba(15,15,15,1) 100%);
+  width: 100%;
+  padding: 20px 24px 32px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .pageWrapper {
+    padding: 12px;
+  }
 }
 
 .centered {

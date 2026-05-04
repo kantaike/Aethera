@@ -3,6 +3,9 @@ import type { components } from '../schema';
 
 export type CharacterPreview = components['schemas']['CharacterPreview']; 
 export type CharacterDetail = components['schemas']['CharacterDetailDto']; 
+export type CharacterModifiers = components['schemas']['CharacterModifiersDto'];
+export type Modifier = components['schemas']['ModifierDto'];
+export type ModifierBreakdown = components['schemas']['ModifierBreakdownDto'];
 export type Settlement = components['schemas']['SettlementDto'];
 export type Dynasty = components['schemas']['DynastyDto'];
 export type Item = components['schemas']['ItemDto'];
@@ -15,6 +18,13 @@ export type DynastyStatus = components['schemas']['DynastyStatus'];
 export type StoryPreview = components['schemas']['StoryDto'];
 export type Art = components['schemas']['Art'];
 export type EntityArtType = components['schemas']['EntityArtType'];
+
+export type Species = components['schemas']['Species'];
+export type CharacterClass = components['schemas']['CharacterClass'];
+export type Alignment = components['schemas']['Alignment'];
+export type Background = components['schemas']['Background'];
+export type Skill = components['schemas']['Skill'];
+export type CharacterLanguage = components['schemas']['Language'];
 
 export interface StoryDetail {
   id: string;

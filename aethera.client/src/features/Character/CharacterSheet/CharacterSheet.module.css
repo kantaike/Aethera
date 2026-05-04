@@ -10,6 +10,10 @@
   ),
   var(--primary);
   min-height: 100vh;
+  width: min(1600px, 100%);
+  margin: 0 auto;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -161,12 +165,109 @@
   color: var(--accent-blue);
 }
 
+.valueTooltipTrigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+}
+
+.valueTooltipPanel {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(6px);
+  min-width: 220px;
+  max-width: 260px;
+  background: rgba(13, 17, 23, 0.98);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 50;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+  transition:
+    opacity 0.18s ease 0.06s,
+    transform 0.22s ease 0.06s,
+    visibility 0s linear 0.28s;
+}
+
+.valueTooltipTrigger:hover .valueTooltipPanel,
+.valueTooltipTrigger:focus-within .valueTooltipPanel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0.08s;
+}
+
+.valueTooltipTrigger:hover,
+.valueTooltipTrigger:focus-within {
+  z-index: 60;
+}
+
+.valueTooltipTitle {
+  display: block;
+  color: var(--headers);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.valueTooltipLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text);
+  font-size: 0.74rem;
+  margin-bottom: 4px;
+}
+
+.valueTooltipSection {
+  display: block;
+  margin-top: 6px;
+  margin-bottom: 4px;
+  color: var(--accent-blue);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.valueTooltipEmpty {
+  display: block;
+  color: #8B949E;
+  font-size: 0.72rem;
+}
+
+.valueTooltipModifierRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.valueTooltipModifierName {
+  color: var(--text);
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.valueTooltipModifierValue {
+  color: #7EE787;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
 /* Tabs */
 .tabsSection {
   background: rgba(22, 27, 34, 0.5);
   border-radius: 16px;
   border: 1px solid var(--border);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .tabButtons {
@@ -337,6 +438,86 @@
   background: var(--border-gold);
 }
 
+.skillHint {
+  margin: -6px 0 12px;
+  color: var(--text);
+  opacity: 0.75;
+  font-size: 0.86rem;
+}
+
+.skillTable {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: visible;
+  background: rgba(13, 17, 23, 0.45);
+}
+
+.skillTableRow {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 70px 110px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(48, 54, 61, 0.65);
+}
+
+.skillTableRow:first-child {
+  border-top: none;
+}
+
+.skillTableHeader {
+  background: rgba(13, 17, 23, 0.8);
+  color: var(--headers);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.skillTableRow:nth-child(odd):not(.skillTableHeader) {
+  background: rgba(22, 27, 34, 0.45);
+}
+
+.skillRowProficient {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.14), rgba(212, 175, 55, 0.03));
+}
+
+.skillCellName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.skillName {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.skillProficientBadge {
+  color: #161b22;
+  background: var(--border-gold-bright);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.skillCellAbility {
+  color: var(--accent-silver);
+  font-weight: 700;
+  font-size: 0.84rem;
+}
+
+.skillCellModifier {
+  position: relative;
+  color: var(--headers);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -358,7 +539,23 @@
     padding: 20px;
   }
 
+  .sheetWrapper {
+    width: 100%;
+    padding: 0;
+  }
+
   .statsLayout {
     grid-template-columns: 1fr;
+  }
+
+  .skillTableRow {
+    grid-template-columns: minmax(0, 1fr) 52px 74px;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .skillProficientBadge {
+    padding: 2px 6px;
+    font-size: 0.62rem;
   }
 }

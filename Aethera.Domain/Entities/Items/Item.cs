@@ -1,7 +1,9 @@
 ﻿using Aethera.Domain.Common;
 using Aethera.Domain.ValueObjects;
+using Aethera.Domain.Entities.Basic;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Aethera.Domain.Entities.Items
@@ -13,6 +15,8 @@ namespace Aethera.Domain.Entities.Items
         public int? Weight { get; protected set; }
         public decimal? Cost { get; protected set; }
         public Art? Art { get; private set; }
+        
+        public List<Modifier> Modifiers { get; protected set; } = new List<Modifier>();
 
         public Item(string? name, string? description, int? weight, decimal? cost)
         {
@@ -53,6 +57,26 @@ namespace Aethera.Domain.Entities.Items
         public void SetArt(Art art)
         {
             Art = art;
+        }
+
+        public void AddModifier(Modifier modifier)
+        {
+            if (modifier == null)
+                throw new ArgumentNullException(nameof(modifier));
+            
+            modifier.SourceType = ModifierSourceType.Item;
+            modifier.SourceId = Id;
+            Modifiers = [.. Modifiers, modifier];
+        }
+
+        public void RemoveModifier(Guid modifierId)
+        {
+            Modifiers = [.. Modifiers.Where(m => m.Id != modifierId)];
+        }
+
+        public void ClearModifiers()
+        {
+            Modifiers = [];
         }
     }
     public enum ItemType

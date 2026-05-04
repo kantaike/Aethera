@@ -128,7 +128,7 @@ namespace Aethera.Domain.Entities.Characters
         // --- Traits & Features ---
         public string? Feats { get; private set; }
         public int? HeroicInspirationCount { get; private set; } = 0;
-        public Guid? BackgroundId { get; private set; }
+        public Background? Background { get; private set; }
         public string? Backstory { get; private set; }
         public string? Personality { get; private set; }
 
@@ -136,16 +136,19 @@ namespace Aethera.Domain.Entities.Characters
         public Guid? EquipedWeaponId { get; private set; }
         public Guid? EquipedArmorId { get; private set; }
 
+        // --- Modifiers ---
+        public List<Modifier> Modifiers { get; private set; } = [];
+
         // --- Collections ---
 
-        private readonly List<Weapon> _weapons = [];
         private readonly List<Armor> _armors = [];
         private readonly List<Equipment> _equipments = [];
         private readonly List<Item> _items = [];
         private readonly List<Spell> _spells = [];
 
-        public IReadOnlyCollection<Spell> Spells => _spells.AsReadOnly();
+        private readonly List<Weapon> _weapons = [];
         public IReadOnlyCollection<Weapon> Weapons => _weapons.AsReadOnly();
+        public IReadOnlyCollection<Spell> Spells => _spells.AsReadOnly();
         public IReadOnlyCollection<Armor> Armors => _armors.AsReadOnly();
         public IReadOnlyCollection<Equipment> Equipments => _equipments.AsReadOnly();
         public IReadOnlyCollection<Item> Items => _items.AsReadOnly();
@@ -290,9 +293,10 @@ namespace Aethera.Domain.Entities.Characters
             ExperiencePoints = (ExperiencePoints ?? 0) + experiencePoints;
         }
 
-        public void SetBackground(Guid backgroundId)
+        public void SetBackground(Background background)
         {
-            BackgroundId = backgroundId;
+            if(Background != null) throw new ArgumentException("Only initial background setting is allowed. Background cannot be changed once set.");
+            Background = background;
         }
 
         public void SetParents(Guid? fatherId, Guid? motherId)
@@ -323,6 +327,25 @@ namespace Aethera.Domain.Entities.Characters
         public void SetArt(Art art)
         {
             Art = art;
+        }
+
+        public void AddModifier(Modifier modifier)
+        {
+            if (modifier == null)
+                throw new ArgumentNullException(nameof(modifier));
+            
+            modifier.SourceType = ModifierSourceType.Character;
+            Modifiers = [.. Modifiers, modifier];
+        }
+
+        public void RemoveModifier(Guid modifierId)
+        {
+            Modifiers = [.. Modifiers.Where(m => m.Id != modifierId)];
+        }
+
+        public void ClearModifiers()
+        {
+            Modifiers = [];
         }
 
         // --- Translatable fields (set via repository after loading translation) ---
@@ -390,6 +413,22 @@ namespace Aethera.Domain.Entities.Characters
         Primordial,
         Sylvan,
         Undercommon
+    }
+    public enum Background
+    {
+        Acolyte,
+        Charlatan,
+        Criminal,
+        Entertainer,
+        FolkHero,
+        GuildArtisan,
+        Hermit,
+        Noble,
+        Outlander,
+        Sage,
+        Sailor,
+        Soldier,
+        Urchin
     }
     public enum Skill
     {

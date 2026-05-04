@@ -48,9 +48,6 @@ export const Modal = ({ open, title, subtitle, onClose, children }: ModalProps) 
             <h2 id="entity-modal-title" className={styles.title}>{title}</h2>
             {subtitle ? <p className={styles.subtitle}>{subtitle}</p> : null}
           </div>
-          <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close modal">
-            ×
-          </button>
         </div>
         <div className={styles.content}>{children}</div>
       </div>

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { charactersApi } from '../api/characters';
-import type { CharacterPreview } from '../api/types/types';
+import type { CharacterPreview, CreateCharacterRequest } from '../api/types/types';
 
 export const useCharacters = () => {
   return useQuery({
@@ -13,9 +13,19 @@ export const useCharacter = (id: string | undefined) => {
     queryKey: ['character', id], 
     queryFn: () => charactersApi.getById(id!),
     enabled: !!id, 
-    staleTime: 1000 * 60 * 5, //Data is conidered expired after 5 minutes
+    staleTime: 1000 * 60 * 5, //Data is considered expired after 5 minutes
   });
 };
+
+export const useCharacterModifiers = (id: string | undefined) => {
+  return useQuery({
+    queryKey: ['character', id, 'modifiers'],
+    queryFn: () => charactersApi.getModifiers(id!),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
 export const useCharacterById = (id: number | string) => {
   return useQuery({
     queryKey: ['characters', id], 
@@ -30,6 +40,17 @@ export const useEquipItem = () => {
   return useMutation({
     mutationFn: ({ charId, itemId }: { charId: string, itemId: string }) => 
       charactersApi.equip(charId, itemId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['characters'] });
+    },
+  });
+};
+
+export const useCreateCharacter = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateCharacterRequest) => charactersApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['characters'] });
     },

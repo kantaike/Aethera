@@ -163,6 +163,13 @@ namespace Aethera.Infrastructure.Persistence
                 entity.Navigation(c => c.Equipments).UsePropertyAccessMode(PropertyAccessMode.Field);
                 entity.Navigation(c => c.Items).UsePropertyAccessMode(PropertyAccessMode.Field);
 
+                entity.Property(c => c.Modifiers)
+                    .HasColumnType("jsonb")
+                    .HasConversion(
+                        v => System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions?)null),
+                        v => System.Text.Json.JsonSerializer.Deserialize<List<Modifier>>(v, (System.Text.Json.JsonSerializerOptions?)null) ?? new List<Modifier>())
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
+
                 entity.OwnsOne(c => c.Art, art =>
                 {
                     art.Property(a => a.FilePath)
@@ -245,6 +252,12 @@ namespace Aethera.Infrastructure.Persistence
                     .HasValue<Weapon>("Weapon")
                     .HasValue<Armor>("Armor")
                     .HasValue<Equipment>("Equipment");
+                entity.Property(e => e.Modifiers)
+                    .HasColumnType("jsonb")
+                    .HasConversion(
+                        v => System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions?)null),
+                        v => System.Text.Json.JsonSerializer.Deserialize<List<Modifier>>(v, (System.Text.Json.JsonSerializerOptions?)null) ?? new List<Modifier>())
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
                 entity.OwnsOne(c => c.Art, art =>
                 {
                     art.Property(a => a.FilePath)

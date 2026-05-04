@@ -1,11 +1,14 @@
-﻿using Aethera.Application.Characters.Commands.AddTranslation;
+﻿using Aethera.Application.Characters.Commands.AddModifier;
+using Aethera.Application.Characters.Commands.AddTranslation;
 using Aethera.Application.Characters.Commands.CreateCharacter;
 using Aethera.Application.Characters.Commands.EquipItem;
 using Aethera.Application.Characters.Commands.SetDynasty;
 using Aethera.Application.Characters.Commands.SetParents;
 using Aethera.Application.Characters.Queries.GetCharacterDetails;
+using Aethera.Application.Characters.Queries.GetCharacterModifiers;
 using Aethera.Application.Characters.Queries.GetCharactersList;
 using Aethera.Application.Common.Interfaces;
+using Aethera.Application.DTOs;
 using Aethera.Domain.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -88,6 +91,26 @@ namespace Aethera.Server.Controllers
         {
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Translation added" });
+        }
+
+        [HttpPost("modifiers")]
+        public async Task<IActionResult> AddModifier(
+            [FromBody] AddCharacterModifierCommand command,
+            [FromServices] ICommandHandler<AddCharacterModifierCommand> handler,
+            CancellationToken ct)
+        {
+            await handler.HandleAsync(command, ct);
+            return Ok(new { message = "Modifier added" });
+        }
+
+        [HttpGet("{id}/modifiers")]
+        public async Task<ActionResult<CharacterModifiersDto>> GetModifiers(
+            Guid id,
+            [FromServices] IQueryHandler<GetCharacterModifiersQuery, CharacterModifiersDto> handler,
+            CancellationToken ct)
+        {
+            var result = await handler.HandleAsync(new GetCharacterModifiersQuery(id), ct);
+            return Ok(result);
         }
     }
 }

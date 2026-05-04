@@ -2,7 +2,7 @@
 import { useParams } from 'react-router-dom';
 import { CharacterSheet } from '../features/Character/CharacterSheet/CharacterSheet';
 import styles from './Styles/CharacterDetailsPage.module.css';
-import { useCharacter } from '../hooks/useCharacters';
+import { useCharacter, useCharacterModifiers } from '../hooks/useCharacters';
 import { FantasyLoader } from '../components/Loader/FantasyLoader';
 import { translations, useLanguage } from '../i18n/translations';
 
@@ -14,6 +14,7 @@ export default function CharacterDetailsPage() {
 
     // 2. Fetch character details
 const { data: character, isLoading, isError } = useCharacter(id);
+  const { data: modifiers } = useCharacterModifiers(id);
 
   if (isLoading) {
         return <FantasyLoader></FantasyLoader>;
@@ -29,7 +30,7 @@ const { data: character, isLoading, isError } = useCharacter(id);
 
   return (
     <div className={styles.pageWrapper}>
-      <CharacterSheet character={character} />
+      <CharacterSheet character={character} modifiers={modifiers} />
     </div>
   );
 }

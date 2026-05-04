@@ -515,6 +515,82 @@
         }
       }
     },
+    "/api/Characters/modifiers": {
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCharacterModifierCommand"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCharacterModifierCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCharacterModifierCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCharacterModifierCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/modifiers": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterModifiersDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterModifiersDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterModifiersDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Dynasties": {
       "post": {
         "tags": [
@@ -925,6 +1001,91 @@
         }
       }
     },
+    "/api/Items/modifiers": {
+      "post": {
+        "tags": [
+          "Items"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddItemModifierCommand"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddItemModifierCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddItemModifierCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddItemModifierCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Items/{id}/modifiers": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ModifierDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ModifierDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ModifierDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Settlements": {
       "post": {
         "tags": [
@@ -1228,6 +1389,42 @@
   },
   "components": {
     "schemas": {
+      "AddCharacterModifierCommand": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "statType": {
+            "$ref": "#/components/schemas/StatType"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ModifierType"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ModifierCategory"
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "AddDynastyTranslationCommand": {
         "type": "object",
         "properties": {
@@ -1246,6 +1443,42 @@
           "motto": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddItemModifierCommand": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "statType": {
+            "$ref": "#/components/schemas/StatType"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ModifierType"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ModifierCategory"
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -1395,6 +1628,24 @@
           }
         },
         "additionalProperties": false
+      },
+      "Background": {
+        "enum": [
+          "Acolyte",
+          "Charlatan",
+          "Criminal",
+          "Entertainer",
+          "FolkHero",
+          "GuildArtisan",
+          "Hermit",
+          "Noble",
+          "Outlander",
+          "Sage",
+          "Sailor",
+          "Soldier",
+          "Urchin"
+        ],
+        "type": "string"
       },
       "CharacterClass": {
         "enum": [
@@ -1568,6 +1819,33 @@
         },
         "additionalProperties": false
       },
+      "CharacterModifiersDto": {
+        "type": "object",
+        "properties": {
+          "personalModifiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModifierDto"
+            },
+            "nullable": true
+          },
+          "equipmentModifiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModifierDto"
+            },
+            "nullable": true
+          },
+          "statBreakdown": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ModifierBreakdownDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CharacterPreview": {
         "type": "object",
         "properties": {
@@ -1656,10 +1934,8 @@
           "alignment": {
             "$ref": "#/components/schemas/Alignment"
           },
-          "backgroundId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+          "background": {
+            "$ref": "#/components/schemas/Background"
           },
           "backstory": {
             "type": "string",
@@ -1977,6 +2253,14 @@
           },
           "art": {
             "$ref": "#/components/schemas/Art"
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Modifier"
+            },
+            "nullable": true,
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -2049,6 +2333,135 @@
           }
         },
         "additionalProperties": false
+      },
+      "Modifier": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "sourceType": {
+            "$ref": "#/components/schemas/ModifierSourceType"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "statType": {
+            "$ref": "#/components/schemas/StatType"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ModifierType"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ModifierCategory"
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModifierBreakdownDto": {
+        "type": "object",
+        "properties": {
+          "baseValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "finalValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModifierDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModifierCategory": {
+        "enum": [
+          "Base",
+          "Permanent",
+          "Equipment",
+          "Temporary"
+        ],
+        "type": "string"
+      },
+      "ModifierDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "sourceType": {
+            "type": "string",
+            "nullable": true
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "statType": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModifierSourceType": {
+        "enum": [
+          "Character",
+          "Item",
+          "Status",
+          "Buff"
+        ],
+        "type": "string"
+      },
+      "ModifierType": {
+        "enum": [
+          "Flat",
+          "Multiplier",
+          "Override"
+        ],
+        "type": "string"
       },
       "Operation": {
         "type": "object",
@@ -2299,6 +2712,48 @@
           "Gnome",
           "Tiefling",
           "Dragonborn"
+        ],
+        "type": "string"
+      },
+      "StatType": {
+        "enum": [
+          "Strength",
+          "Dexterity",
+          "Constitution",
+          "Intelligence",
+          "Wisdom",
+          "Charisma",
+          "ArmorClass",
+          "Initiative",
+          "Speed",
+          "HitPoints",
+          "HitDice",
+          "ProficiencyBonus",
+          "PassivePerception",
+          "StrengthSave",
+          "DexteritySave",
+          "ConstitutionSave",
+          "IntelligenceSave",
+          "WisdomSave",
+          "CharismaSave",
+          "Acrobatics",
+          "AnimalHandling",
+          "Arcana",
+          "Athletics",
+          "Deception",
+          "History",
+          "Insight",
+          "Intimidation",
+          "Investigation",
+          "Medicine",
+          "Nature",
+          "Perception",
+          "Performance",
+          "Persuasion",
+          "Religion",
+          "SleightOfHand",
+          "Stealth",
+          "Survival"
         ],
         "type": "string"
       },

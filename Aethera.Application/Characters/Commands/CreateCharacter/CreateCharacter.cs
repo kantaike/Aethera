@@ -21,7 +21,7 @@ namespace Aethera.Application.Characters.Commands.CreateCharacter
         int? Level = null,
         long? ExperiencePoints = null,
         Alignment? Alignment = null,
-        Guid? BackgroundId = null,
+        Background? Background = null,
         string? Backstory = null,
         string? Personality = null,
         IEnumerable<Skill>? SkillProficiencies = null,
@@ -75,9 +75,9 @@ namespace Aethera.Application.Characters.Commands.CreateCharacter
                     c.SetAlignment(command.Alignment.Value);
                 }
 
-                if (command.BackgroundId.HasValue)
+                if (command.Background.HasValue)
                 {
-                    c.SetBackground(command.BackgroundId.Value);
+                    c.SetBackground(command.Background.Value);
                 }
 
                 // Traits/backstory/personality (personality param to UpdateTraitsAndFeatures is required, supply empty if null)

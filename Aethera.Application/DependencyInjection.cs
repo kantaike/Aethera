@@ -3,6 +3,7 @@ using Aethera.Application.Characters.Queries.GetCharacterDetails;
 using Aethera.Application.Characters.Queries.GetCharactersList;
 using Aethera.Application.Common.Authorization;
 using Aethera.Application.Common.Interfaces;
+using Aethera.Application.Services;
 using Aethera.Domain.Factories;
 using Aethera.Domain.Factories.Interfaces;
 using FluentValidation;
@@ -28,6 +29,7 @@ namespace Aethera.Application
             .WithScopedLifetime());
             services.AddScoped<ICharacterFactory, CharacterFactory>();
             services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<ModifierService>();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;

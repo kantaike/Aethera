@@ -1,8 +1,11 @@
 ﻿using Aethera.Application.Common.Interfaces;
+using Aethera.Application.DTOs;
+using Aethera.Application.Items.Commands.AddModifier;
 using Aethera.Application.Items.Commands.AddTranslation;
 using Aethera.Application.Items.Commands.CreateItemCommand;
 using Aethera.Application.Items.Commands.PatchItem;
 using Aethera.Application.Items.Queries.GetItemDetails;
+using Aethera.Application.Items.Queries.GetItemModifiers;
 using Aethera.Application.Items.Queries.GetItemsList;
 using Aethera.Domain.Entities.Items;
 using Microsoft.AspNetCore.Http;
@@ -63,6 +66,26 @@ namespace Aethera.Server.Controllers
         {
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Translation added" });
+        }
+
+        [HttpPost("modifiers")]
+        public async Task<IActionResult> AddModifier(
+            [FromBody] AddItemModifierCommand command,
+            [FromServices] ICommandHandler<AddItemModifierCommand> handler,
+            CancellationToken ct)
+        {
+            await handler.HandleAsync(command, ct);
+            return Ok(new { message = "Modifier added" });
+        }
+
+        [HttpGet("{id}/modifiers")]
+        public async Task<ActionResult<List<ModifierDto>>> GetModifiers(
+            Guid id,
+            [FromServices] IQueryHandler<GetItemModifiersQuery, List<ModifierDto>> handler,
+            CancellationToken ct)
+        {
+            var result = await handler.HandleAsync(new GetItemModifiersQuery(id), ct);
+            return Ok(result);
         }
     }
 }

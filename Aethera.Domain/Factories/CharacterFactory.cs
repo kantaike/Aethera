@@ -1,7 +1,7 @@
 ﻿using Aethera.Domain.Entities.Characters;
 using Aethera.Domain.Factories.Interfaces;
 using System;
-
+using Aethera.Domain.Entities.Basic;
 namespace Aethera.Domain.Factories
 {
     public class CharacterFactory : ICharacterFactory
@@ -35,57 +35,30 @@ namespace Aethera.Domain.Factories
         public Character CreateCharacter(string name, Species species, CharacterClass @class)
         {
             var baseStats = GetClassBaseStats(@class);
-            var racialMods = GetRacialModifiers(species);
 
-            int str = baseStats.str + racialMods.str;
-            int dex = baseStats.dex + racialMods.dex;
-            int con = baseStats.con + racialMods.con;
-            int intel = baseStats.intel + racialMods.intel;
-            int wis = baseStats.wis + racialMods.wis;
-            int cha = baseStats.cha + racialMods.cha;
-
-            return new Character(
+            var character = new Character(
                 name,
                 species,
                 @class,
-                str,
-                dex,
-                con,
-                intel,
-                wis,
-                cha);
+                baseStats.str,
+                baseStats.dex,
+                baseStats.con,
+                baseStats.intel,
+                baseStats.wis,
+                baseStats.cha);
+
+            ApplyRacialModifiers(character);
+            return character;
         }
 
-        // Creates a character using the standard distribution, then allows the caller to further
-        // configure the Character instance using the public methods on Character (via Action).
-        // Use this instead of a giant DTO: caller can call AddItem, AddSkillProficiency, SetAlignment, etc.
-        // (params) name, species, class, configure
-        public Character CreateCharacterDetailed(string name, Species species, CharacterClass? @class, Action<Character>? configure = null)
+        // Creates a character using the factory defaults and then applies custom configuration via Action
+        public Character CreateCharacterDetailed(string name, Species species, CharacterClass? @class, Action<Character> configure)
         {
-            // If no class provided, construct with defaults (10s) and race modifiers applied as if "no class"
-            Character character;
-            if (@class.HasValue)
-            {
-                character = CreateCharacter(name, species, @class.Value);
-            }
-            else
-            {
-                // No class: start with defaults 10, then apply racial modifiers
-                var racialMods = GetRacialModifiers(species);
-                character = new Character(
-                    name,
-                    species,
-                    null,
-                    10 + racialMods.str,
-                    10 + racialMods.dex,
-                    10 + racialMods.con,
-                    10 + racialMods.intel,
-                    10 + racialMods.wis,
-                    10 + racialMods.cha,
-                    null);
-            }
+            var character = @class.HasValue
+                ? CreateCharacter(name, species, @class.Value)
+                : new Character(name, species, null);
 
-            configure?.Invoke(character);
+            configure(character);
             return character;
         }
 
@@ -111,20 +84,42 @@ namespace Aethera.Domain.Factories
         }
 
         // Helper: racial ability modifiers. Human: +1 to all. Other races follow common 5e-like defaults.
-        private static (int str, int dex, int con, int intel, int wis, int cha) GetRacialModifiers(Species species)
+        private static void ApplyRacialModifiers(Character character)
         {
-            return species switch
-            {
-                Species.Human => (1, 1, 1, 1, 1, 1),
-                Species.Elf => (0, 2, 0, 0, 0, 0),         // +2 DEX
-                Species.Dwarf => (0, 0, 2, 0, 0, 0),       // +2 CON
-                Species.Halfling => (0, 2, 0, 0, 0, 0),    // +2 DEX
-                Species.Gnome => (0, 0, 0, 2, 0, 0),       // +2 INT
-                Species.Dragonborn => (2, 0, 0, 0, 0, 0),  // +2 STR
-                Species.Tiefling => (0, 0, 0, 0, 0, 2),    // +2 CHA
-                Species.Orc => (2, 0, 0, 0, 0, 0),         // +2 STR
-                _ => (0, 0, 0, 0, 0, 0)
-            };
+            switch (character.Species)
+            {   
+                case Species.Human:
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Strength, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Intelligence, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Wisdom, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Charisma, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    break;
+                case Species.Elf:
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    break;
+                case Species.Dwarf:
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    break;
+                case Species.Halfling:
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    break;
+                case Species.Orc:
+                        character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Strength, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    break;
+                case Species.Gnome:
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Intelligence, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    break;
+                case Species.Tiefling:
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Charisma, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    break;
+                case Species.Dragonborn:
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown species: {character.Species}");
+            }
         }
     }
 }
