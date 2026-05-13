@@ -16,6 +16,7 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import { StoriesPage } from './pages/StoriesPage';
 import { StoryDetailsPage } from './pages/StoryDetailsPage';
+import HomePage from './pages/HomePage';
 
 const CreateStoryPage = lazy(() =>
   import('./pages/CreateStoryPage').then((module) => ({
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
+      { index: true, element: <HomePage /> },
       { path: 'characters', element: <CharactersPage /> },
       { path: 'characters/:id', element: <CharacterDetailsPage /> },
       { path: 'settlements', element: <SettlementsPage /> },

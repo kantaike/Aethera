@@ -56,10 +56,10 @@ namespace Aethera.Domain.Services
         /// - Applies ability score improvements (ASI) automatically at ASI levels by adding +2 to the highest attribute.
         /// (params) character, levels (count), rollHp (true -> roll each level; false -> use average)
         /// </summary>
-        public static void LevelUpCharacter(Character character, int levels = 1, bool rollHp = false)
+        public static void LevelUpCharacter(Character character, int levels = 1)
         {
-            if (character is null) throw new ArgumentNullException(nameof(character));
-            if (levels < 1) throw new ArgumentOutOfRangeException(nameof(levels));
+            ArgumentNullException.ThrowIfNull(character);
+            ArgumentOutOfRangeException.ThrowIfLessThan(levels, 1);
 
             // Ensure hit die is assigned
             if (character.HitDice is null)
@@ -85,42 +85,8 @@ namespace Aethera.Domain.Services
             character.LevelUp(levels);
             var newLevel = character.Level;
 
-            // Compute desired total max HP following D&D rules
-            var desiredMaxHp = 0;
-
-            // Level 1 HP
-            if (newLevel >= 1)
-            {
-                desiredMaxHp = Math.Max(hitDie.Sides + conMod, 1);
-            }
-
-            // Levels 2..newLevel HP additions
-            var rng = new Random();
-            for (int lvl = 2; lvl <= newLevel; lvl++)
-            {
-                int hpGain;
-                if (rollHp)
-                {
-                    // roll using a fresh die of correct sides (Dice.Roll is available on hitDie)
-                    // use hitDie.Roll() if available; hitDie may be shared instance, but Roll is stateless/random.
-                    hpGain = hitDie.Roll() + conMod;
-                }
-                else
-                {
-                    hpGain = (hitDie.Sides / 2) + 1 + conMod;
-                }
-
-                // Minimum 1 HP gained per level
-                if (hpGain < 1) hpGain = 1;
-
-                desiredMaxHp += hpGain;
-            }
-
-            // Preserve temp HP if was present
-            var temp = character.HP?.Temp;
-
             // Set both Max and Current to the desired max after leveling
-            character.UpdateHitPoints(desiredMaxHp, desiredMaxHp, temp);
+            character.UpdateHitPoints();
 
             // Apply Ability Score Improvements for each ASI level crossed
             ApplyAsiIfNeeded(character, oldLevel, newLevel);
@@ -154,10 +120,28 @@ namespace Aethera.Domain.Services
                     i++;
                 } while (targetAttribute.score > 19);
 
+                var statType = targetAttribute.name.ToLower() switch
+                {
+                    "strength" => StatType.Strength,
+                    "dexterity" => StatType.Dexterity,
+                    "constitution" => StatType.Constitution,
+                    "intelligence" => StatType.Intelligence,
+                    "wisdom" => StatType.Wisdom,
+                    "charisma" => StatType.Charisma,
+                    _ => throw new InvalidOperationException("Invalid attribute name")
+                };
 
-
-                var newScore = targetAttribute.score + 2;
-                character.UpdateAttribute(targetAttribute.name, newScore);
+                Modifier attributeAddition = new Modifier(
+                    ModifierSourceType.Character,
+                    statType,
+                    ModifierType.Flat,
+                    ModifierCategory.Base,
+                    2,
+                    100,
+                    null,
+                    null
+                );
+                character.AddModifier(attributeAddition);
             }
         }
 

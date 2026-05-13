@@ -597,6 +597,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/Characters/{id}/levelup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["LevelUpCommand"];
+                    "application/json": components["schemas"]["LevelUpCommand"];
+                    "text/json": components["schemas"]["LevelUpCommand"];
+                    "application/*+json": components["schemas"]["LevelUpCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/Dynasties": {
         parameters: {
             query?: never;
@@ -1569,6 +1611,12 @@ export interface components {
         ItemType: "Item" | "Weapon" | "Armor" | "Equipment";
         /** @enum {string} */
         Language: "Common" | "Dwarvish" | "Elvish" | "Giant" | "Gnomish" | "Goblin" | "Halfling" | "Orcish" | "Abyssal" | "Celestial" | "Draconic" | "DeepSpeech" | "Infernal" | "Primordial" | "Sylvan" | "Undercommon";
+        LevelUpCommand: {
+            /** Format: uuid */
+            characterId?: string;
+            /** Format: int32 */
+            levels?: number;
+        };
         LoginUserCommand: {
             username?: string | null;
             password?: string | null;

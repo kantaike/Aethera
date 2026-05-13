@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-var storageBaseUrl = builder.Configuration["StorageSettings:DevUrl"];
+var storageBaseUrl = builder.Configuration["StorageSettings:ProdUrl"];
 
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
@@ -23,13 +23,13 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+        options.SerializerSettings.Converters.Add(new ArtUrlConverter(storageBaseUrl));
     });
 
 // For System.Text.Json (if needed elsewhere)
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    options.JsonSerializerOptions.Converters.Add(new ArtUrlConverter(storageBaseUrl));
 });
 
 // Register Swagger/OpenAPI services

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Home, Sword, Castle, Crown, Backpack, ScrollText, UserCircle, Menu } from 'lucide-react';
 import styles from './Layout.module.css';
 import { setStoredLanguage, type Language, translations, useLanguage } from '../i18n/translations';
 
@@ -29,7 +30,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🏠</span>
+            <Home className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.home}</span>
           </Link>
           <Link
@@ -39,7 +40,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🧙‍♂️</span>
+            <Sword className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.characters}</span>
           </Link>
           <Link
@@ -49,7 +50,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🏰</span>
+            <Castle className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.settlements}</span>
           </Link>
           <Link
@@ -59,7 +60,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>👑</span>
+            <Crown className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.dynasties}</span>
           </Link>
           <Link
@@ -69,7 +70,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🎒</span>
+            <Backpack className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.items}</span>
           </Link>
           <Link
@@ -79,7 +80,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>📜</span>
+            <ScrollText className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.stories}</span>
           </Link>
         </nav>
@@ -92,7 +93,7 @@ const Layout = () => {
             } ${styles.footerProfileLink}`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>👤</span>
+            <UserCircle className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.profile}</span>
           </Link>
 
@@ -121,8 +122,8 @@ const Layout = () => {
 
       <div className={styles.main}>
         <header className={styles.mobileHeader}>
-          <button className={styles.menuButton} onClick={toggleSidebar}>
-            ☰
+          <button className={styles.menuButton} onClick={toggleSidebar} aria-label="Toggle menu">
+            <Menu size={22} />
           </button>
           <span style={{ marginLeft: '20px' }}>{t.menu}</span>
         </header>

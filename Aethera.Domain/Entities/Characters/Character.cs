@@ -163,7 +163,44 @@ namespace Aethera.Domain.Entities.Characters
         {
             HP = new HitPoints(max, current, temp);
         }
+        public void UpdateHitPoints()
+        {
+            // Recalculate max HP based on hit dice, level, constitution modifier and any explicit modifiers that target HP.
+            var level = Math.Max(1, Level);
+            var conMod = Constitution?.Modifier ?? 0;
 
+            // Average per-level HP (standard 5e convention): (sides / 2) + 1, fallback to 5 if HitDice unknown
+            var perLevelHp = (HitDice is not null) ? ((HitDice.Sides / 2) + 1) : 5;
+
+            // Ensure at least +1 HP per level (rolling/average + con mod cannot reduce below 1 per level)
+            var perLevelGain = Math.Max(1, perLevelHp + conMod);
+
+            // First level HP uses the hit die maximum
+            var firstLevelHp = Math.Max(1, (HitDice?.Sides ?? perLevelHp) + conMod);
+
+            var modifierBonus = Modifiers.Where(m => m.StatType == StatType.HitPoints).Sum(m => m.Value);
+            var totalMax = firstLevelHp + (level - 1) * perLevelGain;
+
+
+            // Ensure at least 1 max HP
+            totalMax = Math.Max(1, totalMax);
+
+            if (HP is null)
+            {
+                HP = new HitPoints(totalMax, totalMax, 0);
+            }
+            else
+            {
+                var current = HP.Current ?? totalMax;
+                var temp = HP.Temp ?? 0;
+
+                // Clamp current to new max
+                if (current > totalMax) current = totalMax;
+                if (current < 0) current = 0;
+
+                HP = new HitPoints(totalMax, current, temp);
+            }
+        }
         public void AddItem(Item item)
         {
             switch (item)
@@ -246,6 +283,7 @@ namespace Aethera.Domain.Entities.Characters
                     break;
                 case "constitution":
                     Constitution = attributeScore;
+                    UpdateHitPoints();
                     break;
                 case "intelligence":
                     Intelligence = attributeScore;
@@ -291,6 +329,47 @@ namespace Aethera.Domain.Entities.Characters
         public void GainExperience(long experiencePoints)
         {
             ExperiencePoints = (ExperiencePoints ?? 0) + experiencePoints;
+
+            var xp = ExperiencePoints ?? 0;
+
+            // Standard D&D 5e cumulative XP thresholds for levels 1..20
+            // Index 0 unused, index == level
+            long[] xpThresholds = new long[]
+            {
+                0,      // 0 - unused
+                0,      // Level 1
+                300,    // Level 2
+                900,    // Level 3
+                2700,   // Level 4
+                6500,   // Level 5
+                14000,  // Level 6
+                23000,  // Level 7
+                34000,  // Level 8
+                48000,  // Level 9
+                64000,  // Level 10
+                85000,  // Level 11
+                100000, // Level 12
+                120000, // Level 13
+                140000, // Level 14
+                165000, // Level 15
+                195000, // Level 16
+                225000, // Level 17
+                265000, // Level 18
+                305000, // Level 19
+                355000  // Level 20
+            };
+
+            var prospectiveLevel = Level;
+            while (prospectiveLevel < 20 && xp >= xpThresholds[prospectiveLevel + 1])
+            {
+                prospectiveLevel++;
+            }
+
+            var levelsToGain = prospectiveLevel - Level;
+            if (levelsToGain > 0)
+            {
+                LevelUpService.LevelUpCharacter(this, levelsToGain);
+            }
         }
 
         public void SetBackground(Background background)

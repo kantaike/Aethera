@@ -69,3 +69,4 @@ Aethera.Server/appsettings.Development.json
 
 # Ignore media files
 Aethera.Server/wwwroot
+Aethera.Server/appsettings.json

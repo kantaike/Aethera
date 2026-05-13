@@ -1,6 +1,5 @@
 ﻿using Aethera.Domain.ValueObjects;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Aethera.Server.Common
 {
@@ -10,21 +9,24 @@ namespace Aethera.Server.Common
 
         public ArtUrlConverter(string baseUrl)
         {
-            _baseUrl = baseUrl.EndsWith("/") ? baseUrl : baseUrl + "/";
+            _baseUrl = baseUrl?.EndsWith("/") == true ? baseUrl : (baseUrl ?? string.Empty) + "/";
         }
 
-        public override void Write(Utf8JsonWriter writer, Art value, JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, Art? value, JsonSerializer serializer)
         {
-            var fullUrl = $"{_baseUrl}{value.FilePath.TrimStart('/')}";
+            var fullUrl = $"{_baseUrl}{value?.FilePath.TrimStart('/')}";
 
             writer.WriteStartObject();
-            writer.WriteString("filePath", fullUrl);
+            writer.WritePropertyName("filePath");
+            writer.WriteValue(fullUrl);
             writer.WriteEndObject();
         }
 
-        public override Art? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Art? ReadJson(JsonReader reader, Type objectType, Art? existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException("Deserialization not needed for now.");
         }
+
+        public override bool CanRead => false;
     }
 }

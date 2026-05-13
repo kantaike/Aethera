@@ -1,69 +1,176 @@
+/* ============================================================
+   AETHERA — Global Design Tokens & Base Styles
+   ============================================================ */
+
 :root {
-  font-family: 'Montserrat', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  --border-gold: #8b7355;
+  /* --- Typography --- */
+  --font-heading: 'Cinzel', 'Georgia', serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  /* --- Core Palette --- */
+  --primary:        #0b0e14;          /* main background            */
+  --secondary:      #161b22;          /* cards, sidebar, panels     */
+  --secondary-muted: rgba(22, 27, 34, 0.8); /* glassmorphism surfaces */
+  --border:         rgba(255, 255, 255, 0.08);
+  --border-gold:    #8b7355;
   --border-gold-bright: #d4af37;
-  --primary: #0D1117;
-  --secondary: #161B22;
-  --border: #30363D;
-  --headers: #E6EDF3;
-  --text: #8B949E;
-  --accent-blue: #58A6FF;
-  --accent-silver: #C9D1D9;
 
-  --shadow-heavy: 0 10px 20px rgba(0,0,0,0.8);
-  --glass-blur: blur(8px);
-  --sidebar-width: 260px;
-  --header-height: 60px;
-  --transition: 0.3s ease;
+  /* --- Text --- */
+  --headers:        #e8dfc8;          /* warm ivory for headings    */
+  --text:           #9aa5b4;          /* body copy                  */
+  --text-muted:     #566272;
+  --accent-silver:  #c9d1d9;
 
+  /* --- Accent / Interactive --- */
+  --accent-blue:    #58a6ff;
+  --accent-violet:  #a78bfa;
+  --accent-glow:    rgba(88, 166, 255, 0.35);
+  --accent-glow-violet: rgba(167, 139, 250, 0.3);
+
+  /* --- Shadows & Effects --- */
+  --shadow-heavy:   0 10px 30px rgba(0, 0, 0, 0.85);
+  --shadow-card:    0 4px 16px rgba(0, 0, 0, 0.6);
+  --glow-blue:      0 0 12px rgba(88, 166, 255, 0.45),
+                    0 0 28px rgba(88, 166, 255, 0.2);
+  --glow-violet:    0 0 12px rgba(167, 139, 250, 0.4),
+                    0 0 28px rgba(167, 139, 250, 0.18);
+  --glow-gold:      0 0 12px rgba(212, 175, 55, 0.4),
+                    0 0 28px rgba(212, 175, 55, 0.15);
+
+  /* --- Glassmorphism --- */
+  --glass-blur:     blur(12px);
+  --glass-bg:       rgba(22, 27, 34, 0.8);
+  --glass-border:   1px solid rgba(255, 255, 255, 0.08);
+
+  /* --- Layout --- */
+  --sidebar-width:  260px;
+  --header-height:  60px;
+
+  /* --- Transitions --- */
+  --transition:     0.3s ease-in-out;
+
+  /* --- Base font settings --- */
+  font-family: var(--font-body);
+  line-height: 1.6;
+  font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.glow{
-  box-shadow: 0 0 15px rgba(88, 166, 255, 0.5);
-}
 
-a {
-  font-weight: 500;
-  text-decoration: inherit;
+/* ============================================================
+   Base Reset & Body
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', serif;
-  background: var(--primary);
+  font-family: var(--font-body);
+  background-color: var(--primary);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(88, 166, 255, 0.04) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(167, 139, 250, 0.04) 0%, transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-attachment: fixed;
   color: var(--text);
+  min-height: 100dvh;
 }
-h1,h2,h3,h4,h5,h6{
-  font-family: "Cinzel", serif;
+
+/* ============================================================
+   Typography
+   ============================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--headers);
   font-optical-sizing: auto;
   font-style: normal;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
 }
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+
+h1 { font-size: 2.8em; }
+h2 { font-size: 2em;   }
+h3 { font-size: 1.5em; }
+
+a {
+  font-weight: 500;
+  color: var(--accent-blue);
+  text-decoration: none;
+  transition: color var(--transition), text-shadow var(--transition);
 }
+
+a:hover {
+  color: var(--accent-violet);
+  text-shadow: 0 0 8px var(--accent-glow-violet);
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid rgba(88, 166, 255, 0.25);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: linear-gradient(#1F6FEB,#58A6FF);
+  font-family: var(--font-body);
+  background: linear-gradient(135deg, #1f3a6e 0%, #1f6feb 100%);
+  color: #e8dfc8;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
 }
+
 button:hover {
-  filter: drop-shadow(0 0 5px rgba(78, 201, 255, 0.5));;
+  box-shadow: var(--glow-blue);
+  border-color: rgba(88, 166, 255, 0.6);
+  transform: translateY(-1px);
 }
-button:focus,
+
+button:active {
+  transform: translateY(0);
+}
+
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 3px;
+  box-shadow: var(--glow-blue);
+}
+
+/* ============================================================
+   Utility Classes
+   ============================================================ */
+
+/* Glow helpers */
+.glow        { box-shadow: var(--glow-blue); }
+.glow-violet { box-shadow: var(--glow-violet); }
+.glow-gold   { box-shadow: var(--glow-gold); }
+
+/* Glass surface — apply to sidebar, dropdowns, modals */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+}
+
+/* Card surface */
+.surface {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.surface:hover {
+  box-shadow: var(--shadow-card), 0 0 20px rgba(88, 166, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
 }

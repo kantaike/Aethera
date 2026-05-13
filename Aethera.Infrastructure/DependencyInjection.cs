@@ -33,7 +33,7 @@ namespace Aethera.Infrastructure
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IStoryRepository, StoryRepository>();
 
-            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IFileService, CloudinaryFileService>();
             services.AddScoped<ICultureProvider, CultureProvider>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

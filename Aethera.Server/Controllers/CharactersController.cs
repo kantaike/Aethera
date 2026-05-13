@@ -2,6 +2,7 @@
 using Aethera.Application.Characters.Commands.AddTranslation;
 using Aethera.Application.Characters.Commands.CreateCharacter;
 using Aethera.Application.Characters.Commands.EquipItem;
+using Aethera.Application.Characters.Commands.LevelUp;
 using Aethera.Application.Characters.Commands.SetDynasty;
 using Aethera.Application.Characters.Commands.SetParents;
 using Aethera.Application.Characters.Queries.GetCharacterDetails;
@@ -111,6 +112,17 @@ namespace Aethera.Server.Controllers
         {
             var result = await handler.HandleAsync(new GetCharacterModifiersQuery(id), ct);
             return Ok(result);
+        }
+
+        [HttpPost("{id}/levelup")]
+                public async Task<IActionResult> LevelUp(
+            Guid id,
+                        [FromBody] LevelUpCommand command,
+                        [FromServices] ICommandHandler<LevelUpCommand> handler,
+                        CancellationToken ct)
+        {
+            await handler.HandleAsync(command, ct);
+            return Ok(new { message = "Character leveled up" });
         }
     }
 }
