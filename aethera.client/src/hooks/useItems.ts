@@ -1,5 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { artApi } from '../api/art';
 import { itemsApi } from '../api/items';
+import type { AddItemTranslationRequest, CreateItemRequest, EntityPatchOperation } from '../api/types/types';
 
 export const useItems = () => {
   return useQuery({
@@ -14,5 +16,54 @@ export const useItem = (id: string | undefined) => {
     queryFn: () => itemsApi.getById(id!),
     enabled: !!id,
     staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useCreateItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateItemRequest) => itemsApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+    },
+  });
+};
+
+export const usePatchItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, operations }: { id: string; operations: EntityPatchOperation[] }) =>
+      itemsApi.patch(id, operations),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+      queryClient.invalidateQueries({ queryKey: ['item', variables.id] });
+    },
+  });
+};
+
+export const useAddItemTranslation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: AddItemTranslationRequest) => itemsApi.addTranslation(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+      queryClient.invalidateQueries({ queryKey: ['item', variables.id] });
+    },
+  });
+};
+
+export const useUploadItemArt = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, file }: { id: string; file: File }) =>
+      artApi.upload('Item', id, file),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+      queryClient.invalidateQueries({ queryKey: ['item', variables.id] });
+    },
   });
 };

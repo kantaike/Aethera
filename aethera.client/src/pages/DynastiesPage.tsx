@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DynastyCard } from '../features/Dynasties/DynastyCard/DynastyCard';
 import { FantasyLoader } from '../components/Loader/FantasyLoader';
-import { useDynasties } from '../hooks/useDynasties';
+import { useCreateDynasty, useDynasties } from '../hooks/useDynasties';
 import { useCharacters } from '../hooks/useCharacters';
 import type { Dynasty } from '../api/types/types';
 import type { DynastyView, DynastyStatus } from '../features/Dynasties/types';
@@ -12,21 +12,61 @@ import {
   DEFAULT_CULTURE,
 } from '../features/Dynasties/types';
 import styles from './Styles/DynastiesPage.module.css';
+import { translations, useLanguage } from '../i18n/translations';
+import { useAuthStore } from '../store/authStore';
+import { Modal } from '../components/Modal/Modal';
+import formStyles from '../components/Modal/EntityForm.module.css';
 
-const STATUS_OPTIONS: { value: '' | DynastyStatus; label: string }[] = [
-  { value: '', label: 'All statuses' },
-  { value: 'Ruling', label: 'Ruling' },
-  { value: 'Fallen', label: 'Fallen' },
-  { value: 'Vassal', label: 'Vassal' },
+const STATUS_OPTIONS: { value: '' | DynastyStatus }[] = [
+  { value: '' },
+  { value: 'Ruling' },
+  { value: 'Fallen' },
+  { value: 'Vassal' },
 ];
 
 export function DynastiesPage() {
+  const language = useLanguage();
+  const t = translations.pages.dynasties[language];
   const { data: dynasties, isLoading: dynastiesLoading } = useDynasties();
   const { data: characters, isLoading: charactersLoading } = useCharacters();
+  const { mutate: createDynasty, isPending: isCreating, error: createError } = useCreateDynasty();
+  const currentUser = useAuthStore((state) => state.currentUser);
+  const isMaster = currentUser?.role === 'Master';
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'' | DynastyStatus>('');
   const [cultureFilter, setCultureFilter] = useState('');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [newDynastyName, setNewDynastyName] = useState('');
+  const [newDynastyDescription, setNewDynastyDescription] = useState('');
+  const [formError, setFormError] = useState('');
+
+  const closeCreateModal = () => {
+    setIsCreateOpen(false);
+    setNewDynastyName('');
+    setNewDynastyDescription('');
+    setFormError('');
+  };
+
+  const handleCreateDynasty = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!newDynastyName.trim()) {
+      setFormError(t.modal.required);
+      return;
+    }
+
+    setFormError('');
+    createDynasty(
+      {
+        name: newDynastyName.trim(),
+        description: newDynastyDescription.trim() || undefined,
+      },
+      {
+        onSuccess: closeCreateModal,
+      }
+    );
+  };
 
   const enrichedDynasties = useMemo((): DynastyView[] => {
     if (!dynasties) return [];
@@ -43,12 +83,12 @@ export function DynastiesPage() {
     return (dynasties as Dynasty[]).map((d, index) => ({
       ...d,
       influence: index === 0 ? 5 : DEFAULT_INFLUENCE,
-      motto: index === 0 ? 'Strength in unity' : DEFAULT_MOTTO,
+      motto: index === 0 ? t.defaultMotto : DEFAULT_MOTTO,
       culture: DEFAULT_CULTURE,
       status: (index === 0 ? 'Ruling' : DEFAULT_STATUS) as DynastyStatus,
       memberIds: charByDynasty.get(d.id ?? '') ?? [],
     }));
-  }, [dynasties, characters]);
+  }, [dynasties, characters, t.defaultMotto]);
 
   const cultureOptions = useMemo(() => {
     const set = new Set<string>();
@@ -90,13 +130,22 @@ export function DynastiesPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.mainTitle}>Hall of Fame</h1>
-      <p className={styles.subtitle}>Great Houses of the Realm</p>
+      <div className={styles.headerRow}>
+        <div>
+          <h1 className={styles.mainTitle}>{t.title}</h1>
+          <p className={styles.subtitle}>{t.subtitle}</p>
+        </div>
+        {isMaster ? (
+          <button type="button" className={styles.createButton} onClick={() => setIsCreateOpen(true)}>
+            {t.createButton}
+          </button>
+        ) : null}
+      </div>
 
       <div className={styles.filters}>
         <input
           type="search"
-          placeholder="Search dynasties..."
+          placeholder={t.searchPlaceholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className={styles.searchInput}
@@ -108,7 +157,7 @@ export function DynastiesPage() {
         >
           {STATUS_OPTIONS.map((opt) => (
             <option key={opt.value || 'all'} value={opt.value}>
-              {opt.label}
+              {opt.value === '' ? t.allStatuses : t.status[opt.value]}
             </option>
           ))}
         </select>
@@ -117,7 +166,7 @@ export function DynastiesPage() {
           onChange={(e) => setCultureFilter(e.target.value)}
           className={styles.select}
         >
-          <option value="">All cultures</option>
+          <option value="">{t.allCultures}</option>
           {cultureOptions.map((c) => (
             <option key={c} value={c}>
               {c}
@@ -129,7 +178,7 @@ export function DynastiesPage() {
       {tier1Dynasties.length > 0 && (
         <section className={styles.tierSection}>
           <h2 className={styles.tierTitle}>
-            <span className={styles.crown}>👑</span> Royal Houses
+            <span className={styles.crown}>👑</span> {t.royalHouses}
           </h2>
           <div className={styles.tier1Grid}>
             {tier1Dynasties.map((dynasty) => (
@@ -146,7 +195,7 @@ export function DynastiesPage() {
       {mainDynasties.length > 0 && (
         <section className={styles.tierSection}>
           <h2 className={styles.tierTitle}>
-            <span className={styles.diamond}>◈</span> Noble Houses
+            <span className={styles.diamond}>◈</span> {t.nobleHouses}
           </h2>
           <div className={styles.mainGrid}>
             {mainDynasties.map((dynasty) => (
@@ -157,8 +206,44 @@ export function DynastiesPage() {
       )}
 
       {filteredDynasties.length === 0 && (
-        <p className={styles.empty}>No dynasties match your filters.</p>
+        <p className={styles.empty}>{t.empty}</p>
       )}
+
+      <Modal open={isCreateOpen} onClose={closeCreateModal} title={t.modal.title} subtitle={t.modal.subtitle}>
+        <form className={formStyles.form} onSubmit={handleCreateDynasty}>
+          <div className={formStyles.field}>
+            <label className={formStyles.label} htmlFor="dynasty-name">{t.modal.name}</label>
+            <input
+              id="dynasty-name"
+              className={formStyles.input}
+              value={newDynastyName}
+              onChange={(event) => setNewDynastyName(event.target.value)}
+              placeholder={t.modal.namePlaceholder}
+              required
+            />
+          </div>
+          <div className={formStyles.field}>
+            <label className={formStyles.label} htmlFor="dynasty-description">{t.modal.description}</label>
+            <textarea
+              id="dynasty-description"
+              className={formStyles.textarea}
+              value={newDynastyDescription}
+              onChange={(event) => setNewDynastyDescription(event.target.value)}
+              placeholder={t.modal.descriptionPlaceholder}
+            />
+          </div>
+          {formError ? <p className={formStyles.error}>{formError}</p> : null}
+          {createError ? <p className={formStyles.error}>{createError.message}</p> : null}
+          <div className={formStyles.footer}>
+            <button type="button" className={formStyles.secondaryButton} onClick={closeCreateModal} disabled={isCreating}>
+              {t.modal.cancel}
+            </button>
+            <button type="submit" className={formStyles.primaryButton} disabled={isCreating}>
+              {isCreating ? t.modal.submitting : t.modal.submit}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

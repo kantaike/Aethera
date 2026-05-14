@@ -128,7 +128,7 @@ namespace Aethera.Domain.Entities.Characters
         // --- Traits & Features ---
         public string? Feats { get; private set; }
         public int? HeroicInspirationCount { get; private set; } = 0;
-        public Guid? BackgroundId { get; private set; }
+        public Background? Background { get; private set; }
         public string? Backstory { get; private set; }
         public string? Personality { get; private set; }
 
@@ -136,16 +136,19 @@ namespace Aethera.Domain.Entities.Characters
         public Guid? EquipedWeaponId { get; private set; }
         public Guid? EquipedArmorId { get; private set; }
 
+        // --- Modifiers ---
+        public List<Modifier> Modifiers { get; private set; } = [];
+
         // --- Collections ---
 
-        private readonly List<Weapon> _weapons = [];
         private readonly List<Armor> _armors = [];
         private readonly List<Equipment> _equipments = [];
         private readonly List<Item> _items = [];
         private readonly List<Spell> _spells = [];
 
-        public IReadOnlyCollection<Spell> Spells => _spells.AsReadOnly();
+        private readonly List<Weapon> _weapons = [];
         public IReadOnlyCollection<Weapon> Weapons => _weapons.AsReadOnly();
+        public IReadOnlyCollection<Spell> Spells => _spells.AsReadOnly();
         public IReadOnlyCollection<Armor> Armors => _armors.AsReadOnly();
         public IReadOnlyCollection<Equipment> Equipments => _equipments.AsReadOnly();
         public IReadOnlyCollection<Item> Items => _items.AsReadOnly();
@@ -153,14 +156,51 @@ namespace Aethera.Domain.Entities.Characters
 
         public void LevelUp(int levelCount = 1)
         {
-            LevelUpService.LevelUpCharacter(this, levelCount);
+            Level += levelCount;
         }
 
         public void UpdateHitPoints(int max, int current, int? temp = null)
         {
             HP = new HitPoints(max, current, temp);
         }
+        public void UpdateHitPoints()
+        {
+            // Recalculate max HP based on hit dice, level, constitution modifier and any explicit modifiers that target HP.
+            var level = Math.Max(1, Level);
+            var conMod = Constitution?.Modifier ?? 0;
 
+            // Average per-level HP (standard 5e convention): (sides / 2) + 1, fallback to 5 if HitDice unknown
+            var perLevelHp = (HitDice is not null) ? ((HitDice.Sides / 2) + 1) : 5;
+
+            // Ensure at least +1 HP per level (rolling/average + con mod cannot reduce below 1 per level)
+            var perLevelGain = Math.Max(1, perLevelHp + conMod);
+
+            // First level HP uses the hit die maximum
+            var firstLevelHp = Math.Max(1, (HitDice?.Sides ?? perLevelHp) + conMod);
+
+            var modifierBonus = Modifiers.Where(m => m.StatType == StatType.HitPoints).Sum(m => m.Value);
+            var totalMax = firstLevelHp + (level - 1) * perLevelGain;
+
+
+            // Ensure at least 1 max HP
+            totalMax = Math.Max(1, totalMax);
+
+            if (HP is null)
+            {
+                HP = new HitPoints(totalMax, totalMax, 0);
+            }
+            else
+            {
+                var current = HP.Current ?? totalMax;
+                var temp = HP.Temp ?? 0;
+
+                // Clamp current to new max
+                if (current > totalMax) current = totalMax;
+                if (current < 0) current = 0;
+
+                HP = new HitPoints(totalMax, current, temp);
+            }
+        }
         public void AddItem(Item item)
         {
             switch (item)
@@ -243,6 +283,7 @@ namespace Aethera.Domain.Entities.Characters
                     break;
                 case "constitution":
                     Constitution = attributeScore;
+                    UpdateHitPoints();
                     break;
                 case "intelligence":
                     Intelligence = attributeScore;
@@ -288,11 +329,53 @@ namespace Aethera.Domain.Entities.Characters
         public void GainExperience(long experiencePoints)
         {
             ExperiencePoints = (ExperiencePoints ?? 0) + experiencePoints;
+
+            var xp = ExperiencePoints ?? 0;
+
+            // Standard D&D 5e cumulative XP thresholds for levels 1..20
+            // Index 0 unused, index == level
+            long[] xpThresholds = new long[]
+            {
+                0,      // 0 - unused
+                0,      // Level 1
+                300,    // Level 2
+                900,    // Level 3
+                2700,   // Level 4
+                6500,   // Level 5
+                14000,  // Level 6
+                23000,  // Level 7
+                34000,  // Level 8
+                48000,  // Level 9
+                64000,  // Level 10
+                85000,  // Level 11
+                100000, // Level 12
+                120000, // Level 13
+                140000, // Level 14
+                165000, // Level 15
+                195000, // Level 16
+                225000, // Level 17
+                265000, // Level 18
+                305000, // Level 19
+                355000  // Level 20
+            };
+
+            var prospectiveLevel = Level;
+            while (prospectiveLevel < 20 && xp >= xpThresholds[prospectiveLevel + 1])
+            {
+                prospectiveLevel++;
+            }
+
+            var levelsToGain = prospectiveLevel - Level;
+            if (levelsToGain > 0)
+            {
+                LevelUpService.LevelUpCharacter(this, levelsToGain);
+            }
         }
 
-        public void SetBackground(Guid backgroundId)
+        public void SetBackground(Background background)
         {
-            BackgroundId = backgroundId;
+            if(Background != null) throw new ArgumentException("Only initial background setting is allowed. Background cannot be changed once set.");
+            Background = background;
         }
 
         public void SetParents(Guid? fatherId, Guid? motherId)
@@ -323,6 +406,34 @@ namespace Aethera.Domain.Entities.Characters
         public void SetArt(Art art)
         {
             Art = art;
+        }
+
+        public void AddModifier(Modifier modifier)
+        {
+            if (modifier == null)
+                throw new ArgumentNullException(nameof(modifier));
+            
+            modifier.SourceType = ModifierSourceType.Character;
+            Modifiers = [.. Modifiers, modifier];
+        }
+
+        public void RemoveModifier(Guid modifierId)
+        {
+            Modifiers = [.. Modifiers.Where(m => m.Id != modifierId)];
+        }
+
+        public void ClearModifiers()
+        {
+            Modifiers = [];
+        }
+
+        // --- Translatable fields (set via repository after loading translation) ---
+        public void ApplyTranslation(string? name, string? feats, string? backstory, string? personality)
+        {
+            if (name != null) Name = name;
+            if (feats != null) Feats = feats;
+            if (backstory != null) Backstory = backstory;
+            if (personality != null) Personality = personality;
         }
     }
     public record AttributeScore(int Score)
@@ -381,6 +492,22 @@ namespace Aethera.Domain.Entities.Characters
         Primordial,
         Sylvan,
         Undercommon
+    }
+    public enum Background
+    {
+        Acolyte,
+        Charlatan,
+        Criminal,
+        Entertainer,
+        FolkHero,
+        GuildArtisan,
+        Hermit,
+        Noble,
+        Outlander,
+        Sage,
+        Sailor,
+        Soldier,
+        Urchin
     }
     public enum Skill
     {

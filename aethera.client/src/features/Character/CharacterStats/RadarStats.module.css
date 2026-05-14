@@ -63,7 +63,7 @@
   align-items: center;
   width: 60px;
   text-align: center;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .labelName {
@@ -84,4 +84,86 @@
   color: var(--accent-blue);
   font-size: 12px;
   font-weight: bold;
+}
+
+.statTooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(6px);
+  min-width: 220px;
+  max-width: 260px;
+  background: rgba(13, 17, 23, 0.98);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 15;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+  transition:
+    opacity 0.18s ease 0.06s,
+    transform 0.22s ease 0.06s,
+    visibility 0s linear 0.28s;
+}
+
+.labelWrapper:hover .statTooltip,
+.labelWrapper:focus-within .statTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0.08s;
+}
+
+.tooltipTitle {
+  color: var(--headers);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text);
+  font-size: 0.74rem;
+  margin-bottom: 4px;
+}
+
+.tooltipSection {
+  margin-top: 6px;
+  margin-bottom: 4px;
+  color: var(--accent-blue);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tooltipEmpty {
+  color: #8B949E;
+  font-size: 0.72rem;
+}
+
+.tooltipModifierRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.tooltipModifierName {
+  color: var(--text);
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.tooltipModifierValue {
+  color: #7EE787;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
 }

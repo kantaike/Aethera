@@ -3,8 +3,8 @@ import styles from './Card.module.css';
 
 interface CardProps {
   children: React.ReactNode;
-  variant?: 'blue' | 'gold' | 'purple' | 'green'; // Цветовые темы для разных типов
-  onClick?: () => void;
+  variant?: 'blue' | 'gold' | 'purple' | 'green'; // Color themes for different entity types
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   className?: string;
 }
 

@@ -49,6 +49,7 @@ namespace Aethera.Application.Characters.Queries.GetCharacterDetails
         int? HeroicInspirationCount,
         string? Backstory,
         string? Personality,
+        CharacterStatus? Status,
         List<RelativeDto> Relatives
     );
 
@@ -64,7 +65,7 @@ namespace Aethera.Application.Characters.Queries.GetCharacterDetails
         public async Task<CharacterDetailDto> HandleAsync(GetCharacterDetailQuery query, CancellationToken ct = default)
         {
             if (query is null) throw new ArgumentNullException(nameof(query));
-            var character = await _characterRepository.GetWithTranslation(query.Id, ct).ConfigureAwait(false);
+            var character = await _characterRepository.Get(query.Id, ct).ConfigureAwait(false);
 
             if (character == null)
             {
@@ -115,6 +116,7 @@ namespace Aethera.Application.Characters.Queries.GetCharacterDetails
                 character.HeroicInspirationCount,
                 character.Backstory,
                 character.Personality,
+                character.Status,
                 relatives
             );
         }

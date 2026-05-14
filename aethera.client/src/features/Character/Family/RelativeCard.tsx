@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './RelativeCard.module.css';
 import { CharacterMiniCard } from '../CharacterMiniCard/CharacterMiniCard';
+import { translations, useLanguage } from '../../../i18n/translations';
 
 interface RelativeCardProps {
   id: string;
@@ -8,7 +9,9 @@ interface RelativeCardProps {
 }
 
 export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
-  // Логика иконок теперь живет только здесь
+  const language = useLanguage();
+  const t = translations.features.relativeCard[language];
+  // Icon mapping for relationship roles
   const getRoleIcon = (roleName: string | null) => {
     const r = roleName?.toLowerCase() || '';
     if (r.includes('parent') || r.includes('father') || r.includes('mother')) return '▲';
@@ -18,7 +21,7 @@ export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
   };
 
   const formatRole = (r: string) => {
-    if (r === 'SELF' || r === 'MAIN') return 'Current';
+    if (r === 'SELF' || r === 'MAIN') return t.current;
     return r
       .toLowerCase()
       .replace(/-/g, ' ')
@@ -26,7 +29,14 @@ export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
   };
 
   const isMain = role === 'SELF' || role === 'MAIN';
-  const wrapperClass = `${isMain ? styles.mainCharacter : ''}`;
+  const getRoleClass = (roleName: string) => {
+    if (roleName === 'SELF' || roleName === 'MAIN') return styles.roleSelf;
+    if (roleName === 'FATHER' || roleName === 'MOTHER' || roleName === 'PARENT') return styles.roleParent;
+    if (roleName.includes('GRANDPARENT')) return styles.roleGrand;
+    return styles.roleOther;
+  };
+
+  const wrapperClass = `${styles.relativeCardWrapper} ${isMain ? styles.mainCharacter : ''} ${getRoleClass(role)}`;
 
   const formattedRole = (
     <span className={styles.relativeRole}>
@@ -36,8 +46,8 @@ export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
   );
 
   return (
-    <div className={styles.relativeCardWrapper + ' ' + (wrapperClass || '')}>
-      <CharacterMiniCard id={id} propsText={formattedRole} />
+    <div className={wrapperClass}>
+      <CharacterMiniCard id={id} propsText={formattedRole} variant="family" />
     </div>
   );
 };

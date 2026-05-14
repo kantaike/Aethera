@@ -38,6 +38,7 @@ namespace Aethera.Application.Common.Commands
         private readonly IItemRepository _itemRepository;
         private readonly ISettlementRepository _settlementRepository;
         private readonly IDynastyRepository _dynastyRepository;
+        private readonly IStoryRepository _storyRepository;
         private readonly IFileService _fileService;
         private readonly IUnitOfWork _uow;
 
@@ -46,6 +47,7 @@ namespace Aethera.Application.Common.Commands
             IItemRepository itemRepository,
             ISettlementRepository settlementRepository,
             IDynastyRepository dynastyRepository,
+            IStoryRepository storyRepository,
             IFileService fileService,
             IUnitOfWork uow)
         {
@@ -53,19 +55,20 @@ namespace Aethera.Application.Common.Commands
             _itemRepository = itemRepository;
             _settlementRepository = settlementRepository;
             _dynastyRepository = dynastyRepository;
+            _storyRepository = storyRepository;
             _fileService = fileService;
             _uow = uow;
         }
 
         public async Task HandleAsync(UploadArtCommand command, CancellationToken ct)
         {
-            // 1. Simple switch to get the entity
             IHasArt? entity = command.EntityType switch
             {
                 EntityArtType.Character => await _characterRepository.Get(command.EntityId, ct),
                 EntityArtType.Item => await _itemRepository.Get(command.EntityId, ct),
                 EntityArtType.Settlement => await _settlementRepository.Get(command.EntityId, ct),
                 EntityArtType.Dynasty => await _dynastyRepository.Get(command.EntityId, ct),
+                EntityArtType.Story => await _storyRepository.Get(command.EntityId, ct),
                 _ => throw new ArgumentOutOfRangeException(nameof(command.EntityType), "Unsupported type")
             };
 

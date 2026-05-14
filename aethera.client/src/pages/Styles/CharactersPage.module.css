@@ -2,17 +2,40 @@
   animation: fadeIn 0.5s ease-out;
 }
 
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
 .mainTitle {
   color: var(--headers);
-  margin: 0 0 8px 0;
+  margin: 0;
   font-size: 2.25rem;
 }
 
 .subtitle {
   color: var(--text);
-  margin: 0 0 24px 0;
+  margin: 8px 0 0;
   font-size: 1rem;
   opacity: 0.9;
+}
+
+.createButton {
+  padding: 12px 18px;
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0d3b66, #1f6feb);
+  color: #f8fbff;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.createButton:hover {
+  filter: brightness(1.08);
 }
 
 .filters {
@@ -95,5 +118,63 @@
     grid-template-columns: 1fr;
     gap: 20px;
     padding: 0 16px;
+  }
+}
+
+.attrGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.attrField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.attrLabel {
+  color: var(--headers);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.attrField input {
+  text-align: center;
+  padding: 8px 4px;
+}
+
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.checkboxLabel input[type='checkbox'] {
+  accent-color: var(--border-gold);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .attrGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .checkboxGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

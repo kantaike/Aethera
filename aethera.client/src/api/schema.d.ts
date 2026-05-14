@@ -43,6 +43,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["CreateAdministrativeUnitCommand"];
                     "application/json": components["schemas"]["CreateAdministrativeUnitCommand"];
                     "text/json": components["schemas"]["CreateAdministrativeUnitCommand"];
                     "application/*+json": components["schemas"]["CreateAdministrativeUnitCommand"];
@@ -107,6 +108,152 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/Auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["RegisterUserCommand"];
+                    "application/json": components["schemas"]["RegisterUserCommand"];
+                    "text/json": components["schemas"]["RegisterUserCommand"];
+                    "application/*+json": components["schemas"]["RegisterUserCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["LoginUserCommand"];
+                    "application/json": components["schemas"]["LoginUserCommand"];
+                    "text/json": components["schemas"]["LoginUserCommand"];
+                    "application/*+json": components["schemas"]["LoginUserCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Auth/create-master": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/Characters": {
         parameters: {
             query?: never;
@@ -146,6 +293,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["CreateCharacterCommand"];
                     "application/json": components["schemas"]["CreateCharacterCommand"];
                     "text/json": components["schemas"]["CreateCharacterCommand"];
                     "application/*+json": components["schemas"]["CreateCharacterCommand"];
@@ -223,6 +371,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["EquipItemCommand"];
                     "application/json": components["schemas"]["EquipItemCommand"];
                     "text/json": components["schemas"]["EquipItemCommand"];
                     "application/*+json": components["schemas"]["EquipItemCommand"];
@@ -264,6 +413,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": string;
                     "application/json": string;
                     "text/json": string;
                     "application/*+json": string;
@@ -305,6 +455,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["SetParentsCommand"];
                     "application/json": components["schemas"]["SetParentsCommand"];
                     "text/json": components["schemas"]["SetParentsCommand"];
                     "application/*+json": components["schemas"]["SetParentsCommand"];
@@ -345,6 +496,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["AddTranslationCommand"];
                     "application/json": components["schemas"]["AddTranslationCommand"];
                     "text/json": components["schemas"]["AddTranslationCommand"];
                     "application/*+json": components["schemas"]["AddTranslationCommand"];
@@ -361,6 +513,451 @@ export interface paths {
             };
         };
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/modifiers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddCharacterModifierCommand"];
+                    "application/json": components["schemas"]["AddCharacterModifierCommand"];
+                    "text/json": components["schemas"]["AddCharacterModifierCommand"];
+                    "application/*+json": components["schemas"]["AddCharacterModifierCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/modifiers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["CharacterModifiersDto"];
+                        "application/json": components["schemas"]["CharacterModifiersDto"];
+                        "text/json": components["schemas"]["CharacterModifiersDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/levelup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["LevelUpCommand"];
+                    "application/json": components["schemas"]["LevelUpCommand"];
+                    "text/json": components["schemas"]["LevelUpCommand"];
+                    "application/*+json": components["schemas"]["LevelUpCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/items/{itemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    itemId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/traits-and-features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["UpdateTraitsAndFeaturesCommand"];
+                    "application/json": components["schemas"]["UpdateTraitsAndFeaturesCommand"];
+                    "text/json": components["schemas"]["UpdateTraitsAndFeaturesCommand"];
+                    "application/*+json": components["schemas"]["UpdateTraitsAndFeaturesCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["Skill"];
+                    "application/json": components["schemas"]["Skill"];
+                    "text/json": components["schemas"]["Skill"];
+                    "application/*+json": components["schemas"]["Skill"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/languages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["Language"];
+                    "application/json": components["schemas"]["Language"];
+                    "text/json": components["schemas"]["Language"];
+                    "application/*+json": components["schemas"]["Language"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/background": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["Background"];
+                    "application/json": components["schemas"]["Background"];
+                    "text/json": components["schemas"]["Background"];
+                    "application/*+json": components["schemas"]["Background"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/hometown": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": string;
+                    "application/json": string;
+                    "text/json": string;
+                    "application/*+json": string;
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/alignment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["Alignment"];
+                    "application/json": components["schemas"]["Alignment"];
+                    "text/json": components["schemas"]["Alignment"];
+                    "application/*+json": components["schemas"]["Alignment"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Characters/{id}/modifiers/{modifierId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    modifierId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -405,6 +1002,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["CreateDynastyCommand"];
                     "application/json": components["schemas"]["CreateDynastyCommand"];
                     "text/json": components["schemas"]["CreateDynastyCommand"];
                     "application/*+json": components["schemas"]["CreateDynastyCommand"];
@@ -462,6 +1060,72 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["Operation"][];
+                    "application/json": components["schemas"]["Operation"][];
+                    "text/json": components["schemas"]["Operation"][];
+                    "application/*+json": components["schemas"]["Operation"][];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/api/Dynasties/AddTranslation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddDynastyTranslationCommand"];
+                    "application/json": components["schemas"]["AddDynastyTranslationCommand"];
+                    "text/json": components["schemas"]["AddDynastyTranslationCommand"];
+                    "application/*+json": components["schemas"]["AddDynastyTranslationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
         patch?: never;
         trace?: never;
     };
@@ -504,6 +1168,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["CreateItemCommand"];
                     "application/json": components["schemas"]["CreateItemCommand"];
                     "text/json": components["schemas"]["CreateItemCommand"];
                     "application/*+json": components["schemas"]["CreateItemCommand"];
@@ -561,6 +1226,151 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["Operation"][];
+                    "application/json": components["schemas"]["Operation"][];
+                    "text/json": components["schemas"]["Operation"][];
+                    "application/*+json": components["schemas"]["Operation"][];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/api/Items/AddTranslation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddItemTranslationCommand"];
+                    "application/json": components["schemas"]["AddItemTranslationCommand"];
+                    "text/json": components["schemas"]["AddItemTranslationCommand"];
+                    "application/*+json": components["schemas"]["AddItemTranslationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Items/modifiers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddItemModifierCommand"];
+                    "application/json": components["schemas"]["AddItemModifierCommand"];
+                    "text/json": components["schemas"]["AddItemModifierCommand"];
+                    "application/*+json": components["schemas"]["AddItemModifierCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Items/{id}/modifiers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ModifierDto"][];
+                        "application/json": components["schemas"]["ModifierDto"][];
+                        "text/json": components["schemas"]["ModifierDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
         patch?: never;
         trace?: never;
     };
@@ -603,6 +1413,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
+                    "application/json-patch+json": components["schemas"]["CreateSettlementCommand"];
                     "application/json": components["schemas"]["CreateSettlementCommand"];
                     "text/json": components["schemas"]["CreateSettlementCommand"];
                     "application/*+json": components["schemas"]["CreateSettlementCommand"];
@@ -624,10 +1435,258 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/Settlements/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["Settlement"];
+                        "application/json": components["schemas"]["Settlement"];
+                        "text/json": components["schemas"]["Settlement"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["Operation"][];
+                    "application/json": components["schemas"]["Operation"][];
+                    "text/json": components["schemas"]["Operation"][];
+                    "application/*+json": components["schemas"]["Operation"][];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/api/Settlements/AddTranslation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddSettlementTranslationCommand"];
+                    "application/json": components["schemas"]["AddSettlementTranslationCommand"];
+                    "text/json": components["schemas"]["AddSettlementTranslationCommand"];
+                    "application/*+json": components["schemas"]["AddSettlementTranslationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Stories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StoryDto"][];
+                        "application/json": components["schemas"]["StoryDto"][];
+                        "text/json": components["schemas"]["StoryDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["CreateStoryCommand"];
+                    "application/json": components["schemas"]["CreateStoryCommand"];
+                    "text/json": components["schemas"]["CreateStoryCommand"];
+                    "application/*+json": components["schemas"]["CreateStoryCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Stories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AddCharacterModifierCommand: {
+            /** Format: uuid */
+            characterId?: string;
+            /** Format: uuid */
+            sourceId?: string | null;
+            label?: string | null;
+            statType?: components["schemas"]["StatType"];
+            type?: components["schemas"]["ModifierType"];
+            category?: components["schemas"]["ModifierCategory"];
+            /** Format: double */
+            value?: number;
+            /** Format: int32 */
+            priority?: number;
+        };
+        AddDynastyTranslationCommand: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            description?: string | null;
+            motto?: string | null;
+        };
+        AddItemModifierCommand: {
+            /** Format: uuid */
+            itemId?: string;
+            /** Format: uuid */
+            sourceId?: string | null;
+            label?: string | null;
+            statType?: components["schemas"]["StatType"];
+            type?: components["schemas"]["ModifierType"];
+            category?: components["schemas"]["ModifierCategory"];
+            /** Format: double */
+            value?: number;
+            /** Format: int32 */
+            priority?: number;
+        };
+        AddItemTranslationCommand: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            description?: string | null;
+        };
+        AddSettlementTranslationCommand: {
+            /** Format: uuid */
+            id?: string;
+            title?: string | null;
+            description?: string | null;
+        };
         AddTranslationCommand: {
             /** Format: uuid */
             id?: string;
@@ -661,6 +1720,8 @@ export interface components {
             /** Format: int32 */
             readonly modifier?: number;
         };
+        /** @enum {string} */
+        Background: "Acolyte" | "Charlatan" | "Criminal" | "Entertainer" | "FolkHero" | "GuildArtisan" | "Hermit" | "Noble" | "Outlander" | "Sage" | "Sailor" | "Soldier" | "Urchin";
         /** @enum {string} */
         CharacterClass: "Fighter" | "Wizard" | "Rogue" | "Cleric" | "Ranger" | "Paladin" | "Bard" | "Warlock" | "Sorcerer" | "Druid" | "Monk" | "Barbarian";
         CharacterDetailDto: {
@@ -715,6 +1776,13 @@ export interface components {
             personality?: string | null;
             relatives?: components["schemas"]["RelativeDto"][] | null;
         };
+        CharacterModifiersDto: {
+            personalModifiers?: components["schemas"]["ModifierDto"][] | null;
+            equipmentModifiers?: components["schemas"]["ModifierDto"][] | null;
+            statBreakdown?: {
+                [key: string]: components["schemas"]["ModifierBreakdownDto"];
+            } | null;
+        };
         CharacterPreview: {
             /** Format: uuid */
             id?: string;
@@ -741,6 +1809,19 @@ export interface components {
             name?: string | null;
             species?: components["schemas"]["Species"];
             class?: components["schemas"]["CharacterClass"];
+            /** Format: int32 */
+            level?: number | null;
+            /** Format: int64 */
+            experiencePoints?: number | null;
+            alignment?: components["schemas"]["Alignment"];
+            background?: components["schemas"]["Background"];
+            backstory?: string | null;
+            personality?: string | null;
+            skillProficiencies?: components["schemas"]["Skill"][] | null;
+            languageProficiencies?: components["schemas"]["Language"][] | null;
+            attributes?: {
+                [key: string]: number;
+            } | null;
         };
         CreateDynastyCommand: {
             name?: string | null;
@@ -770,6 +1851,13 @@ export interface components {
             /** Format: uuid */
             provinceId?: string | null;
         };
+        CreateStoryCommand: {
+            title?: string | null;
+            description?: string | null;
+            content?: string | null;
+            /** Format: uuid */
+            authorId?: string;
+        };
         Dice: {
             /** Format: int32 */
             readonly sides?: number;
@@ -798,7 +1886,7 @@ export interface components {
         /** @enum {string} */
         DynastyStatus: "Ruling" | "Fallen" | "Vassal";
         /** @enum {string} */
-        EntityArtType: "Character" | "Item" | "Settlement" | "Dynasty";
+        EntityArtType: "Character" | "Item" | "Settlement" | "Dynasty" | "Story";
         /** @enum {string} */
         EntityState: "Updated" | "Disabled" | "Deleted";
         EquipItemCommand: {
@@ -832,6 +1920,7 @@ export interface components {
             /** Format: double */
             cost?: number | null;
             art?: components["schemas"]["Art"];
+            readonly modifiers?: components["schemas"]["Modifier"][] | null;
         };
         ItemDto: {
             /** Format: uuid */
@@ -846,6 +1935,72 @@ export interface components {
         ItemType: "Item" | "Weapon" | "Armor" | "Equipment";
         /** @enum {string} */
         Language: "Common" | "Dwarvish" | "Elvish" | "Giant" | "Gnomish" | "Goblin" | "Halfling" | "Orcish" | "Abyssal" | "Celestial" | "Draconic" | "DeepSpeech" | "Infernal" | "Primordial" | "Sylvan" | "Undercommon";
+        LevelUpCommand: {
+            /** Format: uuid */
+            characterId?: string;
+            /** Format: int32 */
+            levels?: number;
+        };
+        LoginUserCommand: {
+            username?: string | null;
+            password?: string | null;
+        };
+        Modifier: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            sourceId?: string | null;
+            sourceType?: components["schemas"]["ModifierSourceType"];
+            label?: string | null;
+            statType?: components["schemas"]["StatType"];
+            type?: components["schemas"]["ModifierType"];
+            category?: components["schemas"]["ModifierCategory"];
+            /** Format: double */
+            value?: number;
+            /** Format: int32 */
+            priority?: number;
+        };
+        ModifierBreakdownDto: {
+            /** Format: double */
+            baseValue?: number;
+            /** Format: double */
+            finalValue?: number;
+            modifiers?: components["schemas"]["ModifierDto"][] | null;
+        };
+        /** @enum {string} */
+        ModifierCategory: "Base" | "Permanent" | "Equipment" | "Temporary";
+        ModifierDto: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            sourceId?: string | null;
+            sourceType?: string | null;
+            label?: string | null;
+            statType?: string | null;
+            type?: string | null;
+            category?: string | null;
+            /** Format: double */
+            value?: number;
+            /** Format: int32 */
+            priority?: number;
+        };
+        /** @enum {string} */
+        ModifierSourceType: "Character" | "Item" | "Status" | "Buff";
+        /** @enum {string} */
+        ModifierType: "Flat" | "Multiplier" | "Override";
+        Operation: {
+            operationType?: components["schemas"]["OperationType"];
+            path?: string | null;
+            op?: string | null;
+            from?: string | null;
+            value?: unknown;
+        };
+        /** @enum {string} */
+        OperationType: "Add" | "Remove" | "Replace" | "Move" | "Copy" | "Test" | "Invalid";
+        RegisterUserCommand: {
+            username?: string | null;
+            password?: string | null;
+        };
         RelativeDto: {
             /** Format: uuid */
             id?: string;
@@ -863,6 +2018,27 @@ export interface components {
             fatherId?: string | null;
             /** Format: uuid */
             motherId?: string | null;
+        };
+        Settlement: {
+            /** Format: uuid */
+            readonly id?: string;
+            /** Format: date-time */
+            readonly createdAt?: string | null;
+            /** Format: date-time */
+            readonly updatedAt?: string | null;
+            /** Format: date-time */
+            readonly deletedAt?: string | null;
+            entityState?: components["schemas"]["EntityState"];
+            title?: string | null;
+            description?: string | null;
+            /** Format: int32 */
+            readonly population?: number | null;
+            type?: components["schemas"]["SettlementType"];
+            /** Format: uuid */
+            readonly rulerId?: string | null;
+            /** Format: uuid */
+            readonly provinceId?: string | null;
+            art?: components["schemas"]["Art"];
         };
         SettlementDto: {
             /** Format: uuid */
@@ -885,6 +2061,24 @@ export interface components {
         Skill: "Acrobatics" | "AnimalHandling" | "Arcana" | "Athletics" | "Deception" | "History" | "Insight" | "Intimidation" | "Investigation" | "Medicine" | "Nature" | "Perception" | "Performance" | "Persuasion" | "Religion" | "SleightOfHand" | "Stealth" | "Survival";
         /** @enum {string} */
         Species: "Human" | "Elf" | "Dwarf" | "Halfling" | "Orc" | "Gnome" | "Tiefling" | "Dragonborn";
+        /** @enum {string} */
+        StatType: "Strength" | "Dexterity" | "Constitution" | "Intelligence" | "Wisdom" | "Charisma" | "ArmorClass" | "Initiative" | "Speed" | "HitPoints" | "HitDice" | "ProficiencyBonus" | "PassivePerception" | "StrengthSave" | "DexteritySave" | "ConstitutionSave" | "IntelligenceSave" | "WisdomSave" | "CharismaSave" | "Acrobatics" | "AnimalHandling" | "Arcana" | "Athletics" | "Deception" | "History" | "Insight" | "Intimidation" | "Investigation" | "Medicine" | "Nature" | "Perception" | "Performance" | "Persuasion" | "Religion" | "SleightOfHand" | "Stealth" | "Survival";
+        StoryDto: {
+            /** Format: uuid */
+            id?: string;
+            title?: string | null;
+            description?: string | null;
+            art?: components["schemas"]["Art"];
+        };
+        UpdateTraitsAndFeaturesCommand: {
+            /** Format: uuid */
+            characterId?: string;
+            feats?: string | null;
+            /** Format: int32 */
+            heroicInspirationCount?: number | null;
+            backstory?: string | null;
+            personality?: string | null;
+        };
     };
     responses: never;
     parameters: never;

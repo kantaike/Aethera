@@ -11,6 +11,6 @@ namespace Aethera.Domain.Factories.Interfaces
 
         public Character CreateCharacter(string name, Species species, CharacterClass @class);
 
-        public Character CreateCharacterDetailed(string name, Species species, CharacterClass? @class, Action<Character>? configure = null);
+        public Character CreateCharacterDetailed(string name, Species species, CharacterClass? @class, Action<Character> configure);
     }
 }

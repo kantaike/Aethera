@@ -29,7 +29,12 @@ namespace Aethera.Server.Common
                 return culture;
             }
 
-            return Culture.enUS;
+            // Fallback: match short language prefix (e.g. "en" -> enUS, "uk" -> ukUA)
+            var match = Enum.GetValues<Culture>()
+                .Cast<Culture?>()
+                .FirstOrDefault(c => c.ToString()!.StartsWith(primaryTag, StringComparison.OrdinalIgnoreCase));
+
+            return match ?? Culture.enUS;
         }
     }
 }

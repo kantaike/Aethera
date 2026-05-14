@@ -1,65 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Home, Sword, Castle, Crown, Backpack, ScrollText, UserCircle, Menu } from 'lucide-react';
 import styles from './Layout.module.css';
-
-type Language = 'uk' | 'en';
-
-const translations: Record<
-  Language,
-  {
-    menu: string;
-    home: string;
-    characters: string;
-    settlements: string;
-    dynasties: string;
-    items: string;
-    stories: string;
-  }
-> = {
-  uk: {
-    menu: 'Меню',
-    home: 'Головна',
-    characters: 'Персонажі',
-    settlements: 'Поселення',
-    dynasties: 'Династії',
-    items: 'Предмети',
-    stories: 'Історії',
-  },
-  en: {
-    menu: 'Menu',
-    home: 'Home',
-    characters: 'Characters',
-    settlements: 'Settlements',
-    dynasties: 'Dynasties',
-    items: 'Items',
-    stories: 'Stories',
-  },
-};
+import { setStoredLanguage, type Language, translations, useLanguage } from '../i18n/translations';
 
 const Layout = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [language, setLanguage] = useState<Language>('en');
+  const language = useLanguage();
   const location = useLocation();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = window.localStorage.getItem('language') as Language | null;
-      if (stored === 'uk' || stored === 'en') {
-        setLanguage(stored);
-      }
-    }
-  }, []);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLanguageChange = (lang: Language) => {
-    setLanguage(lang);
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('language', lang);
-    }
+    setStoredLanguage(lang);
   };
 
-  const t = translations[language];
+  const t = translations.layout[language];
 
   return (
     <div className={styles.container}>
@@ -74,7 +30,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🏠</span>
+            <Home className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.home}</span>
           </Link>
           <Link
@@ -84,7 +40,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🧙‍♂️</span>
+            <Sword className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.characters}</span>
           </Link>
           <Link
@@ -94,7 +50,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🏰</span>
+            <Castle className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.settlements}</span>
           </Link>
           <Link
@@ -104,7 +60,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>👑</span>
+            <Crown className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.dynasties}</span>
           </Link>
           <Link
@@ -114,7 +70,7 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>🎒</span>
+            <Backpack className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.items}</span>
           </Link>
           <Link
@@ -124,12 +80,23 @@ const Layout = () => {
             }`}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>📜</span>
+            <ScrollText className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.stories}</span>
           </Link>
         </nav>
 
         <div className={styles.sidebarFooter}>
+          <Link
+            to="/profile"
+            className={`${styles.navLink} ${
+              location.pathname.startsWith('/profile') ? styles.navLinkActive : ''
+            } ${styles.footerProfileLink}`}
+            onClick={() => setSidebarOpen(false)}
+          >
+            <UserCircle className={styles.navIcon} size={18} />
+            <span className={styles.navLabel}>{t.profile}</span>
+          </Link>
+
           <div className={styles.langButtons}>
             <button
               type="button"
@@ -155,8 +122,8 @@ const Layout = () => {
 
       <div className={styles.main}>
         <header className={styles.mobileHeader}>
-          <button className={styles.menuButton} onClick={toggleSidebar}>
-            ☰
+          <button className={styles.menuButton} onClick={toggleSidebar} aria-label="Toggle menu">
+            <Menu size={22} />
           </button>
           <span style={{ marginLeft: '20px' }}>{t.menu}</span>
         </header>

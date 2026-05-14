@@ -3,6 +3,7 @@ using Aethera.Domain.Entities.Basic;
 using Aethera.Domain.Entities.Characters;
 using Aethera.Domain.Entities.Items;
 using Aethera.Domain.Entities.Settlements;
+using Aethera.Domain.Entities.Stories;
 using Aethera.Domain.Entities.Users;
 using Aethera.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -16,20 +17,23 @@ namespace Aethera.Infrastructure.Persistence
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
         // -- Characters --
-        public DbSet<CharacterEntity> CharacterEntities { get; set; }
+        public DbSet<Character> Characters { get; set; }
         public DbSet<CharacterTranslationEntity> CharacterTranslationEntities { get; set; }
         public DbSet<Dynasty> Dynasties { get; set; }
+        public DbSet<DynastyTranslationEntity> DynastyTranslationEntities { get; set; }
         public DbSet<Spell> Spells { get; set; }
         public DbSet<Religion> Religions { get; set; }
 
         // -- Items --
         public DbSet<Item> Items { get; set; }
+        public DbSet<ItemTranslationEntity> ItemTranslationEntities { get; set; }
         public DbSet<Weapon> Weapons { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
         public DbSet<Armor> Armors { get; set; }
 
         // -- Settlements --
         public DbSet<Settlement> Settlements { get; set; }
+        public DbSet<SettlementTranslationEntity> SettlementTranslationEntities { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Castle> Castles { get; set; }
         public DbSet<Village> Villages { get; set; }
@@ -42,24 +46,37 @@ namespace Aethera.Infrastructure.Persistence
         // -- Users --
         public DbSet<User> Users { get; set; }
 
+        // -- Stories --
+        public DbSet<Story> Stories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // -- Characters --
-            modelBuilder.Entity<CharacterEntity>(entity =>
+            modelBuilder.Entity<Character>(entity =>
             {
                 entity.ToTable("Characters");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                     .HasDefaultValueSql("gen_random_uuid()");
+
+                entity.Property(e => e.Name)
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
+                entity.Property(e => e.Feats)
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
+                entity.Property(e => e.Backstory)
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
+                entity.Property(e => e.Personality)
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
+
                 entity.OwnsOne(e => e.HP, hp =>
                 {
                     hp.Property(p => p.Current).HasColumnName("HP_Current");
                     hp.Property(p => p.Max).HasColumnName("HP_Maximum");
                     hp.Property(p => p.Temp).HasColumnName("HP_Temporary");
                 });
-                entity.OwnsOne(e=>e.HitDice, hd =>
+                entity.OwnsOne(e => e.HitDice, hd =>
                 {
                     hd.Property(p => p.Sides).HasColumnName("HitDice_DiceSides");
                 });
@@ -87,6 +104,7 @@ namespace Aethera.Infrastructure.Persistence
                 {
                     attr.Property(p => p.Score).HasColumnName("Charisma_Score");
                 });
+
                 entity.HasOne<Dynasty>()
                       .WithMany()
                       .HasForeignKey(e => e.DynastyId)
@@ -95,54 +113,62 @@ namespace Aethera.Infrastructure.Persistence
                       .WithMany()
                       .HasForeignKey(e => e.HometownId)
                       .OnDelete(DeleteBehavior.SetNull);
-                entity.HasOne<CharacterEntity>()
+                entity.HasOne<Character>()
                       .WithMany()
                       .HasForeignKey(e => e.FatherId)
                       .OnDelete(DeleteBehavior.SetNull);
-                entity.HasOne<CharacterEntity>()
+                entity.HasOne<Character>()
                       .WithMany()
                       .HasForeignKey(e => e.MotherId)
                       .OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasMany(c => c.Spells)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "CharacterSpells",
-                    j => j.HasOne<Spell>().WithMany().HasForeignKey("SpellId"),
-                    j => j.HasOne<CharacterEntity>().WithMany().HasForeignKey("CharacterId"));
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "CharacterSpells",
+                        j => j.HasOne<Spell>().WithMany().HasForeignKey("SpellId"),
+                        j => j.HasOne<Character>().WithMany().HasForeignKey("CharacterId"));
 
                 entity.HasMany(c => c.Weapons)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "CharacterWeapons",
-                    j => j.HasOne<Weapon>().WithMany().HasForeignKey("WeaponId"),
-                    j => j.HasOne<CharacterEntity>().WithMany().HasForeignKey("CharacterId"));
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "CharacterWeapons",
+                        j => j.HasOne<Weapon>().WithMany().HasForeignKey("WeaponId"),
+                        j => j.HasOne<Character>().WithMany().HasForeignKey("CharacterId"));
 
                 entity.HasMany(c => c.Armors)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "CharacterArmors",
-                    j => j.HasOne<Armor>().WithMany().HasForeignKey("ArmorId"),
-                    j => j.HasOne<CharacterEntity>().WithMany().HasForeignKey("CharacterId"));
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "CharacterArmors",
+                        j => j.HasOne<Armor>().WithMany().HasForeignKey("ArmorId"),
+                        j => j.HasOne<Character>().WithMany().HasForeignKey("CharacterId"));
 
                 entity.HasMany(c => c.Equipments)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "CharacterEquipments",
-                    j => j.HasOne<Equipment>().WithMany().HasForeignKey("EquipmentId"),
-                    j => j.HasOne<CharacterEntity>().WithMany().HasForeignKey("CharacterId"));
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "CharacterEquipments",
+                        j => j.HasOne<Equipment>().WithMany().HasForeignKey("EquipmentId"),
+                        j => j.HasOne<Character>().WithMany().HasForeignKey("CharacterId"));
 
                 entity.HasMany(c => c.Items)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "CharacterItems",
-                    j => j.HasOne<Item>().WithMany().HasForeignKey("ItemId"),
-                    j => j.HasOne<CharacterEntity>().WithMany().HasForeignKey("CharacterId"));
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "CharacterItems",
+                        j => j.HasOne<Item>().WithMany().HasForeignKey("ItemId"),
+                        j => j.HasOne<Character>().WithMany().HasForeignKey("CharacterId"));
+
                 entity.Navigation(c => c.Spells).UsePropertyAccessMode(PropertyAccessMode.Field);
                 entity.Navigation(c => c.Weapons).UsePropertyAccessMode(PropertyAccessMode.Field);
                 entity.Navigation(c => c.Armors).UsePropertyAccessMode(PropertyAccessMode.Field);
                 entity.Navigation(c => c.Equipments).UsePropertyAccessMode(PropertyAccessMode.Field);
                 entity.Navigation(c => c.Items).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+                entity.Property(c => c.Modifiers)
+                    .HasColumnType("jsonb")
+                    .HasConversion(
+                        v => System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions?)null),
+                        v => System.Text.Json.JsonSerializer.Deserialize<List<Modifier>>(v, (System.Text.Json.JsonSerializerOptions?)null) ?? new List<Modifier>())
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
 
                 entity.OwnsOne(c => c.Art, art =>
                 {
@@ -151,7 +177,9 @@ namespace Aethera.Infrastructure.Persistence
                        .HasMaxLength(500)
                        .IsRequired(false);
                 });
-                entity.HasMany(e => e.Translations).WithOne()
+
+                entity.HasMany<CharacterTranslationEntity>()
+                      .WithOne()
                       .HasForeignKey(e => e.CharacterId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
@@ -183,6 +211,21 @@ namespace Aethera.Infrastructure.Persistence
                 });
             });
 
+            modelBuilder.Entity<DynastyTranslationEntity>(entity =>
+            {
+                entity.ToTable("DynastyTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.DynastyId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
             modelBuilder.Entity<Spell>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -209,6 +252,12 @@ namespace Aethera.Infrastructure.Persistence
                     .HasValue<Weapon>("Weapon")
                     .HasValue<Armor>("Armor")
                     .HasValue<Equipment>("Equipment");
+                entity.Property(e => e.Modifiers)
+                    .HasColumnType("jsonb")
+                    .HasConversion(
+                        v => System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions?)null),
+                        v => System.Text.Json.JsonSerializer.Deserialize<List<Modifier>>(v, (System.Text.Json.JsonSerializerOptions?)null) ?? new List<Modifier>())
+                    .UsePropertyAccessMode(PropertyAccessMode.Field);
                 entity.OwnsOne(c => c.Art, art =>
                 {
                     art.Property(a => a.FilePath)
@@ -227,6 +276,21 @@ namespace Aethera.Infrastructure.Persistence
                 });
             });
 
+            modelBuilder.Entity<ItemTranslationEntity>(entity =>
+            {
+                entity.ToTable("ItemTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.ItemId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
             // -- Settlements --
             modelBuilder.Entity<Settlement>(entity =>
             {
@@ -235,7 +299,7 @@ namespace Aethera.Infrastructure.Persistence
                       .HasValue<City>("City")
                       .HasValue<Castle>("Castle")
                       .HasValue<Village>("Village");
-                entity.HasOne<CharacterEntity>()
+                entity.HasOne<Character>()
                       .WithMany()
                       .HasForeignKey(e => e.RulerId)
                       .OnDelete(DeleteBehavior.SetNull);
@@ -252,6 +316,21 @@ namespace Aethera.Infrastructure.Persistence
                 });
             });
 
+            modelBuilder.Entity<SettlementTranslationEntity>(entity =>
+            {
+                entity.ToTable("SettlementTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.SettlementId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Title).IsRequired();
+            });
+
             // -- Administrative units --
             modelBuilder.Entity<AdministrativeUnit>(entity =>
             {
@@ -260,7 +339,7 @@ namespace Aethera.Infrastructure.Persistence
                     .HasValue<Country>("Country")
                     .HasValue<Province>("Province")
                     .HasValue<Region>("Region");
-                entity.HasOne<CharacterEntity>()
+                entity.HasOne<Character>()
                       .WithMany()
                       .HasForeignKey(e => e.RulerId)
                       .OnDelete(DeleteBehavior.SetNull);
@@ -277,6 +356,25 @@ namespace Aethera.Infrastructure.Persistence
                 entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.PasswordHash).IsRequired();
                 entity.HasIndex(e => e.Username).IsUnique();
+            });
+
+            // -- Stories --
+            modelBuilder.Entity<Story>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Title).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Content).HasColumnType("text").IsRequired();
+                entity.HasOne<User>()
+                      .WithMany()
+                      .HasForeignKey(e => e.AuthorId)
+                      .OnDelete(DeleteBehavior.SetNull);
+                entity.OwnsOne(c => c.Art, art =>
+                {
+                    art.Property(a => a.FilePath)
+                       .HasColumnName("Art_FilePath")
+                       .HasMaxLength(500)
+                       .IsRequired(false);
+                });
             });
         }
     }

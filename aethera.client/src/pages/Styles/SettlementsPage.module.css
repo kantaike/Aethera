@@ -1,20 +1,131 @@
-.settlementsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 20px;
-  
+.container {
   animation: fadeIn 0.5s ease-out;
 }
 
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.mainTitle {
+  margin: 0;
+  color: var(--headers);
+  font-size: 2.25rem;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.createButton {
+  padding: 12px 18px;
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0d3b66, #1f6feb);
+  color: #f8fbff;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.createButton:hover {
+  filter: brightness(1.08);
+}
+
+.countrySection {
+  margin-bottom: 32px;
+}
+
+.countryHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.countryName {
+  margin: 0;
+  color: var(--headers);
+  font-size: 1.4rem;
+}
+
+.goldLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.55), rgba(212, 175, 55, 0));
+}
+
+.regionBlock {
+  margin-bottom: 24px;
+}
+
+.regionName {
+  margin: 0 0 14px;
+  color: var(--headers);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+}
+
+.diamond {
+  color: var(--border-gold-bright);
+}
+
+.settlementsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.empty {
+  margin: 36px 0 0;
+  color: var(--text);
+  text-align: center;
+}
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 480px) {
   .settlementsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
-    padding: 16px;
+  }
+
+  .countryHeader {
+    gap: 10px;
   }
 }
