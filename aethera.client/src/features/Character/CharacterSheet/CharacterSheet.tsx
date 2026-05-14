@@ -318,11 +318,6 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
         <div className={styles.tabContent}>
           {activeTab === 'biography' && (
             <div className={styles.biographyTab}>
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>{t.family}</h3>
-                <FamilyTree character={character} relatives={relatives} />
-              </section>
-
               {(character.backstory || character.personality) && (
                 <section className={styles.section}>
                   <h3 className={styles.sectionTitle}>{t.backstoryAndPersonality}</h3>
@@ -342,6 +337,13 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
                       </div>
                     </div>
                   )}
+                </section>
+              )}
+
+              {relatives.length > 0 && (
+                <section className={styles.section}>
+                  <h3 className={styles.sectionTitle}>{t.family}</h3>
+                  <FamilyTree character={character} relatives={relatives} />
                 </section>
               )}
 

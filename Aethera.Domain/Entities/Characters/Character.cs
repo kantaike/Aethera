@@ -156,7 +156,7 @@ namespace Aethera.Domain.Entities.Characters
 
         public void LevelUp(int levelCount = 1)
         {
-            LevelUpService.LevelUpCharacter(this, levelCount);
+            Level += levelCount;
         }
 
         public void UpdateHitPoints(int max, int current, int? temp = null)

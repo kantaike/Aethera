@@ -2,6 +2,7 @@ import api from './client';
 import type {
   AddDynastyTranslationRequest,
   AddSettlementTranslationRequest,
+  CreateAdministrativeUnitRequest,
   CreateDynastyRequest,
   CreateSettlementRequest,
   EntityPatchDocument,
@@ -17,7 +18,7 @@ export const settlementsApi = {
 
 export const administrativeUnitsApi = {
   getAll: () => api.get('/AdministrativeUnits').then(res => res.data),
-  create: (data: any) => api.post('/AdministrativeUnits', data),
+  create: (data: CreateAdministrativeUnitRequest) => api.post('/AdministrativeUnits', data).then(res => res.data),
 };
 
 export const dynastiesApi = {

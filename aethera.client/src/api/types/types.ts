@@ -25,6 +25,9 @@ export type Alignment = components['schemas']['Alignment'];
 export type Background = components['schemas']['Background'];
 export type Skill = components['schemas']['Skill'];
 export type CharacterLanguage = components['schemas']['Language'];
+export type StatType = components['schemas']['StatType'];
+export type ModifierType = components['schemas']['ModifierType'];
+export type ModifierCategory = components['schemas']['ModifierCategory'];
 
 export interface StoryDetail {
   id: string;
@@ -40,10 +43,16 @@ export type CreateCharacterRequest = components['schemas']['CreateCharacterComma
 export type CreateDynastyRequest = components['schemas']['CreateDynastyCommand'];
 export type CreateItemRequest = components['schemas']['CreateItemCommand'];
 export type CreateSettlementRequest = components['schemas']['CreateSettlementCommand'];
+export type CreateAdministrativeUnitRequest = components['schemas']['CreateAdministrativeUnitCommand'];
 export type AddDynastyTranslationRequest = components['schemas']['AddDynastyTranslationCommand'];
 export type AddSettlementTranslationRequest = components['schemas']['AddSettlementTranslationCommand'];
 export type AddItemTranslationRequest = components['schemas']['AddItemTranslationCommand'];
 export type CreateStoryRequest = components['schemas']['CreateStoryCommand'];
+export type UpdateTraitsAndFeaturesRequest = components['schemas']['UpdateTraitsAndFeaturesCommand'];
+export type SetCharacterParentsRequest = components['schemas']['SetParentsCommand'];
+export type LevelUpRequest = components['schemas']['LevelUpCommand'];
+export type AddCharacterModifierRequest = components['schemas']['AddCharacterModifierCommand'];
+export type AddCharacterTranslationRequest = components['schemas']['AddTranslationCommand'];
 
 export type EntityPatchOperation = {
 	op: string;

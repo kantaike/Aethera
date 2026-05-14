@@ -1,12 +1,36 @@
 .pageWrapper {
   min-height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background: radial-gradient(circle, rgba(35,35,35,1) 0%, rgba(15,15,15,1) 100%);
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   padding: 20px 24px 32px;
   box-sizing: border-box;
+  gap: 16px;
+}
+
+.masterActions {
+  width: min(1600px, 100%);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.editModeButton {
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--border-gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.editModeButton:hover {
+  background: rgba(212, 175, 55, 0.16);
+  border-color: var(--border-gold);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {

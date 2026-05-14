@@ -98,6 +98,37 @@ namespace Aethera.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
+        public async Task UpsertTraitsAndFeaturesTranslation(Guid id, string? feats, string? backstory, string? personality, CancellationToken ct)
+        {
+            var culture = _cultureProvider.Culture;
+
+            var entity = await _context.Set<Character>().FindAsync([id], ct)
+                ?? throw new KeyNotFoundException($"Character with id {id} not found.");
+
+            var translation = await _context.Set<CharacterTranslationEntity>()
+                .FirstOrDefaultAsync(t => t.CharacterId == id && t.Culture == culture, ct);
+
+            if (translation is null)
+            {
+                translation = new CharacterTranslationEntity
+                {
+                    CharacterId = entity.Id,
+                    Culture = culture,
+                    Name = entity.Name,
+                    Feats = feats,
+                    Backstory = backstory,
+                    Personality = personality
+                };
+
+                _context.Set<CharacterTranslationEntity>().Add(translation);
+                return;
+            }
+
+            translation.Feats = feats;
+            translation.Backstory = backstory;
+            translation.Personality = personality;
+        }
+
         public async Task<List<RelativeDto>> GetFamilyTree(Guid characterId, CancellationToken ct)
         {
             var rawData = await _context.Set<Character>()

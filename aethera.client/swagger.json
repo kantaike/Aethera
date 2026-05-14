@@ -638,6 +638,356 @@
         }
       }
     },
+    "/api/Characters/{id}/items/{itemId}": {
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/traits-and-features": {
+      "put": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTraitsAndFeaturesCommand"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTraitsAndFeaturesCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTraitsAndFeaturesCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTraitsAndFeaturesCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/skills": {
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/languages": {
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Language"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Language"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Language"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Language"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/background": {
+      "put": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Background"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Background"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Background"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Background"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/hometown": {
+      "put": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/alignment": {
+      "put": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Alignment"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Alignment"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Alignment"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Alignment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Characters/{id}/modifiers/{modifierId}": {
+      "delete": {
+        "tags": [
+          "Characters"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "modifierId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Dynasties": {
       "post": {
         "tags": [
@@ -2835,6 +3185,33 @@
           },
           "art": {
             "$ref": "#/components/schemas/Art"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateTraitsAndFeaturesCommand": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "feats": {
+            "type": "string",
+            "nullable": true
+          },
+          "heroicInspirationCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "backstory": {
+            "type": "string",
+            "nullable": true
+          },
+          "personality": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

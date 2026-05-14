@@ -6,62 +6,110 @@
   position: relative;
 }
 
+.tierSelf {
+  --line-delay: 0.34s;
+}
+
+.tierParent {
+  --line-delay: 0.62s;
+}
+
+.tierGrand {
+  --line-delay: 0.88s;
+}
+
+.tierOther {
+  --line-delay: 1s;
+}
+
 .pairContainer {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 14px;
   position: relative;
-  margin-bottom: 40px; /* Отступ до линии детей */
+  margin-bottom: 42px;
 }
 
-/* Линия связи между супругами */
 .marriageLine {
   width: 30px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--border-gold-bright), transparent);
-  box-shadow: 0 0 8px var(--border-gold);
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.15));
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.48));
 }
 
 .childrenContainer {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 26px;
   position: relative;
   padding-top: 25px;
 }
 
-/* Горизонтальная перекладина ("плечи") над детьми */
 .childrenContainer::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 20px;
-  right: 20px;
-  height: 1px;
-  background: var(--border-gold);
-  opacity: 0.6;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0), rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0));
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
 }
 
-/* Вертикальный "стебель" от родителей вниз */
 .childrenContainer::before {
   content: '';
   position: absolute;
-  top: -40px; /* Соединяет с pairContainer */
+  top: -42px;
   left: 50%;
-  width: 1px;
-  height: 65px;
-  background: linear-gradient(180deg, var(--border-gold), transparent);
-  opacity: 0.8;
+  width: 2px;
+  height: 67px;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.85), rgba(212, 175, 55, 0.2));
+  filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.38));
 }
 
-/* Маленькие "отростки" к каждой карточке ребенка */
 .nodeWrapper:not(:only-child)::before {
   content: '';
   position: absolute;
   top: -25px;
   left: 50%;
-  width: 1px;
+  width: 2px;
   height: 25px;
-  background-color: var(--border-gold);
-  opacity: 0.6;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.86), rgba(212, 175, 55, 0.22));
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.35));
+}
+
+.revealLine,
+.revealLine::before,
+.revealLine::after {
+  opacity: 0;
+  animation: revealEnergy 0.5s ease forwards;
+  animation-delay: var(--line-delay, 0.4s);
+}
+
+@keyframes revealEnergy {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .pairContainer {
+    margin-bottom: 34px;
+  }
+
+  .childrenContainer {
+    gap: 18px;
+    padding-top: 20px;
+  }
+
+  .childrenContainer::before {
+    top: -34px;
+    height: 54px;
+  }
 }

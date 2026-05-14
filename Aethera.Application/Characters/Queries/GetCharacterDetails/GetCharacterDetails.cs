@@ -49,6 +49,7 @@ namespace Aethera.Application.Characters.Queries.GetCharacterDetails
         int? HeroicInspirationCount,
         string? Backstory,
         string? Personality,
+        CharacterStatus? Status,
         List<RelativeDto> Relatives
     );
 
@@ -115,6 +116,7 @@ namespace Aethera.Application.Characters.Queries.GetCharacterDetails
                 character.HeroicInspirationCount,
                 character.Backstory,
                 character.Personality,
+                character.Status,
                 relatives
             );
         }

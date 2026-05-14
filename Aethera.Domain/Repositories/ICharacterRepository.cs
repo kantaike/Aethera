@@ -10,6 +10,7 @@ namespace Aethera.Domain.Repositories
     {
         Task<List<RelativeDto>> GetFamilyTree(Guid characterId, CancellationToken ct);
         Task AddTranslation(Guid id, string? name, string? feats, string? backstory, string? personality);
+        Task UpsertTraitsAndFeaturesTranslation(Guid id, string? feats, string? backstory, string? personality, CancellationToken ct);
         Task<IEnumerable<Character>> GetCharactersByDynasty(Guid dynastyId);
     }
 }

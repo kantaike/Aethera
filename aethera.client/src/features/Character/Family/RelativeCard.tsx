@@ -29,7 +29,14 @@ export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
   };
 
   const isMain = role === 'SELF' || role === 'MAIN';
-  const wrapperClass = `${isMain ? styles.mainCharacter : ''}`;
+  const getRoleClass = (roleName: string) => {
+    if (roleName === 'SELF' || roleName === 'MAIN') return styles.roleSelf;
+    if (roleName === 'FATHER' || roleName === 'MOTHER' || roleName === 'PARENT') return styles.roleParent;
+    if (roleName.includes('GRANDPARENT')) return styles.roleGrand;
+    return styles.roleOther;
+  };
+
+  const wrapperClass = `${styles.relativeCardWrapper} ${isMain ? styles.mainCharacter : ''} ${getRoleClass(role)}`;
 
   const formattedRole = (
     <span className={styles.relativeRole}>
@@ -39,8 +46,8 @@ export const RelativeCard: React.FC<RelativeCardProps> = ({ id, role }) => {
   );
 
   return (
-    <div className={styles.relativeCardWrapper + ' ' + (wrapperClass || '')}>
-      <CharacterMiniCard id={id} propsText={formattedRole} />
+    <div className={wrapperClass}>
+      <CharacterMiniCard id={id} propsText={formattedRole} variant="family" />
     </div>
   );
 };
