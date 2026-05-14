@@ -21,6 +21,8 @@ FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Aethera.Server/Aethera.Server.csproj", "Aethera.Server/"]
+COPY ["Aethera.Domain/Aethera.Domain.csproj", "Aethera.Domain/"]
+COPY ["Aethera.Infrastructure/Aethera.Infrastructure.csproj", "Aethera.Infrastructure/"]
 COPY ["aethera.client/aethera.client.esproj", "aethera.client/"]
 RUN dotnet restore "./Aethera.Server/Aethera.Server.csproj"
 COPY . .
