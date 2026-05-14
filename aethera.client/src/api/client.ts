@@ -4,7 +4,7 @@ import { getStoredLanguage, translations } from '../i18n/translations';
 import { useAuthStore } from '../store/authStore';
 
 const api = axios.create({
-  baseURL: 'https://localhost:44336/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

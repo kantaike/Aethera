@@ -14,12 +14,14 @@ namespace Aethera.Infrastructure.Persistence
             string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "Aethera.Server");
 
             IConfigurationRoot configuration = new ConfigurationBuilder()
-            .SetBasePath(path)
-            .AddJsonFile("appsettings.json", optional: true)
-            .Build();
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
 
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetValue<string>("DATABASE_URL")
+                           ?? configuration.GetConnectionString("DefaultConnection");
 
 
             builder.UseNpgsql(connectionString, npgsqlOptions =>
