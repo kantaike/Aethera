@@ -1,6 +1,6 @@
 ﻿namespace Aethera.Server.Middleware
 {
-    public class ExceptionHandlingMiddleware(RequestDelegate next)
+    public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         public async Task InvokeAsync(HttpContext context)
         {
@@ -10,6 +10,7 @@
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Unhandled exception occurred while processing request {Method} {Path}", context.Request.Method, context.Request.Path);
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -55,6 +56,7 @@
             return context.Response.WriteAsJsonAsync(result);
         }
     }
+
     public class ErrorResponse
     {
         public int StatusCode { get; set; }
