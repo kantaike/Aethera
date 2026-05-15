@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Home, Sword, Castle, Crown, Backpack, ScrollText, UserCircle, Menu } from 'lucide-react';
+import {
+  Home,
+  Sword,
+  Castle,
+  Crown,
+  Backpack,
+  ScrollText,
+  UserCircle,
+  Menu,
+  Globe,
+} from 'lucide-react';
 import styles from './Layout.module.css';
 import { setStoredLanguage, type Language, translations, useLanguage } from '../i18n/translations';
 
@@ -13,6 +23,10 @@ const Layout = () => {
 
   const handleLanguageChange = (lang: Language) => {
     setStoredLanguage(lang);
+  };
+
+  const toggleLanguage = () => {
+    handleLanguageChange(language === 'uk' ? 'en' : 'uk');
   };
 
   const t = translations.layout[language];
@@ -97,26 +111,15 @@ const Layout = () => {
             <span className={styles.navLabel}>{t.profile}</span>
           </Link>
 
-          <div className={styles.langButtons}>
-            <button
-              type="button"
-              className={`${styles.langButton} ${
-                language === 'uk' ? styles.langButtonActive : ''
-              }`}
-              onClick={() => handleLanguageChange('uk')}
-            >
-              UA
-            </button>
-            <button
-              type="button"
-              className={`${styles.langButton} ${
-                language === 'en' ? styles.langButtonActive : ''
-              }`}
-              onClick={() => handleLanguageChange('en')}
-            >
-              EN
-            </button>
-          </div>
+          <button
+            type="button"
+            className={`${styles.langButton} ${language === 'uk' ? styles.langButtonActive : ''}`}
+            onClick={toggleLanguage}
+            aria-label={language === 'uk' ? 'Switch language to English' : 'Switch language to Ukrainian'}
+            title={language === 'uk' ? 'English' : 'Українська'}
+          >
+            <Globe className={styles.langIcon} size={18} />
+          </button>
         </div>
       </aside>
 
