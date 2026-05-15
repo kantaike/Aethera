@@ -78,6 +78,8 @@ export function CharacterEditPanel({ characterId, character, modifiers, onExit }
   const language = useLanguage();
   const t = translations.features.characterEditPanel[language];
 
+  const characterBackground = (character as { background?: Background }).background;
+
   const { data: allCharacters = [] } = useCharacters();
   const { data: dynasties = [] } = useDynasties();
   const { data: settlements = [] } = useSettlements();
@@ -107,7 +109,7 @@ export function CharacterEditPanel({ characterId, character, modifiers, onExit }
   };
 
   // --- Background ---
-  const [selectedBackground, setSelectedBackground] = useState<string>(character.background ?? ALL_BACKGROUNDS[0]);
+  const [selectedBackground, setSelectedBackground] = useState<string>(characterBackground ?? ALL_BACKGROUNDS[0]);
   const { mutateAsync: updateBackground, isPending: isSavingBackground } = useUpdateCharacterBackground();
 
   const handleSaveBackground = async () => {
@@ -586,14 +588,14 @@ export function CharacterEditPanel({ characterId, character, modifiers, onExit }
                 <div className={styles.modifierInfo}>
                   <span className={styles.modifierName}>{mod.label ?? t.noValue}</span>
                   <span className={styles.modifierMeta}>
-                    {mod.statType} · {mod.type} · {mod.category} · {mod.value >= 0 ? '+' : ''}{mod.value}
+                    {mod.statType} · {mod.type} · {mod.category} · {(mod.value ?? 0) >= 0 ? '+' : ''}{mod.value ?? 0}
                   </span>
                 </div>
                 <button
                   type="button"
                   className={styles.deleteButton}
-                  onClick={() => handleDeleteModifier(mod.id)}
-                  disabled={isDeletingModifier}
+                  onClick={() => mod.id && handleDeleteModifier(mod.id)}
+                  disabled={isDeletingModifier || !mod.id}
                 >
                   {t.delete}
                 </button>
