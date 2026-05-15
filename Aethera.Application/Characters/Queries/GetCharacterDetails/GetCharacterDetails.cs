@@ -50,6 +50,7 @@ namespace Aethera.Application.Characters.Queries.GetCharacterDetails
         string? Backstory,
         string? Personality,
         CharacterStatus? Status,
+        Guid? UserId,
         List<RelativeDto> Relatives
     );
 
@@ -117,6 +118,7 @@ namespace Aethera.Application.Characters.Queries.GetCharacterDetails
                 character.Backstory,
                 character.Personality,
                 character.Status,
+                character.UserId,
                 relatives
             );
         }

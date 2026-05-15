@@ -22,6 +22,8 @@ export default function CharacterDetailsPage() {
     // 2. Fetch character details
 const { data: character, isLoading, isError } = useCharacter(id);
   const { data: modifiers } = useCharacterModifiers(id);
+  const isOwner = Boolean(currentUser && character && character.userId === currentUser.id);
+  const canEditCharacter = isMaster || isOwner;
 
   if (isLoading) {
         return <FantasyLoader></FantasyLoader>;
@@ -37,7 +39,7 @@ const { data: character, isLoading, isError } = useCharacter(id);
 
   return (
     <div className={styles.pageWrapper}>
-      {isMaster && !isEditMode && (
+      {canEditCharacter && !isEditMode && (
         <div className={styles.masterActions}>
           <button
             type="button"

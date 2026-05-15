@@ -11,11 +11,13 @@ namespace Aethera.Infrastructure.Persistence
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "Aethera.Server");
-
+            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            var serverProjectPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Aethera.Server");
+            
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true)
+                .SetBasePath(serverProjectPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -23,6 +25,12 @@ namespace Aethera.Infrastructure.Persistence
             var connectionString = configuration.GetValue<string>("DATABASE_URL")
                            ?? configuration.GetConnectionString("DefaultConnection");
 
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "Could not find a valid connection string. " +
+                    "Please ensure DATABASE_URL environment variable or DefaultConnection in appsettings.json is configured.");
+            }
 
             builder.UseNpgsql(connectionString, npgsqlOptions =>
             {

@@ -208,6 +208,35 @@ namespace Aethera.Infrastructure.Repositories
             return characters;
         }
 
+        public async Task<IEnumerable<Character>> GetCharactersByUserId(Guid userId, CancellationToken ct)
+        {
+            var culture = _cultureProvider.Culture;
+
+            var characters = await _context.Set<Character>()
+                .Where(c => c.UserId == userId)
+                .AsNoTracking()
+                .ToListAsync(ct);
+
+            var characterIds = characters.Select(c => c.Id).ToList();
+
+            if (!characterIds.Any())
+                return characters;
+
+            var translations = await _context.Set<CharacterTranslationEntity>()
+                .Where(t => characterIds.Contains(t.CharacterId) && t.Culture == culture)
+                .ToListAsync(ct);
+
+            var translationMap = translations.ToDictionary(t => t.CharacterId);
+
+            foreach (var character in characters)
+            {
+                if (translationMap.TryGetValue(character.Id, out var translation))
+                    character.ApplyTranslation(translation.Name, translation.Feats, translation.Backstory, translation.Personality);
+            }
+
+            return characters;
+        }
+
         private bool IsCousin(Character target, Character person, List<Character> all)
         {
             var targetParents = all.Where(p => p.Id == target.FatherId || p.Id == target.MotherId).Select(p => p.Id);

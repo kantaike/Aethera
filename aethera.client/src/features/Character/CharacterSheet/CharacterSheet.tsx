@@ -115,8 +115,9 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
     suffix = '',
     prefix = '',
     signed = false,
+    ignoreBreakdown = false,
   ) => {
-    const breakdown = statBreakdown[statType];
+    const breakdown = ignoreBreakdown ? undefined : statBreakdown[statType];
     const baseValue = typeof breakdown?.baseValue === 'number' ? breakdown.baseValue : fallbackValue;
     const finalValue = typeof breakdown?.finalValue === 'number' ? breakdown.finalValue : fallbackValue;
     const modifiersList = (breakdown?.modifiers ?? []) as Modifier[];
@@ -220,7 +221,17 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
     }
   };
 
-  const proficiencyBonus = getFinalValue('ProficiencyBonus', character.proficiencyBonus) ?? 0;
+  const proficiencyBonusFromDetail = character.proficiencyBonus;
+  const proficiencyBonusFromBreakdown = statBreakdown.ProficiencyBonus?.finalValue;
+  const proficiencyBonusFromLevel =
+    typeof character.level === 'number' && character.level > 0
+      ? Math.floor((character.level - 1) / 4) + 2
+      : undefined;
+  const proficiencyBonus =
+    proficiencyBonusFromDetail ??
+    (typeof proficiencyBonusFromBreakdown === 'number' ? proficiencyBonusFromBreakdown : undefined) ??
+    proficiencyBonusFromLevel ??
+    0;
   const proficientSkills = new Set((character.skillProficiencies ?? []).map((skill) => String(skill)));
 
   const skillRows = SKILL_ORDER.map((skill) => {
@@ -228,8 +239,7 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
     const abilityScore = getAbilityScore(ability);
     const baseModifier = getAbilityModifier(abilityScore);
     const isProficient = proficientSkills.has(skill);
-    const fallbackModifier = baseModifier + (isProficient ? proficiencyBonus : 0);
-    const finalModifier = getFinalValue(skill, fallbackModifier);
+    const finalModifier = baseModifier + (isProficient ? proficiencyBonus : 0);
 
     return {
       skill,
@@ -379,7 +389,7 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
                     <div className={styles.statGrid}>
                       <div className={styles.statRow}>
                         <span>{t.proficiencyBonus}</span>
-                        {renderStatValueWithTooltip('ProficiencyBonus', t.proficiencyBonus, character.proficiencyBonus)}
+                        {renderStatValueWithTooltip('ProficiencyBonus', t.proficiencyBonus, proficiencyBonus, '', '', false, true)}
                       </div>
                       <div className={styles.statRow}>
                         <span>{t.armorClass}</span>
@@ -491,6 +501,7 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
                           row.finalModifier,
                           '',
                           '',
+                          true,
                           true,
                         )}
                       </span>

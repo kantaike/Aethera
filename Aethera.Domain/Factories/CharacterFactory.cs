@@ -89,33 +89,33 @@ namespace Aethera.Domain.Factories
             switch (character.Species)
             {   
                 case Species.Human:
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Strength, ModifierType.Flat, ModifierCategory.Base, 1, 100));
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 1, 100));
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 1, 100));
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Intelligence, ModifierType.Flat, ModifierCategory.Base, 1, 100));
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Wisdom, ModifierType.Flat, ModifierCategory.Base, 1, 100));
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Charisma, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Strength, ModifierType.Flat, ModifierCategory.Base, 1, 100, null, "Race"));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 1, 100, null, "Race"));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 1, 100, null, "Race"));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Intelligence, ModifierType.Flat, ModifierCategory.Base, 1, 100, null, "Race"));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Wisdom, ModifierType.Flat, ModifierCategory.Base, 1, 100, null, "Race"));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Charisma, ModifierType.Flat, ModifierCategory.Base, 1, 100, null, "Race"));
                     break;
                 case Species.Elf:
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 2, 100, null, "Race"));
                     break;
                 case Species.Dwarf:
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 2, 100, null, "Race"));
                     break;
                 case Species.Halfling:
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Dexterity, ModifierType.Flat, ModifierCategory.Base, 2, 100, null, "Race"));
                     break;
                 case Species.Orc:
-                        character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Strength, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                        character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Strength, ModifierType.Flat, ModifierCategory.Base, 2, 100, null, "Race"));
                     break;
                 case Species.Gnome:
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Intelligence, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Intelligence, ModifierType.Flat, ModifierCategory.Base, 2, 100, null, "Race"));
                     break;
                 case Species.Tiefling:
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Charisma, ModifierType.Flat, ModifierCategory.Base, 2, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Charisma, ModifierType.Flat, ModifierCategory.Base, 2, 100, null, "Race"));
                     break;
                 case Species.Dragonborn:
-                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 1, 100));
+                    character.AddModifier(new Modifier(ModifierSourceType.Character, StatType.Constitution, ModifierType.Flat, ModifierCategory.Base, 1, 100, null, "Race"));
                     break;
                 default:
                     throw new ArgumentException($"Unknown species: {character.Species}");

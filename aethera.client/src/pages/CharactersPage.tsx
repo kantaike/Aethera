@@ -168,6 +168,16 @@ export default function CharactersPage() {
     });
   }, [characters, nameSearch, speciesFilter, classFilter]);
 
+  const ownsCharacter = useMemo(() => {
+    if (!currentUser || !characters) {
+      return false;
+    }
+
+    return (characters as CharacterPreview[]).some((character) => character.userId === currentUser.id);
+  }, [characters, currentUser]);
+
+  const canCreateCharacter = Boolean(currentUser) && (isMaster || !ownsCharacter);
+
   if (isLoading) return <FantasyLoader fullScreen />;
   if (error) return <p className={styles.error}>{t.error}</p>;
 
@@ -178,7 +188,7 @@ export default function CharactersPage() {
           <h1 className={styles.mainTitle}>{t.title}</h1>
           <p className={styles.subtitle}>{t.subtitle}</p>
         </div>
-        {isMaster ? (
+        {canCreateCharacter ? (
           <button type="button" className={styles.createButton} onClick={() => setIsCreateOpen(true)}>
             {t.createButton}
           </button>

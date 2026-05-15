@@ -2206,6 +2206,9 @@
             "type": "string",
             "nullable": true
           },
+          "status": {
+            "$ref": "#/components/schemas/CharacterStatus"
+          },
           "relatives": {
             "type": "array",
             "items": {
@@ -2277,6 +2280,14 @@
           }
         },
         "additionalProperties": false
+      },
+      "CharacterStatus": {
+        "enum": [
+          "Alive",
+          "Dead",
+          "Unknown"
+        ],
+        "type": "string"
       },
       "CreateAdministrativeUnitCommand": {
         "type": "object",

@@ -1,8 +1,12 @@
 import type { components } from '../schema';
 
 
-export type CharacterPreview = components['schemas']['CharacterPreview']; 
-export type CharacterDetail = components['schemas']['CharacterDetailDto']; 
+export type CharacterPreview = components['schemas']['CharacterPreview'] & {
+  userId?: string | null;
+}; 
+export type CharacterDetail = components['schemas']['CharacterDetailDto'] & {
+  userId?: string | null;
+}; 
 export type CharacterModifiers = components['schemas']['CharacterModifiersDto'];
 export type Modifier = components['schemas']['ModifierDto'];
 export type ModifierBreakdown = components['schemas']['ModifierBreakdownDto'];

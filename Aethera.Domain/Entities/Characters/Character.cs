@@ -153,7 +153,12 @@ namespace Aethera.Domain.Entities.Characters
         public IReadOnlyCollection<Equipment> Equipments => _equipments.AsReadOnly();
         public IReadOnlyCollection<Item> Items => _items.AsReadOnly();
 
+        public Guid? UserId { get; private set; }
 
+        public void AssignToUser(Guid userId)
+        {
+            UserId = userId;
+        }
         public void LevelUp(int levelCount = 1)
         {
             Level += levelCount;
@@ -275,23 +280,23 @@ namespace Aethera.Domain.Entities.Characters
             var attributeScore = new AttributeScore(score);
             switch (attributeName.ToLower())
             {
-                case "strength":
+                case "str":
                     Strength = attributeScore;
                     break;
-                case "dexterity":
+                case "dex":
                     Dexterity = attributeScore;
                     break;
-                case "constitution":
+                case "con":
                     Constitution = attributeScore;
                     UpdateHitPoints();
                     break;
-                case "intelligence":
+                case "int":
                     Intelligence = attributeScore;
                     break;
-                case "wisdom":
+                case "wis":
                     Wisdom = attributeScore;
                     break;
-                case "charisma":
+                case "cha":
                     Charisma = attributeScore;
                     break;
                 default:

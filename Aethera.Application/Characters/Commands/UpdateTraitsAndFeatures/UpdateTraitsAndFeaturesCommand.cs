@@ -1,5 +1,8 @@
 using Aethera.Application.Common.Interfaces;
+using Aethera.Application.Common.Authorization;
 using Aethera.Domain.Repositories;
+using Aethera.Domain.Entities.Users;
+using System;
 
 namespace Aethera.Application.Characters.Commands.UpdateTraitsAndFeatures
 {
@@ -15,17 +18,28 @@ namespace Aethera.Application.Characters.Commands.UpdateTraitsAndFeatures
     public class UpdateTraitsAndFeaturesHandler : ICommandHandler<UpdateTraitsAndFeaturesCommand>
     {
         private readonly ICharacterRepository _characterRepository;
+        private readonly IAuthorizationService _authorizationService;
         private readonly IUnitOfWork _uow;
 
-        public UpdateTraitsAndFeaturesHandler(ICharacterRepository characterRepository, IUnitOfWork uow)
+        public UpdateTraitsAndFeaturesHandler(ICharacterRepository characterRepository, IUnitOfWork uow,
+            IAuthorizationService authorizationService)
         {
             _characterRepository = characterRepository;
             _uow = uow;
+            _authorizationService = authorizationService;
         }
 
         public async Task HandleAsync(UpdateTraitsAndFeaturesCommand command, CancellationToken ct = default)
         {
             var character = await _characterRepository.Get(command.CharacterId, ct);
+            var userId = _authorizationService.GetCurrentUserId();
+            var userRole = _authorizationService.GetUserRole();
+
+            // Players can only update their own character
+            if (userRole == Role.Player && character.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("Players can only update their own character.");
+            }
 
             character.UpdateTraitsAndFeatures(
                 command.Feats,

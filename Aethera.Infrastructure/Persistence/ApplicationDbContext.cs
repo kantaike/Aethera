@@ -121,6 +121,10 @@ namespace Aethera.Infrastructure.Persistence
                       .WithMany()
                       .HasForeignKey(e => e.MotherId)
                       .OnDelete(DeleteBehavior.SetNull);
+                entity.HasOne<User>()
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasMany(c => c.Spells)
                     .WithMany()

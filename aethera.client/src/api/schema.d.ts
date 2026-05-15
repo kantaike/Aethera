@@ -1774,6 +1774,7 @@ export interface components {
             heroicInspirationCount?: number | null;
             backstory?: string | null;
             personality?: string | null;
+            status?: components["schemas"]["CharacterStatus"];
             relatives?: components["schemas"]["RelativeDto"][] | null;
         };
         CharacterModifiersDto: {
@@ -1796,6 +1797,8 @@ export interface components {
             /** Format: uuid */
             dynastyId?: string | null;
         };
+        /** @enum {string} */
+        CharacterStatus: "Alive" | "Dead" | "Unknown";
         CreateAdministrativeUnitCommand: {
             title?: string | null;
             type?: components["schemas"]["AdministrativeUnitType"];

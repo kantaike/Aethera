@@ -1,6 +1,8 @@
 ﻿using Aethera.Application.Common.Interfaces;
+using Aethera.Application.Common.Authorization;
 using Aethera.Domain.Common;
 using Aethera.Domain.Entities.Characters;
+using Aethera.Domain.Entities.Users;
 using Aethera.Domain.Factories.Interfaces;
 using Aethera.Domain.Repositories;
 using FluentValidation;
@@ -36,13 +38,16 @@ namespace Aethera.Application.Characters.Commands.CreateCharacter
         private readonly IUnitOfWork _uow;
         private readonly ICharacterFactory _factory;
         private readonly IValidator<CreateCharacterCommand> _validator;
+        private readonly IAuthorizationService _authorizationService;
         public CreateCharacterHandler(ICharacterRepository repository,
-            IUnitOfWork unitOfWork, ICharacterFactory factory, IValidator<CreateCharacterCommand> validator)
+            IUnitOfWork unitOfWork, ICharacterFactory factory, IValidator<CreateCharacterCommand> validator,
+            IAuthorizationService authorizationService)
         {
             _repository = repository;
             _uow = unitOfWork;
             _factory = factory;
             _validator = validator;
+            _authorizationService = authorizationService;
         }
 
         public async Task HandleAsync(CreateCharacterCommand command, CancellationToken ct = default)
@@ -52,6 +57,19 @@ namespace Aethera.Application.Characters.Commands.CreateCharacter
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
+            }
+
+            var userId = _authorizationService.GetCurrentUserId();
+            var userRole = _authorizationService.GetUserRole();
+
+            // Non-admin players can only create one character
+            if (userRole == Role.Player)
+            {
+                var existingCharacters = await _repository.GetCharactersByUserId(userId, ct);
+                if (existingCharacters.Any())
+                {
+                    throw new InvalidOperationException("Players can only create one character. You have already created a character.");
+                }
             }
 
             // Use factory's detailed creation with configure Action to apply additional properties.
@@ -120,6 +138,12 @@ namespace Aethera.Application.Characters.Commands.CreateCharacter
                     }
                 }
             });
+
+            // Assign character to current user if player
+            if (userRole == Role.Player)
+            {
+                character.AssignToUser(userId);
+            }
 
             await _repository.Add(character, ct);
 

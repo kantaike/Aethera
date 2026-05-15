@@ -11,7 +11,7 @@ using System.Text;
 namespace Aethera.Application.Characters.Queries.GetCharactersList
 {
     public record GetCharactersQuery();
-    public record CharacterPreview(Guid Id, string Name, Species species, CharacterClass? @class, HitPoints? HP, int Level, Art? Art, Guid? DynastyId);
+    public record CharacterPreview(Guid Id, string Name, Species species, CharacterClass? @class, HitPoints? HP, int Level, Art? Art, Guid? DynastyId, Guid? UserId);
 
     public class GetCharacterQueryHandler : IQueryHandler<GetCharactersQuery, IEnumerable<CharacterPreview>>
     {
@@ -34,7 +34,8 @@ namespace Aethera.Application.Characters.Queries.GetCharactersList
                 character.HP,
                 character.Level,
                 character.Art,
-                character.DynastyId
+                character.DynastyId,
+                character.UserId
             ));
         }
 
