@@ -1,4 +1,5 @@
-﻿using Aethera.Application.Common.Interfaces;
+﻿using Aethera.Application.Common.Authorization;
+using Aethera.Application.Common.Interfaces;
 using Aethera.Application.Items.Queries.GetItemDetails;
 using Aethera.Application.Settlements.Commands.AddTranslation;
 using Aethera.Application.Settlements.Commands.CreateSettlement;
@@ -7,6 +8,7 @@ using Aethera.Application.Settlements.Queries.GetSettlementDetails;
 using Aethera.Application.Settlements.Queries.GetSettlements;
 using Aethera.Domain.Entities.Items;
 using Aethera.Domain.Entities.Settlements;
+using Aethera.Domain.Entities.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +23,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> Create(
             [FromBody] CreateSettlementCommand command,
             [FromServices] ICommandHandler<CreateSettlementCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             if (command == null) return BadRequest();
             await handler.HandleAsync(command, ct);
             return Ok(new { message = $"Settlement {command.Title} created successfully" });
@@ -52,8 +56,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] JsonPatchDocument<SettlementPatchDto> patchDocument,
             [FromServices] ICommandHandler<PatchSettlementCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             var command = new PatchSettlementCommand { SettlementId = id, PatchDocument = patchDocument };
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Settlement updated successfully" });
@@ -63,8 +69,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> AddTranslation(
             [FromBody] AddSettlementTranslationCommand command,
             [FromServices] ICommandHandler<AddSettlementTranslationCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Translation added" });
         }

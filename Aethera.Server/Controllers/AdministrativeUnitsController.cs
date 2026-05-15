@@ -1,6 +1,8 @@
 ﻿using Aethera.Application.AdministrativeUnits.Commands.CreateAdministrativeUnit;
 using Aethera.Application.AdministrativeUnits.Queries.GetAdministrativeUnits;
+using Aethera.Application.Common.Authorization;
 using Aethera.Application.Common.Interfaces;
+using Aethera.Domain.Entities.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,8 +16,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> Create(
             [FromBody] CreateAdministrativeUnitCommand command,
             [FromServices] ICommandHandler<CreateAdministrativeUnitCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(command, ct);
             return Ok(new { message = $"{command.Type} created" });
         }

@@ -21,6 +21,18 @@
 
             ErrorResponse result = exception switch
             {
+                UnauthorizedAccessException => new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    Message = "Unauthorized",
+                    Errors = "Authentication is required for this operation."
+                },
+                System.Security.SecurityException secEx => new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status403Forbidden,
+                    Message = "Forbidden",
+                    Errors = secEx.Message
+                },
                 FluentValidation.ValidationException valEx => new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,

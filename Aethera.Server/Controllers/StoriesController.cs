@@ -1,8 +1,10 @@
-﻿using Aethera.Application.Common.Interfaces;
+﻿using Aethera.Application.Common.Authorization;
+using Aethera.Application.Common.Interfaces;
 using Aethera.Application.Items.Commands.CreateItemCommand;
 using Aethera.Application.Stories.Commands.CreateStory;
 using Aethera.Application.Stories.Queries.GetStoriesPreview;
 using Aethera.Application.Stories.Queries.GetStoryDetails;
+using Aethera.Domain.Entities.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,8 +18,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> Create(
             [FromBody] CreateStoryCommand command,
             [FromServices] ICommandHandler<CreateStoryCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(command, ct);
             return Ok();
         }

@@ -4,6 +4,7 @@ using Aethera.Domain.Repositories;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
+using System.Security;
 
 namespace Aethera.Application.Common.Authorization
 {
@@ -47,7 +48,7 @@ namespace Aethera.Application.Common.Authorization
         {
             var userRole = GetUserRole();
             if (userRole != requiredRole)
-                throw new UnauthorizedAccessException($"This operation requires {requiredRole} role. Your role: {userRole}.");
+                throw new SecurityException($"This operation requires {requiredRole} role. Your role: {userRole}.");
         }
     }
 }

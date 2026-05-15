@@ -16,10 +16,12 @@ using Aethera.Application.Characters.Commands.UpdateTraitsAndFeatures;
 using Aethera.Application.Characters.Queries.GetCharacterDetails;
 using Aethera.Application.Characters.Queries.GetCharacterModifiers;
 using Aethera.Application.Characters.Queries.GetCharactersList;
+using Aethera.Application.Common.Authorization;
 using Aethera.Application.Common.Interfaces;
 using Aethera.Application.DTOs;
 using Aethera.Domain.Common;
 using Aethera.Domain.Entities.Characters;
+using Aethera.Domain.Entities.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,8 +56,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> Create(
         [FromBody] CreateCharacterCommand command,
         [FromServices] ICommandHandler<CreateCharacterCommand> handler,
+        [FromServices] IAuthorizationService authorizationService,
         CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(command, ct);
 
             return Ok(new { message = "Character created" });
@@ -65,8 +69,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> EquipItem(
         [FromBody] EquipItemCommand command,
         [FromServices] ICommandHandler<EquipItemCommand> handler,
+        [FromServices] IAuthorizationService authorizationService,
         CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Item equiped successfully" });
         }
@@ -76,8 +82,10 @@ namespace Aethera.Server.Controllers
         Guid id,
         [FromBody] Guid dynastyId,
         [FromServices] ICommandHandler<SetDynastyCommand> handler,
+        [FromServices] IAuthorizationService authorizationService,
         CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(new SetDynastyCommand(id, dynastyId), ct);
             return Ok(new { message = "Dynasty updated" });
         }
@@ -87,8 +95,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] SetParentsCommand request,
             [FromServices] ICommandHandler<SetParentsCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(new SetParentsCommand(id, request.FatherId, request.MotherId), ct);
             return Ok(new { message = "Parents are set" });
         }
@@ -97,8 +107,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> AddTranslation(
         [FromBody] AddTranslationCommand command,
         [FromServices] ICommandHandler<AddTranslationCommand> handler,
+        [FromServices] IAuthorizationService authorizationService,
         CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Translation added" });
         }
@@ -107,8 +119,10 @@ namespace Aethera.Server.Controllers
         public async Task<IActionResult> AddModifier(
             [FromBody] AddCharacterModifierCommand command,
             [FromServices] ICommandHandler<AddCharacterModifierCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Modifier added" });
         }
@@ -128,8 +142,10 @@ namespace Aethera.Server.Controllers
             Guid id,
                         [FromBody] LevelUpCommand command,
                         [FromServices] ICommandHandler<LevelUpCommand> handler,
+                        [FromServices] IAuthorizationService authorizationService,
                         CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(command, ct);
             return Ok(new { message = "Character leveled up" });
         }
@@ -139,8 +155,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             Guid itemId,
             [FromServices] ICommandHandler<AddItemCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(new AddItemCommand(id, itemId), ct);
             return Ok(new { message = "Item added successfully" });
         }
@@ -150,8 +168,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] UpdateTraitsAndFeaturesCommand command,
             [FromServices] ICommandHandler<UpdateTraitsAndFeaturesCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(command with { CharacterId = id }, ct);
             return Ok(new { message = "Character traits and features updated" });
         }
@@ -161,8 +181,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] Skill skill,
             [FromServices] ICommandHandler<AddSkillProficiencyCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(new AddSkillProficiencyCommand(id, skill), ct);
             return Ok(new { message = "Skill proficiency added" });
         }
@@ -172,8 +194,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] Language language,
             [FromServices] ICommandHandler<AddLanguageProficiencyCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(new AddLanguageProficiencyCommand(id, language), ct);
             return Ok(new { message = "Language proficiency added" });
         }
@@ -183,8 +207,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] Background background,
             [FromServices] ICommandHandler<SetBackgroundCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(new SetBackgroundCommand(id, background), ct);
             return Ok(new { message = "Background updated" });
         }
@@ -194,8 +220,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] Guid hometownId,
             [FromServices] ICommandHandler<SetHometownCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(new SetHometownCommand(id, hometownId), ct);
             return Ok(new { message = "Hometown updated" });
         }
@@ -205,8 +233,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             [FromBody] Alignment alignment,
             [FromServices] ICommandHandler<SetAlignmentCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.GetCurrentUserId();
             await handler.HandleAsync(new SetAlignmentCommand(id, alignment), ct);
             return Ok(new { message = "Alignment updated" });
         }
@@ -216,8 +246,10 @@ namespace Aethera.Server.Controllers
             Guid id,
             Guid modifierId,
             [FromServices] ICommandHandler<RemoveCharacterModifierCommand> handler,
+            [FromServices] IAuthorizationService authorizationService,
             CancellationToken ct)
         {
+            authorizationService.RequireRole(Role.Master);
             await handler.HandleAsync(new RemoveCharacterModifierCommand(id, modifierId), ct);
             return Ok(new { message = "Modifier removed" });
         }

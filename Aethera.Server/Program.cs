@@ -1,4 +1,6 @@
 using Aethera.Application;
+using Aethera.Application.Common.Authorization;
+using Aethera.Domain.Entities.Users;
 using Aethera.Infrastructure;
 using Aethera.Infrastructure.Persistence;
 using Aethera.Server.Common;
@@ -6,6 +8,7 @@ using Aethera.Server.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Security;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +34,18 @@ builder.Services.AddControllers()
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("VercelPolicy", policy =>
+    {
+        policy.WithOrigins("https://aethera-alpha.vercel.app", "https://localhost:62905")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
 // Register Swagger/OpenAPI services
@@ -63,22 +78,39 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseDefaultFiles();
 app.MapStaticAssets();
 
-if (app.Environment.IsDevelopment())
+var swaggerEnabled = builder.Configuration.GetValue<bool?>("Swagger:Enabled") ?? app.Environment.IsDevelopment();
+var allowSwaggerInProduction = builder.Configuration.GetValue<bool>("Swagger:AllowInProduction");
+var canExposeSwagger = swaggerEnabled && (!app.Environment.IsProduction() || allowSwaggerInProduction);
+
+if (canExposeSwagger)
 {
-    app.UseSwagger();
+    app.UseWhen(
+        context =>
+            context.Request.Path.StartsWithSegments("/internal-docs") ||
+            context.Request.Path.StartsWithSegments("/secret-api-docs") ||
+            context.Request.Path.StartsWithSegments("/openapi"),
+        branch =>
+        {
+            branch.Use(async (context, next) =>
+            {
+                var authorizationService = context.RequestServices.GetRequiredService<IAuthorizationService>();
+                authorizationService.RequireRole(Role.Master);
+                await next(context);
+            });
+        });
+
+    app.UseSwagger(c => { c.RouteTemplate = "secret-api-docs/{documentname}/swagger.json"; });
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aethera API V1");
-        c.RoutePrefix = "";
+        c.SwaggerEndpoint("/secret-api-docs/v1/swagger.json", "Aethera API V1");
+        c.RoutePrefix = "internal-docs";
     });
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
-app.UseCors(builder => builder
-     .AllowAnyOrigin()
-     .AllowAnyMethod()
-     .AllowAnyHeader());
+app.UseCors("VercelPolicy");
+
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
