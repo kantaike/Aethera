@@ -232,6 +232,18 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
     (typeof proficiencyBonusFromBreakdown === 'number' ? proficiencyBonusFromBreakdown : undefined) ??
     proficiencyBonusFromLevel ??
     0;
+
+  if (import.meta.env.DEV) {
+    console.debug('[CharacterSheet] Proficiency bonus sources', {
+      characterId: character.id,
+      level: character.level,
+      fromDetail: proficiencyBonusFromDetail,
+      fromBreakdown: proficiencyBonusFromBreakdown,
+      fromLevel: proficiencyBonusFromLevel,
+      resolved: proficiencyBonus,
+    });
+  }
+
   const proficientSkills = new Set((character.skillProficiencies ?? []).map((skill) => String(skill)));
 
   const skillRows = SKILL_ORDER.map((skill) => {

@@ -100,40 +100,57 @@ namespace Aethera.Domain.Services
 
             foreach (var _ in crossed)
             {
-                // Choose highest attribute by Score. Tie-breaker: Str, Dex, Con, Int, Wis, Cha (stable order).
-                var attributes = new (string name, int score)[]
+                // Choose highest attribute by effective score (base + modifiers).
+                // Tie-breaker: Str, Dex, Con, Int, Wis, Cha (stable order).
+                var attributes = new (string name, AttributeScore score, StatType statType)[]
                 {
-                    ("strength", character.Strength?.Score ?? 10),
-                    ("dexterity", character.Dexterity?.Score ?? 10),
-                    ("constitution", character.Constitution?.Score ?? 10),
-                    ("intelligence", character.Intelligence?.Score ?? 10),
-                    ("wisdom", character.Wisdom?.Score ?? 10),
-                    ("charisma", character.Charisma?.Score ?? 10)
+                    ("strength", character.Strength, StatType.Strength),
+                    ("dexterity", character.Dexterity, StatType.Dexterity),
+                    ("constitution", character.Constitution, StatType.Constitution),
+                    ("intelligence", character.Intelligence, StatType.Intelligence),
+                    ("wisdom", character.Wisdom, StatType.Wisdom),
+                    ("charisma", character.Charisma, StatType.Charisma)
                 };
-                (string name,int score) targetAttribute;
+
+                (string name, AttributeScore score, StatType statType) targetAttribute;
                 int i = 0;
                 do
                 {
-                    targetAttribute = attributes.OrderByDescending(a => a.score)
-                                        .ThenBy(a => GetAttributePriority(a.name))
-                                        .Skip(i).First();
+                    targetAttribute = attributes
+                        .OrderByDescending(a => character.GetEffectiveAttributeScore(a.score, a.statType))
+                        .ThenBy(a => GetAttributePriority(a.name))
+                        .Skip(i).First();
                     i++;
-                } while (targetAttribute.score > 19);
 
-                var statType = targetAttribute.name.ToLower() switch
+                    // In D&D 5e, attribute scores are capped at 20 (or higher with magical items, but ASI should stop at 20)
+                } while (character.GetEffectiveAttributeScore(targetAttribute.score, targetAttribute.statType) >= 20);
+
+                var modifierBonus = character.Modifiers
+                    .Where(m => m.StatType == targetAttribute.statType && m.Type == ModifierType.Flat)
+                    .Sum(m => (int)m.Value);
+                var totalScore = (targetAttribute.score?.Score ?? 10) + modifierBonus;
+
+                if (totalScore >= 20)
                 {
-                    "strength" => StatType.Strength,
-                    "dexterity" => StatType.Dexterity,
-                    "constitution" => StatType.Constitution,
-                    "intelligence" => StatType.Intelligence,
-                    "wisdom" => StatType.Wisdom,
-                    "charisma" => StatType.Charisma,
-                    _ => throw new InvalidOperationException("Invalid attribute name")
-                };
+                    // If highest already at cap, find next highest that isn't
+                    var alternative = attributes
+                        .OrderByDescending(a => character.GetEffectiveAttributeScore(a.score, a.statType))
+                        .FirstOrDefault(a => character.GetEffectiveAttributeScore(a.score, a.statType) < 20);
+
+                    if (alternative.score is not null)
+                    {
+                        targetAttribute = alternative;
+                    }
+                    else
+                    {
+                        // All attributes are at 20, skip this ASI
+                        continue;
+                    }
+                }
 
                 Modifier attributeAddition = new Modifier(
                     ModifierSourceType.Character,
-                    statType,
+                    targetAttribute.statType,
                     ModifierType.Flat,
                     ModifierCategory.Base,
                     2,

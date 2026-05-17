@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Aethera.Domain.Common;
 using Aethera.Domain.Entities.Basic;
@@ -16,12 +17,9 @@ namespace Aethera.Domain.Entities.Characters
         }
         public Character(string? name, Species species, 
             CharacterClass? characterClass,
-            int StrenghthScore = 10, int DexterityScore = 10, int ConstitutionScore = 10,
-            int IntelligenceScore = 10, int WisdomScore = 10, int CharismaScore = 10,
-            CharacterClass? characterSubClass = null
-
-
-            )
+            int strengthScore = 10, int dexterityScore = 10, int constitutionScore = 10,
+            int intelligenceScore = 10, int wisdomScore = 10, int charismaScore = 10,
+            CharacterClass? characterSubClass = null)
         {
             // Basic identity
             Name = name;
@@ -30,27 +28,17 @@ namespace Aethera.Domain.Entities.Characters
             SubClass = characterSubClass;
 
             // Core attributes
-            Strength = new AttributeScore(StrenghthScore);
-            Dexterity = new AttributeScore(DexterityScore);
-            Constitution = new AttributeScore(ConstitutionScore);
-            Intelligence = new AttributeScore(IntelligenceScore);
-            Wisdom = new AttributeScore(WisdomScore);
-            Charisma = new AttributeScore(CharismaScore);
+            Strength = new AttributeScore(strengthScore);
+            Dexterity = new AttributeScore(dexterityScore);
+            Constitution = new AttributeScore(constitutionScore);
+            Intelligence = new AttributeScore(intelligenceScore);
+            Wisdom = new AttributeScore(wisdomScore);
+            Charisma = new AttributeScore(charismaScore);
 
             // Default speed by species (conservative defaults)
-            Speed = species switch
-            {
-                Species.Halfling or Species.Gnome or Species.Dwarf => 25,
-                Species.Human or Species.Elf or Species.Tiefling or Species.Dragonborn => 30,
-                Species.Orc => 35,
-                _ => 30
-            };
 
-            // Hit dice is unknown at construction; leave null but give a sensible first-level HP
-            HitDice = null;
-            var perLevelHp = (HitDice is not null) ? ((HitDice.Sides / 2) + 1) : 5;
-            HP = new HitPoints(Level * perLevelHp, Level * perLevelHp, 0);
-
+            // Hit dice is unknown at construction; give a sensible first-level HP (fallback 5 per level)
+            HP = new HitPoints(Level * 5, Level * 5, 0);
         }
         // --- Identity & Basics ---
         public string? Name { get; private set; } 
@@ -89,14 +77,36 @@ namespace Aethera.Domain.Entities.Characters
         }
         public int? ArmorClass { get
             {
-                var equipedArmor = _armors.FirstOrDefault(armor => armor.Id == EquipedArmorId);
-                return 10 + equipedArmor?.ArmorModifier 
-                    + equipedArmor?.Type == ArmorType.Light || equipedArmor?.Type == ArmorType.Medium
-                    ? (Dexterity?.Modifier ?? 0)
-                    : 0;
+                var equippedArmor = _armors.FirstOrDefault(armor => armor.Id == EquipedArmorId);
+                if (equippedArmor is null)
+                {
+                    // Unarmored: 10 + DEX modifier
+                    return 10 + (Dexterity?.Modifier ?? 0);
+                }
+
+                var armorModifier = equippedArmor.ArmorModifier;
+                var dexBonus = equippedArmor.Type switch
+                {
+                    ArmorType.Light => Dexterity?.Modifier ?? 0,
+                    ArmorType.Medium => Math.Min(Dexterity?.Modifier ?? 0, 2),
+                    _ => 0 // Heavy armor: no DEX bonus
+                };
+                return 10 + armorModifier + dexBonus;
             }
         }
-        public int? Speed { get; private set; }
+        private int? _speed;
+        public int? Speed
+        {
+            get => _speed ?? Species switch
+            {
+                Species.Halfling or Species.Gnome or Species.Dwarf => 25,
+                Species.Human or Species.Elf or Species.Tiefling or Species.Dragonborn => 30,
+                Species.Orc => 35,
+                _ => 30
+            };
+            private set => _speed = value;
+        }
+
         public int? PassivePerception
         {
             get
@@ -121,9 +131,9 @@ namespace Aethera.Domain.Entities.Characters
         public AttributeScore Charisma { get; private set; } = new AttributeScore(10);
 
         // --- Proficiencies and Saves ---
-        public List<string> SavingThrowProficiencies { get; private set; } = [];
-        public List<Skill> SkillProficiencies { get; private set; } = [];
-        public List<Language> LanguageProficiencies { get; private set; } = [];
+        public List<string> SavingThrowProficiencies { get; private set; } = new List<string>();
+        public List<Skill> SkillProficiencies { get; private set; } = new List<Skill>();
+        public List<Language> LanguageProficiencies { get; private set; } = new List<Language>();
 
         // --- Traits & Features ---
         public string? Feats { get; private set; }
@@ -137,16 +147,16 @@ namespace Aethera.Domain.Entities.Characters
         public Guid? EquipedArmorId { get; private set; }
 
         // --- Modifiers ---
-        public List<Modifier> Modifiers { get; private set; } = [];
+        public List<Modifier> Modifiers { get; private set; } = new List<Modifier>();
 
         // --- Collections ---
 
-        private readonly List<Armor> _armors = [];
-        private readonly List<Equipment> _equipments = [];
-        private readonly List<Item> _items = [];
-        private readonly List<Spell> _spells = [];
+        private readonly List<Armor> _armors = new List<Armor>();
+        private readonly List<Equipment> _equipments = new List<Equipment>();
+        private readonly List<Item> _items = new List<Item>();
+        private readonly List<Spell> _spells = new List<Spell>();
 
-        private readonly List<Weapon> _weapons = [];
+        private readonly List<Weapon> _weapons = new List<Weapon>();
         public IReadOnlyCollection<Weapon> Weapons => _weapons.AsReadOnly();
         public IReadOnlyCollection<Spell> Spells => _spells.AsReadOnly();
         public IReadOnlyCollection<Armor> Armors => _armors.AsReadOnly();
@@ -159,6 +169,12 @@ namespace Aethera.Domain.Entities.Characters
         {
             UserId = userId;
         }
+
+        public void SetStatus(CharacterStatus status)
+        {
+            Status = status;
+        }
+
         public void LevelUp(int levelCount = 1)
         {
             Level += levelCount;
@@ -184,7 +200,7 @@ namespace Aethera.Domain.Entities.Characters
             var firstLevelHp = Math.Max(1, (HitDice?.Sides ?? perLevelHp) + conMod);
 
             var modifierBonus = Modifiers.Where(m => m.StatType == StatType.HitPoints).Sum(m => m.Value);
-            var totalMax = firstLevelHp + (level - 1) * perLevelGain;
+            var totalMax = firstLevelHp + (level - 1) * perLevelGain + (int)modifierBonus;
 
 
             // Ensure at least 1 max HP
@@ -306,7 +322,7 @@ namespace Aethera.Domain.Entities.Characters
 
         public void UpdateSpeed(int speed)
         {
-            Speed = speed;
+            _speed = speed;
         }
 
         public void UpdateHitDice(Dice hitDice)
@@ -314,15 +330,42 @@ namespace Aethera.Domain.Entities.Characters
             HitDice = hitDice;
         }
 
+        /// <summary>
+        /// Gets the effective (modified) score of an attribute by reference.
+        /// </summary>
+        public int GetEffectiveAttributeScore(AttributeScore baseAttribute, StatType statType)
+        {
+            if (baseAttribute is null) return 10;
+
+            var baseScore = baseAttribute.Score;
+            var attributeBonus = Modifiers
+                .Where(m => m.StatType == statType && m.Type == ModifierType.Flat)
+                .Sum(m => (int)m.Value);
+
+            return Math.Max(3, baseScore + attributeBonus); // Min score is 3 in D&D
+        }
+
         public void RecordDeathSave(bool isSuccess)
         {
             if (isSuccess)
             {
-                DeathSaveSuccesses = (DeathSaveSuccesses ?? 0) + 1;
+                var successes = (DeathSaveSuccesses ?? 0) + 1;
+                DeathSaveSuccesses = Math.Min(successes, 3);
+                if (DeathSaveSuccesses >= 3)
+                {
+                    // Stabilized — reset death saves
+                    ResetDeathSaves();
+                    Status = CharacterStatus.Alive;
+                }
             }
             else
             {
-                DeathSaveFailures = (DeathSaveFailures ?? 0) + 1;
+                var failures = (DeathSaveFailures ?? 0) + 1;
+                DeathSaveFailures = Math.Min(failures, 3);
+                if (DeathSaveFailures >= 3)
+                {
+                    Status = CharacterStatus.Dead;
+                }
             }
         }
 
@@ -365,7 +408,7 @@ namespace Aethera.Domain.Entities.Characters
             };
 
             var prospectiveLevel = Level;
-            while (prospectiveLevel < 20 && xp >= xpThresholds[prospectiveLevel + 1])
+            while (prospectiveLevel < xpThresholds.Length - 1 && xp >= xpThresholds[prospectiveLevel + 1])
             {
                 prospectiveLevel++;
             }
@@ -419,17 +462,18 @@ namespace Aethera.Domain.Entities.Characters
                 throw new ArgumentNullException(nameof(modifier));
             
             modifier.SourceType = ModifierSourceType.Character;
-            Modifiers = [.. Modifiers, modifier];
+            // Add to existing modifiers list
+            Modifiers.Add(modifier);
         }
 
         public void RemoveModifier(Guid modifierId)
         {
-            Modifiers = [.. Modifiers.Where(m => m.Id != modifierId)];
+            Modifiers.RemoveAll(m => m.Id == modifierId);
         }
 
         public void ClearModifiers()
         {
-            Modifiers = [];
+            Modifiers.Clear();
         }
 
         // --- Translatable fields (set via repository after loading translation) ---
