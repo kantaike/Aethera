@@ -89,14 +89,6 @@ export function SettlementsPage() {
     value: AdministrativeUnitFormState[Key]
   ) => {
     setAdministrativeUnitForm((current) => {
-      if (key === 'type') {
-        return {
-          ...current,
-          [key]: value,
-          parentId: '',
-        };
-      }
-
       return {
         ...current,
         [key]: value,
@@ -105,35 +97,64 @@ export function SettlementsPage() {
   };
 
   const organizedSettlements = useMemo(() => {
-    if (!settlements || !units) return new Map();
+    if (!settlements || !units) return { topLevelCountries: [], vassalsByParent: new Map() };
 
-    const map = new Map<string, Map<string, Settlement[]>>();
-
-    // Fast lookup map for administrative units
     const unitsMap = new Map<string, AdministrativeUnit>(units.map((u: AdministrativeUnit) => [u.id, u]));
 
-    settlements.forEach((s: Settlement) => {
-      const province = unitsMap.get(s.provinceId ?? '');
-      const region = province ? unitsMap.get(province.parentId!) : null;
-      const country = region ? unitsMap.get(region.parentId!) : null;
+    // Organize countries into top-level and vassals
+    const topLevelCountries: AdministrativeUnit[] = [];
+    const vassalsByParent = new Map<string, AdministrativeUnit[]>();
 
-      const countryName = country?.title || t.independentTerritories;
-      const regionName = region?.title || t.localAreas;
-
-      if (!map.has(countryName)) {
-        map.set(countryName, new Map());
+    units.forEach((unit: AdministrativeUnit) => {
+      if (unit.type === 'Country') {
+        if (!unit.parentId) {
+          topLevelCountries.push(unit);
+        } else {
+          if (!vassalsByParent.has(unit.parentId)) {
+            vassalsByParent.set(unit.parentId, []);
+          }
+          vassalsByParent.get(unit.parentId)!.push(unit);
+        }
       }
-      
-      const countryMap = map.get(countryName)!;
-      if (!countryMap.has(regionName)) {
-        countryMap.set(regionName, []);
-      }
-
-      countryMap.get(regionName)!.push(s);
     });
 
-    return map;
-  }, [settlements, t.independentTerritories, t.localAreas, units]);
+    // Sort for consistency
+    topLevelCountries.sort((a, b) => (a.title ?? '').localeCompare(b.title ?? ''));
+    vassalsByParent.forEach((vassals) => {
+      vassals.sort((a, b) => (a.title ?? '').localeCompare(b.title ?? ''));
+    });
+
+    // Function to organize settlements for a specific country
+    const getSettlementsForCountry = (countryId: string | null | undefined): Map<string, Settlement[]> => {
+      const map = new Map<string, Settlement[]>();
+
+      settlements.forEach((s: Settlement) => {
+        const province = unitsMap.get(s.provinceId ?? '');
+        const region = province ? unitsMap.get(province.parentId!) : null;
+        const country = region ? unitsMap.get(region.parentId!) : null;
+
+        // Check if this settlement belongs to the specified country
+        const belongsToCountry = country?.id === countryId || (!region && province?.id === countryId);
+
+        if (belongsToCountry) {
+          const regionName = region?.title || t.localAreas;
+
+          if (!map.has(regionName)) {
+            map.set(regionName, []);
+          }
+          map.get(regionName)!.push(s);
+        }
+      });
+
+      return map;
+    };
+
+    return {
+      topLevelCountries,
+      vassalsByParent,
+      getSettlementsForCountry,
+    };
+  }, [settlements, t.localAreas, units]);
 
   const provinceOptions = useMemo(() => {
     return (units ?? [])
@@ -157,7 +178,9 @@ export function SettlementsPage() {
         ? 'Country'
         : administrativeUnitForm.type === 'Province'
           ? 'Region'
-          : null;
+          : administrativeUnitForm.type === 'Country'
+            ? 'Country'
+            : null;
 
     if (!expectedParentType) {
       return [];
@@ -240,29 +263,106 @@ export function SettlementsPage() {
         ) : null}
       </div>
       
-      {Array.from(organizedSettlements).map(([country, regions]) => (
-        <section key={country} className={styles.countrySection}>
-          <div className={styles.countryHeader}>
-            <h2 className={styles.countryName}>{country}</h2>
-            <div className={styles.goldLine} />
-          </div>
+      {organizedSettlements.topLevelCountries.length === 0 ? (
+        <p className={styles.empty}>{t.empty}</p>
+      ) : (
+        organizedSettlements.topLevelCountries.map((country) => {
+          const countrySettlements = organizedSettlements.getSettlementsForCountry?.(country.id) || new Map();
+          const vassals = organizedSettlements.vassalsByParent.get(country.id!) || [];
 
-          {Array.from(regions as Map<string, Settlement[]>).map(([region, settlementsList]: [string, Settlement[]]) => (
-            <div key={region} className={styles.regionBlock}>
-              <h3 className={styles.regionName}>
-                <span className={styles.diamond}>◈</span> {region}
-              </h3>
-              <div className={styles.settlementsGrid}>
-                {settlementsList.map((s: Settlement) => (
-                  <SettlementCard key={s.id} {...s} />
-                ))}
+          return (
+            <section key={country.id} className={styles.countrySection}>
+              <div className={styles.countryHeader}>
+                <h2 className={styles.countryName}>{country.title}</h2>
+                <div className={styles.goldLine} />
               </div>
-            </div>
-          ))}
-        </section>
-      ))}
 
-      {organizedSettlements.size === 0 ? <p className={styles.empty}>{t.empty}</p> : null}
+              {/* Regions and settlements for main country */}
+              {Array.from(countrySettlements).map(([region, settlementsList]: [string, Settlement[]]) => (
+                <div key={region} className={styles.regionBlock}>
+                  <h3 className={styles.regionName}>
+                    <span className={styles.diamond}>◈</span> {region}
+                  </h3>
+                  <div className={styles.settlementsGrid}>
+                    {settlementsList.map((s: Settlement) => (
+                      <SettlementCard key={s.id} {...s} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Vassal states section */}
+              {vassals.length > 0 && (
+                <div className={styles.vassalStatesSection}>
+                  <h3 className={styles.vassalStatesTitle}>
+                    <span className={styles.vasselIcon}>◆</span> Vassal States
+                  </h3>
+                  <div className={styles.vassalsList}>
+                    {vassals.map((vassal: AdministrativeUnit) => {
+                      const vasselSettlements = organizedSettlements.getSettlementsForCountry?.(vassal.id) || new Map();
+                      const subVassals = organizedSettlements.vassalsByParent.get(vassal.id!) || [];
+
+                      return (
+                        <div key={vassal.id} className={styles.vasselCountry}>
+                          <div className={styles.vasselCountryHeader}>
+                            <h4 className={styles.vasselCountryName}>{vassal.title}</h4>
+                            <span className={styles.vasselBadge}>Vassal</span>
+                          </div>
+
+                          {/* Regions for vassal */}
+                          {Array.from(vasselSettlements).map(([region, settlementsList]: [string, Settlement[]]) => (
+                            <div key={region} className={styles.vasselRegionBlock}>
+                              <h5 className={styles.vasselRegionName}>
+                                <span className={styles.diamond}>◈</span> {region}
+                              </h5>
+                              <div className={styles.settlementsGrid}>
+                                {settlementsList.map((s: Settlement) => (
+                                  <SettlementCard key={s.id} {...s} />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+
+                          {/* Sub-vassals */}
+                          {subVassals.length > 0 && (
+                            <div className={styles.subVasselsList}>
+                              {subVassals.map((subVassal: AdministrativeUnit) => {
+                                const subVasselSettlements = organizedSettlements.getSettlementsForCountry?.(subVassal.id) || new Map();
+
+                                return (
+                                  <div key={subVassal.id} className={styles.subVasselCountry}>
+                                    <div className={styles.subVasselHeader}>
+                                      <h5 className={styles.subVasselName}>{subVassal.title}</h5>
+                                      <span className={styles.subVasselBadge}>Vassal</span>
+                                    </div>
+
+                                    {Array.from(subVasselSettlements).map(([region, settlementsList]: [string, Settlement[]]) => (
+                                      <div key={region} className={styles.subVasselRegionBlock}>
+                                        <h6 className={styles.subVasselRegionName}>
+                                          <span className={styles.diamond}>◈</span> {region}
+                                        </h6>
+                                        <div className={styles.settlementsGrid}>
+                                          {settlementsList.map((s: Settlement) => (
+                                            <SettlementCard key={s.id} {...s} />
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </section>
+          );
+        })
+      )}
 
       <Modal open={isCreateOpen} onClose={closeCreateModal} title={t.modal.title} subtitle={t.modal.subtitle}>
         <form className={formStyles.form} onSubmit={handleCreateSettlement}>

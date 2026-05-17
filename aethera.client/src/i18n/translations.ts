@@ -595,6 +595,7 @@ export const translations = {
         createUnitButton: 'Додати адмін. юніт',
         independentTerritories: 'Незалежні території',
         localAreas: 'Місцеві землі',
+        vassalStates: 'Васальні держави',
         empty: 'Поки що поселень не знайдено.',
         modal: {
           title: 'Нове поселення',
@@ -625,7 +626,7 @@ export const translations = {
           description: 'Опис',
           noParent: 'Без батьківського юніта',
           noRuler: 'Без правителя',
-          parentHint: 'Для Region обирайте Country, для Province обирайте Region.',
+          parentHint: 'Для Region обирайте Country, для Province обирайте Region. Country може мати батьківськую Country (васал).',
           cancel: 'Скасувати',
           submit: 'Створити юніт',
           submitting: 'Створення...',
@@ -651,6 +652,7 @@ export const translations = {
         createUnitButton: 'Add admin unit',
         independentTerritories: 'Independent Territories',
         localAreas: 'Local Areas',
+        vassalStates: 'Vassal States',
         empty: 'No settlements found yet.',
         modal: {
           title: 'New settlement',
@@ -681,7 +683,7 @@ export const translations = {
           description: 'Description',
           noParent: 'No parent unit',
           noRuler: 'No ruler',
-          parentHint: 'For Region choose Country, for Province choose Region.',
+          parentHint: 'For Region choose Country, for Province choose Region. A Country can have a parent Country (vassal state).',
           cancel: 'Cancel',
           submit: 'Create unit',
           submitting: 'Creating...',
