@@ -22,7 +22,12 @@ namespace Aethera.Infrastructure.Persistence
         public DbSet<Dynasty> Dynasties { get; set; }
         public DbSet<DynastyTranslationEntity> DynastyTranslationEntities { get; set; }
         public DbSet<Spell> Spells { get; set; }
-        public DbSet<Religion> Religions { get; set; }
+        public DbSet<Denomination> Denominations { get; set; }
+        public DbSet<Faction> Factions { get; set; }
+        public DbSet<DenominationTranslationEntity> DenominationTranslationEntities { get; set; }
+        public DbSet<FactionTranslationEntity> FactionTranslationEntities { get; set; }
+        public DbSet<DenominationRelation> DenominationRelations { get; set; }
+        public DbSet<FactionRelation> FactionRelations { get; set; }
 
         // -- Items --
         public DbSet<Item> Items { get; set; }
@@ -61,14 +66,10 @@ namespace Aethera.Infrastructure.Persistence
                 entity.Property(e => e.Id)
                     .HasDefaultValueSql("gen_random_uuid()");
 
-                entity.Property(e => e.Name)
-                    .UsePropertyAccessMode(PropertyAccessMode.Field);
-                entity.Property(e => e.Feats)
-                    .UsePropertyAccessMode(PropertyAccessMode.Field);
-                entity.Property(e => e.Backstory)
-                    .UsePropertyAccessMode(PropertyAccessMode.Field);
-                entity.Property(e => e.Personality)
-                    .UsePropertyAccessMode(PropertyAccessMode.Field);
+                entity.Ignore(e => e.Name);
+                entity.Ignore(e => e.Feats);
+                entity.Ignore(e => e.Backstory);
+                entity.Ignore(e => e.Personality);
 
                 entity.OwnsOne(e => e.HP, hp =>
                 {
@@ -108,6 +109,10 @@ namespace Aethera.Infrastructure.Persistence
                 entity.HasOne<Dynasty>()
                       .WithMany()
                       .HasForeignKey(e => e.DynastyId)
+                      .OnDelete(DeleteBehavior.SetNull);
+                entity.HasOne<Denomination>()
+                      .WithMany()
+                      .HasForeignKey(e => e.DenominationId)
                       .OnDelete(DeleteBehavior.SetNull);
                 entity.HasOne<Settlement>()
                       .WithMany()
@@ -206,6 +211,9 @@ namespace Aethera.Infrastructure.Persistence
             modelBuilder.Entity<Dynasty>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Ignore(e => e.Name);
+                entity.Ignore(e => e.Description);
+                entity.Ignore(e => e.Motto);
                 entity.OwnsOne(c => c.Art, art =>
                 {
                     art.Property(a => a.FilePath)
@@ -213,6 +221,10 @@ namespace Aethera.Infrastructure.Persistence
                        .HasMaxLength(500)
                        .IsRequired(false);
                 });
+                entity.HasMany<DynastyTranslationEntity>()
+                      .WithOne()
+                      .HasForeignKey(e => e.DynastyId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<DynastyTranslationEntity>(entity =>
@@ -247,10 +259,122 @@ namespace Aethera.Infrastructure.Persistence
                 });
             });
 
+            modelBuilder.Entity<Denomination>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Ignore(e => e.Name);
+                entity.Ignore(e => e.Description);
+                entity.Ignore(e => e.Tenets);
+                entity.Ignore(e => e.Appearance);
+                entity.Property(e => e.Religion).HasConversion<int>();
+
+                entity.HasOne<Character>()
+                      .WithMany()
+                      .HasForeignKey(e => e.LeaderId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasMany<DenominationTranslationEntity>()
+                      .WithOne()
+                      .HasForeignKey(e => e.DenominationId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<DenominationTranslationEntity>(entity =>
+            {
+                entity.ToTable("DenominationTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.DenominationId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<Faction>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Ignore(e => e.Name);
+                entity.Ignore(e => e.Description);
+
+                entity.HasOne<Denomination>()
+                      .WithMany()
+                      .HasForeignKey(e => e.DenominationId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasOne<Character>()
+                      .WithMany()
+                      .HasForeignKey(e => e.LeaderId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasMany<FactionTranslationEntity>()
+                      .WithOne()
+                      .HasForeignKey(e => e.FactionId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<FactionTranslationEntity>(entity =>
+            {
+                entity.ToTable("FactionTranslations");
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.FactionId, e.Culture })
+                      .IsUnique();
+
+                entity.Property(e => e.Culture)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<DenominationRelation>(entity =>
+            {
+                entity.ToTable("DenominationRelations");
+                entity.HasKey(e => new { e.SourceId, e.TargetId });
+
+                entity.HasOne(e => e.Source)
+                      .WithMany()
+                      .HasForeignKey(e => e.SourceId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Target)
+                      .WithMany()
+                      .HasForeignKey(e => e.TargetId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.Value).IsRequired();
+                entity.Property(e => e.Context);
+            });
+
+            modelBuilder.Entity<FactionRelation>(entity =>
+            {
+                entity.ToTable("FactionRelations");
+                entity.HasKey(e => new { e.SourceId, e.TargetId });
+
+                entity.HasOne(e => e.Source)
+                      .WithMany()
+                      .HasForeignKey(e => e.SourceId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Target)
+                      .WithMany()
+                      .HasForeignKey(e => e.TargetId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.Value).IsRequired();
+                entity.Property(e => e.Context);
+            });
+
             // -- Items --
             modelBuilder.Entity<Item>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Ignore(e => e.Name);
+                entity.Ignore(e => e.Description);
                 entity.HasDiscriminator<string>("ItemType")
                     .HasValue<Item>("Item")
                     .HasValue<Weapon>("Weapon")
@@ -269,6 +393,10 @@ namespace Aethera.Infrastructure.Persistence
                        .HasMaxLength(500)
                        .IsRequired(false);
                 });
+                entity.HasMany<ItemTranslationEntity>()
+                      .WithOne()
+                      .HasForeignKey(e => e.ItemId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<Weapon>(entity =>
             {
@@ -299,6 +427,8 @@ namespace Aethera.Infrastructure.Persistence
             modelBuilder.Entity<Settlement>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Ignore(e => e.Title);
+                entity.Ignore(e => e.Description);
                 entity.HasDiscriminator<string>("SettlementType")
                       .HasValue<City>("City")
                       .HasValue<Castle>("Castle")
@@ -318,6 +448,10 @@ namespace Aethera.Infrastructure.Persistence
                        .HasMaxLength(500)
                        .IsRequired(false);
                 });
+                entity.HasMany<SettlementTranslationEntity>()
+                      .WithOne()
+                      .HasForeignKey(e => e.SettlementId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<SettlementTranslationEntity>(entity =>

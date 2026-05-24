@@ -8,6 +8,10 @@ namespace Aethera.Domain.Entities.Characters
 {
     public class Dynasty : Entity, IHasArt
     {
+        private Dynasty()
+        {
+        }
+
         public string? Name { get; private set; }
         public string? Description { get; private set; }
         public string? Motto { get; private set; }

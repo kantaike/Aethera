@@ -35,37 +35,38 @@ namespace Aethera.Infrastructure.Repositories
 
         public override async Task<Character> Get(Guid id, CancellationToken ct)
         {
-            var culture = _cultureProvider.Culture;
-
             var character = await _context.Set<Character>().FindAsync([id], ct)
                 ?? throw new KeyNotFoundException($"Character with id {id} not found.");
 
-            var translation = await _context.Set<CharacterTranslationEntity>()
-                .FirstOrDefaultAsync(t => t.CharacterId == id && t.Culture == culture, ct);
+            var translations = await _context.Set<CharacterTranslationEntity>()
+                .Where(t => t.CharacterId == id)
+                .ToListAsync(ct);
 
-            if (translation != null)
-                character.ApplyTranslation(translation.Name, translation.Feats, translation.Backstory, translation.Personality);
+            ApplyTranslation(character, SelectPreferredTranslation(translations));
 
             return character;
         }
 
         public override async Task<IEnumerable<Character>> Get(CancellationToken ct)
         {
-            var culture = _cultureProvider.Culture;
-
             var characters = await _context.Set<Character>().AsNoTracking().ToListAsync(ct);
             var characterIds = characters.Select(c => c.Id).ToList();
 
+            if (!characterIds.Any())
+                return characters;
+
             var translations = await _context.Set<CharacterTranslationEntity>()
-                .Where(t => characterIds.Contains(t.CharacterId) && t.Culture == culture)
+                .Where(t => characterIds.Contains(t.CharacterId))
                 .ToListAsync(ct);
 
-            var translationMap = translations.ToDictionary(t => t.CharacterId);
+            var translationMap = translations
+                .GroupBy(t => t.CharacterId)
+                .ToDictionary(g => g.Key, g => SelectPreferredTranslation(g));
 
             foreach (var character in characters)
             {
                 if (translationMap.TryGetValue(character.Id, out var translation))
-                    character.ApplyTranslation(translation.Name, translation.Feats, translation.Backstory, translation.Personality);
+                    ApplyTranslation(character, translation);
             }
 
             return characters;
@@ -100,10 +101,8 @@ namespace Aethera.Infrastructure.Repositories
 
         public async Task UpsertTraitsAndFeaturesTranslation(Guid id, string? feats, string? backstory, string? personality, CancellationToken ct)
         {
+            var character = await Get(id, ct);
             var culture = _cultureProvider.Culture;
-
-            var entity = await _context.Set<Character>().FindAsync([id], ct)
-                ?? throw new KeyNotFoundException($"Character with id {id} not found.");
 
             var translation = await _context.Set<CharacterTranslationEntity>()
                 .FirstOrDefaultAsync(t => t.CharacterId == id && t.Culture == culture, ct);
@@ -112,9 +111,9 @@ namespace Aethera.Infrastructure.Repositories
             {
                 translation = new CharacterTranslationEntity
                 {
-                    CharacterId = entity.Id,
+                    CharacterId = character.Id,
                     Culture = culture,
-                    Name = entity.Name,
+                    Name = character.Name,
                     Feats = feats,
                     Backstory = backstory,
                     Personality = personality
@@ -147,6 +146,8 @@ namespace Aethera.Infrastructure.Repositories
                 ) AS Family", characterId)
                 .AsNoTracking()
                 .ToListAsync(ct);
+
+            ApplyTranslations(rawData);
 
             var target = rawData.FirstOrDefault(c => c.Id == characterId);
             if (target == null) return new List<RelativeDto>();
@@ -184,57 +185,64 @@ namespace Aethera.Infrastructure.Repositories
 
         public async Task<IEnumerable<Character>> GetCharactersByDynasty(Guid dynastyId)
         {
-            var culture = _cultureProvider.Culture;
-
             var characters = await _context.Set<Character>()
                 .Where(c => c.DynastyId == dynastyId)
                 .AsNoTracking()
                 .ToListAsync();
 
-            var characterIds = characters.Select(c => c.Id).ToList();
-
-            var translations = await _context.Set<CharacterTranslationEntity>()
-                .Where(t => characterIds.Contains(t.CharacterId) && t.Culture == culture)
-                .ToListAsync();
-
-            var translationMap = translations.ToDictionary(t => t.CharacterId);
-
-            foreach (var character in characters)
-            {
-                if (translationMap.TryGetValue(character.Id, out var translation))
-                    character.ApplyTranslation(translation.Name, translation.Feats, translation.Backstory, translation.Personality);
-            }
+            ApplyTranslations(characters);
 
             return characters;
         }
 
         public async Task<IEnumerable<Character>> GetCharactersByUserId(Guid userId, CancellationToken ct)
         {
-            var culture = _cultureProvider.Culture;
-
             var characters = await _context.Set<Character>()
                 .Where(c => c.UserId == userId)
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var characterIds = characters.Select(c => c.Id).ToList();
-
-            if (!characterIds.Any())
-                return characters;
-
-            var translations = await _context.Set<CharacterTranslationEntity>()
-                .Where(t => characterIds.Contains(t.CharacterId) && t.Culture == culture)
-                .ToListAsync(ct);
-
-            var translationMap = translations.ToDictionary(t => t.CharacterId);
-
-            foreach (var character in characters)
-            {
-                if (translationMap.TryGetValue(character.Id, out var translation))
-                    character.ApplyTranslation(translation.Name, translation.Feats, translation.Backstory, translation.Personality);
-            }
+            ApplyTranslations(characters);
 
             return characters;
+        }
+
+        private void ApplyTranslations(IEnumerable<Character> characters)
+        {
+            var characterList = characters.ToList();
+            var characterIds = characterList.Select(c => c.Id).ToList();
+
+            if (!characterIds.Any())
+                return;
+
+            var translations = _context.Set<CharacterTranslationEntity>()
+                .Where(t => characterIds.Contains(t.CharacterId))
+                .ToList();
+
+            var translationMap = translations
+                .GroupBy(t => t.CharacterId)
+                .ToDictionary(g => g.Key, g => SelectPreferredTranslation(g));
+
+            foreach (var character in characterList)
+            {
+                if (translationMap.TryGetValue(character.Id, out var translation))
+                    ApplyTranslation(character, translation);
+            }
+        }
+
+        private CharacterTranslationEntity? SelectPreferredTranslation(IEnumerable<CharacterTranslationEntity> translations)
+        {
+            var culture = _cultureProvider.Culture;
+
+            return translations.FirstOrDefault(t => t.Culture == culture)
+                ?? translations.FirstOrDefault(t => t.Culture == Culture.enUS)
+                ?? translations.FirstOrDefault();
+        }
+
+        private static void ApplyTranslation(Character character, CharacterTranslationEntity? translation)
+        {
+            if (translation != null)
+                character.ApplyTranslation(translation.Name, translation.Feats, translation.Backstory, translation.Personality);
         }
 
         private bool IsCousin(Character target, Character person, List<Character> all)

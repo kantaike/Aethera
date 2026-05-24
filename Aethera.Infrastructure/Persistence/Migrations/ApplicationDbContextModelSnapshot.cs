@@ -87,9 +87,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Property<int?>("Background")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Backstory")
-                        .HasColumnType("text");
-
                     b.Property<int?>("Class")
                         .HasColumnType("integer");
 
@@ -104,6 +101,9 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DenominationId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("DynastyId")
                         .HasColumnType("uuid");
@@ -122,9 +122,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid?>("FatherId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Feats")
-                        .HasColumnType("text");
 
                     b.Property<int?>("HeroicInspirationCount")
                         .HasColumnType("integer");
@@ -145,12 +142,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid?>("MotherId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Personality")
-                        .HasColumnType("text");
 
                     b.PrimitiveCollection<List<string>>("SavingThrowProficiencies")
                         .IsRequired()
@@ -180,6 +171,8 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DenominationId");
+
                     b.HasIndex("DynastyId");
 
                     b.HasIndex("FatherId");
@@ -191,6 +184,58 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Characters", (string)null);
+                });
+
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.Denomination", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("EntityState")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("LeaderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Religion")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeaderId");
+
+                    b.ToTable("Denominations");
+                });
+
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.DenominationRelation", b =>
+                {
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Context")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SourceId", "TargetId");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("DenominationRelations", (string)null);
                 });
 
             modelBuilder.Entity("Aethera.Domain.Entities.Characters.Dynasty", b =>
@@ -205,20 +250,11 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<int?>("EntityState")
                         .HasColumnType("integer");
 
                     b.Property<int?>("EstablishedYear")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Motto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -228,7 +264,7 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.ToTable("Dynasties");
                 });
 
-            modelBuilder.Entity("Aethera.Domain.Entities.Characters.Religion", b =>
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.Faction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,8 +276,8 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("DenominationId")
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("EntityState")
                         .HasColumnType("integer");
@@ -249,15 +285,37 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("LeaderId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Religions");
+                    b.HasIndex("DenominationId");
+
+                    b.HasIndex("LeaderId");
+
+                    b.ToTable("Factions");
+                });
+
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.FactionRelation", b =>
+                {
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Context")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SourceId", "TargetId");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("FactionRelations", (string)null);
                 });
 
             modelBuilder.Entity("Aethera.Domain.Entities.Characters.Spell", b =>
@@ -307,9 +365,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<int?>("EntityState")
                         .HasColumnType("integer");
 
@@ -321,9 +376,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Property<string>("Modifiers")
                         .IsRequired()
                         .HasColumnType("jsonb");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -352,9 +404,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<int?>("EntityState")
                         .HasColumnType("integer");
 
@@ -371,9 +420,6 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
 
                     b.Property<int?>("Type")
                         .HasColumnType("integer");
@@ -509,6 +555,52 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.ToTable("CharacterTranslations", (string)null);
                 });
 
+            modelBuilder.Entity("Aethera.Infrastructure.Entities.DenominationTranslationEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Appearance")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Culture")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DenominationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("EntityState")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Tenets")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DenominationId", "Culture")
+                        .IsUnique();
+
+                    b.ToTable("DenominationTranslations", (string)null);
+                });
+
             modelBuilder.Entity("Aethera.Infrastructure.Entities.DynastyTranslationEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -550,6 +642,46 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("DynastyTranslations", (string)null);
+                });
+
+            modelBuilder.Entity("Aethera.Infrastructure.Entities.FactionTranslationEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Culture")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("EntityState")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("FactionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FactionId", "Culture")
+                        .IsUnique();
+
+                    b.ToTable("FactionTranslations", (string)null);
                 });
 
             modelBuilder.Entity("Aethera.Infrastructure.Entities.ItemTranslationEntity", b =>
@@ -791,6 +923,11 @@ namespace Aethera.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Aethera.Domain.Entities.Characters.Character", b =>
                 {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Denomination", null)
+                        .WithMany()
+                        .HasForeignKey("DenominationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Aethera.Domain.Entities.Characters.Dynasty", null)
                         .WithMany()
                         .HasForeignKey("DynastyId")
@@ -1012,6 +1149,33 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.Denomination", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
+                        .WithMany()
+                        .HasForeignKey("LeaderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.DenominationRelation", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Denomination", "Source")
+                        .WithMany()
+                        .HasForeignKey("SourceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Aethera.Domain.Entities.Characters.Denomination", "Target")
+                        .WithMany()
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Source");
+
+                    b.Navigation("Target");
+                });
+
             modelBuilder.Entity("Aethera.Domain.Entities.Characters.Dynasty", b =>
                 {
                     b.OwnsOne("Aethera.Domain.ValueObjects.Art", "Art", b1 =>
@@ -1033,6 +1197,38 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("Art");
+                });
+
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.Faction", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Denomination", null)
+                        .WithMany()
+                        .HasForeignKey("DenominationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
+                        .WithMany()
+                        .HasForeignKey("LeaderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Aethera.Domain.Entities.Characters.FactionRelation", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Faction", "Source")
+                        .WithMany()
+                        .HasForeignKey("SourceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Aethera.Domain.Entities.Characters.Faction", "Target")
+                        .WithMany()
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Source");
+
+                    b.Navigation("Target");
                 });
 
             modelBuilder.Entity("Aethera.Domain.Entities.Characters.Spell", b =>
@@ -1181,6 +1377,51 @@ namespace Aethera.Infrastructure.Persistence.Migrations
                     b.HasOne("Aethera.Domain.Entities.Characters.Character", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aethera.Infrastructure.Entities.DenominationTranslationEntity", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Denomination", null)
+                        .WithMany()
+                        .HasForeignKey("DenominationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aethera.Infrastructure.Entities.DynastyTranslationEntity", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Dynasty", null)
+                        .WithMany()
+                        .HasForeignKey("DynastyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aethera.Infrastructure.Entities.FactionTranslationEntity", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Characters.Faction", null)
+                        .WithMany()
+                        .HasForeignKey("FactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aethera.Infrastructure.Entities.ItemTranslationEntity", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Items.Item", null)
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aethera.Infrastructure.Entities.SettlementTranslationEntity", b =>
+                {
+                    b.HasOne("Aethera.Domain.Entities.Settlements.Settlement", null)
+                        .WithMany()
+                        .HasForeignKey("SettlementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

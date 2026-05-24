@@ -6,6 +6,10 @@ namespace Aethera.Domain.Entities.Settlements
 {
     public class Castle : Settlement
     {
+        private Castle()
+        {
+        }
+
         public Castle(string title, string description) : base(title, description)
         {
         }

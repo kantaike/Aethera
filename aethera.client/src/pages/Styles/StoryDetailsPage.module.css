@@ -1,3 +1,7 @@
+.contentSection {
+  overflow: visible;
+}
+
 .contentBody {
   padding: 20px;
   color: var(--text);

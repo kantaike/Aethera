@@ -26,6 +26,8 @@ namespace Aethera.Infrastructure
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICharacterRepository, CharacterRepository>();
+            services.AddScoped<IDenominationRepository, DenominationRepository>();
+            services.AddScoped<IFactionRepository, FactionRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ISettlementRepository, SettlemmentRepository>();
             services.AddScoped<IAdministrativeUnitRepository, AdministrativeUnitRepository>();

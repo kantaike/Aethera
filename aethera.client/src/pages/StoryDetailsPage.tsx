@@ -106,7 +106,7 @@ export function StoryDetailsPage() {
 
       <div className={entityStyles.article}>
         {data.content ? (
-          <section className={entityStyles.section}>
+          <section className={`${entityStyles.section} ${styles.contentSection}`}>
             <h2 className={entityStyles.sectionHeader}>{t.content}</h2>
             <div className={styles.contentBody}>
               {renderTextWithLinks(data.content)}

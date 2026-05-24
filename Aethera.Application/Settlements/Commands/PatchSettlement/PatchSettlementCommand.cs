@@ -51,7 +51,6 @@ namespace Aethera.Application.Settlements.Commands.PatchSettlement
             var settlement = await _settlementRepository.Get(command.SettlementId, cancellationToken)
                 ?? throw new InvalidOperationException($"Settlement with id {command.SettlementId} not found.");
 
-            // Create a DTO from current settlement state
             var settlementPatchDto = new SettlementPatchDto
             {
                 Title = settlement.Title,
@@ -62,15 +61,19 @@ namespace Aethera.Application.Settlements.Commands.PatchSettlement
                 ProvinceId = settlement.ProvinceId
             };
 
-            // Apply JSON patch to DTO
             command.PatchDocument.ApplyTo(settlementPatchDto);
 
-            // Apply validated changes to domain entity through business logic methods
-            if (settlementPatchDto.Title != null && settlementPatchDto.Title != settlement.Title)
-                settlement.SetTitle(settlementPatchDto.Title);
+            var translatedFieldsChanged = settlementPatchDto.Title != settlement.Title
+                || settlementPatchDto.Description != settlement.Description;
 
-            if (settlementPatchDto.Description != null && settlementPatchDto.Description != settlement.Description)
-                settlement.SetDescription(settlementPatchDto.Description);
+            if (translatedFieldsChanged)
+            {
+                await _settlementRepository.UpsertTranslation(
+                    command.SettlementId,
+                    settlementPatchDto.Title,
+                    settlementPatchDto.Description,
+                    cancellationToken);
+            }
 
             if (settlementPatchDto.Population.HasValue && settlementPatchDto.Population != settlement.Population)
                 settlement.SetPopulation(settlementPatchDto.Population.Value);

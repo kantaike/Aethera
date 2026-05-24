@@ -33,47 +33,38 @@ namespace Aethera.Infrastructure.Repositories
 
         public override async Task<Item> Get(Guid id, CancellationToken ct)
         {
-            var culture = _cultureProvider.Culture;
-
             var item = await _context.Set<Item>().FindAsync([id], ct)
                 ?? throw new KeyNotFoundException($"Item with id {id} not found.");
 
-            var translation = await _context.Set<ItemTranslationEntity>()
-                .FirstOrDefaultAsync(t => t.ItemId == id && t.Culture == culture, ct);
+            var translations = await _context.Set<ItemTranslationEntity>()
+                .Where(t => t.ItemId == id)
+                .ToListAsync(ct);
 
-            if (translation != null)
-            {
-                if (translation.Name != null)
-                    item.SetName(translation.Name);
-                if (translation.Description != null)
-                    item.SetDescription(translation.Description);
-            }
+            ApplyTranslation(item, SelectPreferredTranslation(translations));
 
             return item;
         }
 
         public override async Task<IEnumerable<Item>> Get(CancellationToken ct)
         {
-            var culture = _cultureProvider.Culture;
-
             var items = await _context.Set<Item>().AsNoTracking().ToListAsync(ct);
             var itemIds = items.Select(i => i.Id).ToList();
 
+            if (!itemIds.Any())
+                return items;
+
             var translations = await _context.Set<ItemTranslationEntity>()
-                .Where(t => itemIds.Contains(t.ItemId) && t.Culture == culture)
+                .Where(t => itemIds.Contains(t.ItemId))
                 .ToListAsync(ct);
 
-            var translationMap = translations.ToDictionary(t => t.ItemId);
+            var translationMap = translations
+                .GroupBy(t => t.ItemId)
+                .ToDictionary(g => g.Key, g => SelectPreferredTranslation(g));
 
             foreach (var item in items)
             {
                 if (translationMap.TryGetValue(item.Id, out var translation))
-                {
-                    if (translation.Name != null)
-                        item.SetName(translation.Name);
-                    if (translation.Description != null)
-                        item.SetDescription(translation.Description);
-                }
+                    ApplyTranslation(item, translation);
             }
 
             return items;
@@ -101,6 +92,52 @@ namespace Aethera.Infrastructure.Repositories
             };
 
             _context.Set<ItemTranslationEntity>().Add(translationEntity);
+        }
+
+        public async Task UpsertTranslation(Guid id, string? name, string? description, CancellationToken ct)
+        {
+            var item = await Get(id, ct);
+            var culture = _cultureProvider.Culture;
+
+            var translation = await _context.Set<ItemTranslationEntity>()
+                .FirstOrDefaultAsync(t => t.ItemId == id && t.Culture == culture, ct);
+
+            if (translation is null)
+            {
+                translation = new ItemTranslationEntity
+                {
+                    ItemId = item.Id,
+                    Culture = culture,
+                    Name = name ?? item.Name,
+                    Description = description ?? item.Description
+                };
+
+                _context.Set<ItemTranslationEntity>().Add(translation);
+                return;
+            }
+
+            translation.Name = name ?? translation.Name ?? item.Name;
+            translation.Description = description;
+        }
+
+        private ItemTranslationEntity? SelectPreferredTranslation(IEnumerable<ItemTranslationEntity> translations)
+        {
+            var culture = _cultureProvider.Culture;
+
+            return translations.FirstOrDefault(t => t.Culture == culture)
+                ?? translations.FirstOrDefault(t => t.Culture == Culture.enUS)
+                ?? translations.FirstOrDefault();
+        }
+
+        private static void ApplyTranslation(Item item, ItemTranslationEntity? translation)
+        {
+            if (translation is null)
+                return;
+
+            if (translation.Name != null)
+                item.SetName(translation.Name);
+            if (translation.Description != null)
+                item.SetDescription(translation.Description);
         }
     }
 }

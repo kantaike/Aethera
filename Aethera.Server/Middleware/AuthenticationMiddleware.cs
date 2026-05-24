@@ -8,7 +8,7 @@ namespace Aethera.Server.Middleware
 {
     public class AuthenticationMiddleware(RequestDelegate next)
     {
-        public async Task InvokeAsync(HttpContext context, ICultureProvider cultureProvider)
+        public async Task InvokeAsync(HttpContext context, ICultureProvider cultureProvider, IConfiguration configuration)
         {
             var culture = context.Request.Headers.AcceptLanguage.ToString();
             cultureProvider.SetCulture(cultureProvider.ToCulture(culture));
@@ -19,7 +19,8 @@ namespace Aethera.Server.Middleware
                 try
                 {
                     var tokenHandler = new JwtSecurityTokenHandler();
-                    var key = Encoding.ASCII.GetBytes("YourSuperSecretKey1235678!ABCDEFASDDSAFGHJKLIUOMf"); // TODO: move to config
+                    var secretKey = configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("JWT secret key not configured");
+                    var key = Encoding.ASCII.GetBytes(secretKey);
                     tokenHandler.ValidateToken(token, new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,

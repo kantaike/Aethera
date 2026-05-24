@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { useItem } from '../../hooks/useItems';
 import { EntityLink } from './EntityLink';
+import { PreviewImage } from './PreviewImage';
 import styles from './TextLinks.module.css';
 import { translations, useLanguage } from '../../i18n/translations';
 
@@ -17,10 +18,10 @@ export function Item({ id, children }: ItemLinkProps) {
 
   const preview = (
     <div className={styles.previewRow}>
-      <img
-        className={styles.previewImage}
-        src={data?.art?.filePath ?? ''}
+      <PreviewImage
+        src={data?.art?.filePath}
         alt={typeof label === 'string' ? label : data?.name ?? t.fallback.item}
+        placeholder="IT"
       />
       <div>
         <div className={styles.previewTitle}>{data?.name ?? '—'}</div>

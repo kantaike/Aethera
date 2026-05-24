@@ -8,20 +8,7 @@ using System.Windows.Input;
 
 namespace Aethera.Application.Dynasties.Commands.CreateDynastyCommand
 {
-    public record CreateDynastyCommand(string Name, string Description) : ICommand
-    {
-        public event EventHandler? CanExecuteChanged;
-
-        public bool CanExecute(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public record CreateDynastyCommand(string Name, string Description) { }
 
     public class CreateDynastyHandler : ICommandHandler<CreateDynastyCommand>
     {

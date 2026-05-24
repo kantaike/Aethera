@@ -7,6 +7,10 @@ namespace Aethera.Domain.Entities.Items
 {
     public class Weapon : Item
     {
+        private Weapon()
+        {
+        }
+
         public DiceExpression? Damage { get; private set; }
 
         public Weapon(string? name, string? description, int? weight, decimal? cost, DiceExpression damage) : base(name, description, weight, cost)

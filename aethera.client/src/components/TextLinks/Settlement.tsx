@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { useSettlement } from '../../hooks/useSettlements';
 import { EntityLink } from './EntityLink';
+import { PreviewImage } from './PreviewImage';
 import styles from './TextLinks.module.css';
 import { translations, useLanguage } from '../../i18n/translations';
 
@@ -17,10 +18,10 @@ export function Settlement({ id, children }: SettlementLinkProps) {
 
   const preview = (
     <div className={styles.previewRow}>
-      <img
-        className={styles.previewImage}
-        src={data?.art?.filePath ?? ''}
+      <PreviewImage
+        src={data?.art?.filePath}
         alt={typeof label === 'string' ? label : data?.title ?? data?.name ?? t.fallback.settlement}
+        placeholder="ST"
       />
       <div>
         <div className={styles.previewTitle}>{data?.title ?? data?.name ?? '—'}</div>

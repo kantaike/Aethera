@@ -9,5 +9,6 @@ namespace Aethera.Domain.Repositories
     public interface IDynastyRepository : IRepository<Entities.Characters.Dynasty>
     {
         Task AddTranslation(Guid id, string? name, string? description, string? motto);
+        Task UpsertTranslation(Guid id, string? name, string? description, string? motto, CancellationToken ct);
     }
 }

@@ -1,11 +1,16 @@
 import api from './client';
 import type {
+  AddDenominationTranslationRequest,
   AddDynastyTranslationRequest,
   AddSettlementTranslationRequest,
   CreateAdministrativeUnitRequest,
+  CreateDenominationRequest,
   CreateDynastyRequest,
   CreateSettlementRequest,
   EntityPatchDocument,
+  Denomination,
+  DenominationRelation,
+  UpsertDenominationRelationRequest,
 } from './types/types';
 
 export const settlementsApi = {
@@ -27,4 +32,13 @@ export const dynastiesApi = {
   create: (data: CreateDynastyRequest) => api.post('/Dynasties', data).then(res => res.data),
   patch: (id: string, data: EntityPatchDocument) => api.patch(`/Dynasties/${id}`, data, { headers: { 'Content-Type': 'application/json-patch+json' } }).then(res => res.data),
   addTranslation: (data: AddDynastyTranslationRequest) => api.post('/Dynasties/AddTranslation', data).then(res => res.data),
+};
+
+export const denominationsApi = {
+  getAll: (): Promise<Denomination[]> => api.get('/Denominations').then(res => res.data),
+  getById: (id: string): Promise<Denomination> => api.get(`/Denominations/${id}`).then(res => res.data),
+  create: (data: CreateDenominationRequest) => api.post('/Denominations', data).then(res => res.data),
+  upsertRelations: (data: UpsertDenominationRelationRequest) => api.put('/Denominations/relations', data).then(res => res.data),
+  getRelations: (id: string): Promise<DenominationRelation[]> => api.get(`/Denominations/${id}/relations`).then(res => res.data),
+  addTranslation: (data: AddDenominationTranslationRequest) => api.post('/Denominations/AddTranslation', data).then(res => res.data),
 };

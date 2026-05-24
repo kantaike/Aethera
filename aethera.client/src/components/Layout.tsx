@@ -10,6 +10,7 @@ import {
   UserCircle,
   Menu,
   Globe,
+  Landmark,
 } from 'lucide-react';
 import styles from './Layout.module.css';
 import { setStoredLanguage, type Language, translations, useLanguage } from '../i18n/translations';
@@ -76,6 +77,16 @@ const Layout = () => {
           >
             <Crown className={styles.navIcon} size={18} />
             <span className={styles.navLabel}>{t.dynasties}</span>
+          </Link>
+          <Link
+            to="/denominations"
+            className={`${styles.navLink} ${
+              location.pathname.startsWith('/denominations') ? styles.navLinkActive : ''
+            }`}
+            onClick={() => setSidebarOpen(false)}
+          >
+            <Landmark className={styles.navIcon} size={18} />
+            <span className={styles.navLabel}>{t.denominations}</span>
           </Link>
           <Link
             to="/items"

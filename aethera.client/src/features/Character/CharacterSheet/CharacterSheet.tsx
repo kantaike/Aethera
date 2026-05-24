@@ -57,13 +57,15 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
       : 0;
   const tempHpLeft = hpPercent; /* temp HP bar starts after main HP */
 
-  const relatives = (character.relatives || []).map((r) => ({
-    ...r,
-    id: r.id ?? '',
-    role: r.role ?? '',
-    fatherId: r.fatherId ?? '',
-    motherId: r.motherId ?? '',
-  }));
+  const relatives = (character.relatives || [])
+    .filter((r) => Boolean(r.id))
+    .map((r) => ({
+      ...r,
+      id: r.id!,
+      role: r.role ?? '',
+      fatherId: r.fatherId ?? undefined,
+      motherId: r.motherId ?? undefined,
+    }));
 
   const statBreakdown = modifiers?.statBreakdown ?? {};
 
@@ -405,11 +407,11 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
                       </div>
                       <div className={styles.statRow}>
                         <span>{t.armorClass}</span>
-                        {renderStatValueWithTooltip('ArmorClass', t.armorClass, character.armorClass)}
+                        {renderStatValueWithTooltip('ArmorClass', t.armorClass, character.armorClass, '', '', false, true)}
                       </div>
                       <div className={styles.statRow}>
                         <span>{t.initiative}</span>
-                        {renderStatValueWithTooltip('Initiative', t.initiative, character.initiative)}
+                        {renderStatValueWithTooltip('Initiative', t.initiative, character.initiative, '', '', false, true)}
                       </div>
                       <div className={styles.statRow}>
                         <span>{t.speed}</span>
@@ -417,7 +419,7 @@ export const CharacterSheet = ({ character, modifiers }: { character: CharacterD
                       </div>
                       <div className={styles.statRow}>
                         <span>{t.passivePerception}</span>
-                        {renderStatValueWithTooltip('PassivePerception', t.passivePerception, character.passivePerception)}
+                        {renderStatValueWithTooltip('PassivePerception', t.passivePerception, character.passivePerception, '', '', false, true)}
                       </div>
                     </div>
                   </section>

@@ -9,5 +9,6 @@ namespace Aethera.Domain.Repositories
     public interface IItemRepository : IRepository<Entities.Items.Item>
     {
         Task AddTranslation(Guid id, string? name, string? description);
+        Task UpsertTranslation(Guid id, string? name, string? description, CancellationToken ct);
     }
 }

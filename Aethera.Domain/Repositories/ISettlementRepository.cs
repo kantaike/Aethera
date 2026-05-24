@@ -9,5 +9,6 @@ namespace Aethera.Domain.Repositories
     public interface ISettlementRepository : IRepository<Entities.Settlements.Settlement>
     {
         Task AddTranslation(Guid id, string? title, string? description);
+        Task UpsertTranslation(Guid id, string? title, string? description, CancellationToken ct);
     }
 }

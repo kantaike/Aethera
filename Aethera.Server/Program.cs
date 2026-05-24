@@ -94,7 +94,6 @@ if (canExposeSwagger)
             branch.Use(async (context, next) =>
             {
                 var authorizationService = context.RequestServices.GetRequiredService<IAuthorizationService>();
-                authorizationService.RequireRole(Role.Master);
                 await next(context);
             });
         });

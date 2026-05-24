@@ -52,11 +52,17 @@ namespace Aethera.Application.Items.Commands.PatchItem
 
             command.PatchDocument.ApplyTo(itemPatchDto);
 
-            if (itemPatchDto.Name != null && itemPatchDto.Name != item.Name)
-                item.SetName(itemPatchDto.Name);
+            var translatedFieldsChanged = itemPatchDto.Name != item.Name
+                || itemPatchDto.Description != item.Description;
 
-            if (itemPatchDto.Description != null && itemPatchDto.Description != item.Description)
-                item.SetDescription(itemPatchDto.Description);
+            if (translatedFieldsChanged)
+            {
+                await _itemRepository.UpsertTranslation(
+                    command.ItemId,
+                    itemPatchDto.Name,
+                    itemPatchDto.Description,
+                    cancellationToken);
+            }
 
             if (itemPatchDto.Weight.HasValue && itemPatchDto.Weight != item.Weight)
                 item.SetWeight(itemPatchDto.Weight.Value);

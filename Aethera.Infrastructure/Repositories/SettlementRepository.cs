@@ -33,47 +33,38 @@ namespace Aethera.Infrastructure.Repositories
 
         public override async Task<Settlement> Get(Guid id, CancellationToken ct)
         {
-            var culture = _cultureProvider.Culture;
-
             var settlement = await _context.Set<Settlement>().FindAsync([id], ct)
                 ?? throw new KeyNotFoundException($"Settlement with id {id} not found.");
 
-            var translation = await _context.Set<SettlementTranslationEntity>()
-                .FirstOrDefaultAsync(t => t.SettlementId == id && t.Culture == culture, ct);
+            var translations = await _context.Set<SettlementTranslationEntity>()
+                .Where(t => t.SettlementId == id)
+                .ToListAsync(ct);
 
-            if (translation != null)
-            {
-                if (translation.Title != null)
-                    settlement.SetTitle(translation.Title);
-                if (translation.Description != null)
-                    settlement.SetDescription(translation.Description);
-            }
+            ApplyTranslation(settlement, SelectPreferredTranslation(translations));
 
             return settlement;
         }
 
         public override async Task<IEnumerable<Settlement>> Get(CancellationToken ct)
         {
-            var culture = _cultureProvider.Culture;
-
             var settlements = await _context.Set<Settlement>().AsNoTracking().ToListAsync(ct);
             var settlementIds = settlements.Select(s => s.Id).ToList();
 
+            if (!settlementIds.Any())
+                return settlements;
+
             var translations = await _context.Set<SettlementTranslationEntity>()
-                .Where(t => settlementIds.Contains(t.SettlementId) && t.Culture == culture)
+                .Where(t => settlementIds.Contains(t.SettlementId))
                 .ToListAsync(ct);
 
-            var translationMap = translations.ToDictionary(t => t.SettlementId);
+            var translationMap = translations
+                .GroupBy(t => t.SettlementId)
+                .ToDictionary(g => g.Key, g => SelectPreferredTranslation(g));
 
             foreach (var settlement in settlements)
             {
                 if (translationMap.TryGetValue(settlement.Id, out var translation))
-                {
-                    if (translation.Title != null)
-                        settlement.SetTitle(translation.Title);
-                    if (translation.Description != null)
-                        settlement.SetDescription(translation.Description);
-                }
+                    ApplyTranslation(settlement, translation);
             }
 
             return settlements;
@@ -101,6 +92,52 @@ namespace Aethera.Infrastructure.Repositories
             };
 
             _context.Set<SettlementTranslationEntity>().Add(translationEntity);
+        }
+
+        public async Task UpsertTranslation(Guid id, string? title, string? description, CancellationToken ct)
+        {
+            var settlement = await Get(id, ct);
+            var culture = _cultureProvider.Culture;
+
+            var translation = await _context.Set<SettlementTranslationEntity>()
+                .FirstOrDefaultAsync(t => t.SettlementId == id && t.Culture == culture, ct);
+
+            if (translation is null)
+            {
+                translation = new SettlementTranslationEntity
+                {
+                    SettlementId = settlement.Id,
+                    Culture = culture,
+                    Title = title ?? settlement.Title,
+                    Description = description ?? settlement.Description
+                };
+
+                _context.Set<SettlementTranslationEntity>().Add(translation);
+                return;
+            }
+
+            translation.Title = title ?? translation.Title ?? settlement.Title;
+            translation.Description = description;
+        }
+
+        private SettlementTranslationEntity? SelectPreferredTranslation(IEnumerable<SettlementTranslationEntity> translations)
+        {
+            var culture = _cultureProvider.Culture;
+
+            return translations.FirstOrDefault(t => t.Culture == culture)
+                ?? translations.FirstOrDefault(t => t.Culture == Culture.enUS)
+                ?? translations.FirstOrDefault();
+        }
+
+        private static void ApplyTranslation(Settlement settlement, SettlementTranslationEntity? translation)
+        {
+            if (translation is null)
+                return;
+
+            if (translation.Title != null)
+                settlement.SetTitle(translation.Title);
+            if (translation.Description != null)
+                settlement.SetDescription(translation.Description);
         }
     }
 }

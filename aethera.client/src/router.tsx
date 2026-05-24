@@ -17,6 +17,8 @@ import RegistrationPage from './pages/RegistrationPage';
 import { StoriesPage } from './pages/StoriesPage';
 import { StoryDetailsPage } from './pages/StoryDetailsPage';
 import HomePage from './pages/HomePage';
+import { DenominationsPage } from './pages/DenominationsPage';
+import DenominationDetailsPage from './pages/DenominationDetailsPage';
 
 const CreateStoryPage = lazy(() =>
   import('./pages/CreateStoryPage').then((module) => ({
@@ -36,6 +38,8 @@ export const router = createBrowserRouter([
       { path: 'settlements/:id', element: <SettlementDetailsPage /> },
       { path: 'dynasties', element: <DynastiesPage /> },
       { path: 'dynasties/:id', element: <DynastyDetailsPage /> },
+      { path: 'denominations', element: <DenominationsPage /> },
+      { path: 'denominations/:id', element: <DenominationDetailsPage /> },
       { path: 'items', element: <ItemsPage /> },
       { path: 'items/:id', element: <ItemDetailsPage /> },
       { path: 'stories', element: <StoriesPage /> },

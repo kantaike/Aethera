@@ -8,6 +8,10 @@ namespace Aethera.Domain.Entities.Settlements
 {
     public class Settlement : Entity, IHasArt
     {
+        protected Settlement()
+        {
+        }
+
         public string? Title { get; private set; } = string.Empty;
         public string? Description { get; private set; } = string.Empty;
         public int? Population {  get; private set; }

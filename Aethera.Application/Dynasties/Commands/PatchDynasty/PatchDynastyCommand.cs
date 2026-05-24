@@ -52,14 +52,19 @@ namespace Aethera.Application.Dynasties.Commands.PatchDynasty
 
             command.PatchDocument.ApplyTo(dynastyPatchDto);
 
-            if (dynastyPatchDto.Name != null && dynastyPatchDto.Name != dynasty.Name)
-                dynasty.SetName(dynastyPatchDto.Name);
+            var translatedFieldsChanged = dynastyPatchDto.Name != dynasty.Name
+                || dynastyPatchDto.Description != dynasty.Description
+                || dynastyPatchDto.Motto != dynasty.Motto;
 
-            if (dynastyPatchDto.Description != null && dynastyPatchDto.Description != dynasty.Description)
-                dynasty.SetDescription(dynastyPatchDto.Description);
-
-            if (dynastyPatchDto.Motto != null && dynastyPatchDto.Motto != dynasty.Motto)
-                dynasty.SetMotto(dynastyPatchDto.Motto);
+            if (translatedFieldsChanged)
+            {
+                await _dynastyRepository.UpsertTranslation(
+                    command.DynastyId,
+                    dynastyPatchDto.Name,
+                    dynastyPatchDto.Description,
+                    dynastyPatchDto.Motto,
+                    cancellationToken);
+            }
 
             if (dynastyPatchDto.EstablishedYear.HasValue && dynastyPatchDto.EstablishedYear != dynasty.EstablishedYear)
                 dynasty.SetEstablishedYear(dynastyPatchDto.EstablishedYear.Value);

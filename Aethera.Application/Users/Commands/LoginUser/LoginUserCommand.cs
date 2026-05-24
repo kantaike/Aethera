@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace Aethera.Application.Users.Commands.LoginUser
 {
@@ -14,12 +15,14 @@ namespace Aethera.Application.Users.Commands.LoginUser
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
-        private readonly string _jwtSecret = "YourSuperSecretKey1235678!ABCDEFASDDSAFGHJKLIUOMf"; // TODO: move to config
+        private readonly IConfiguration _configuration;
         public string? Token { get; private set; }
-        public LoginUserHandler(IUserRepository userRepository, IUnitOfWork uow)
+        
+        public LoginUserHandler(IUserRepository userRepository, IUnitOfWork uow, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _uow = uow;
+            _configuration = configuration;
         }
 
         public async Task HandleAsync(LoginUserCommand command, CancellationToken ct)
@@ -45,7 +48,8 @@ namespace Aethera.Application.Users.Commands.LoginUser
         private string GenerateJwtToken(Guid userId, string username)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            var jwtSecret = _configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("JWT Secret not configured");
+            var key = Encoding.ASCII.GetBytes(jwtSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]

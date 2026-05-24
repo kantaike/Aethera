@@ -57,6 +57,7 @@ namespace Aethera.Domain.Entities.Characters
             _ => throw new ArgumentOutOfRangeException()
         };
         public Alignment? Alignment { get; private set; }
+        public Guid? DenominationId { get; private set; }
         public Guid? DynastyId { get; private set; } 
         public Guid? HometownId { get; private set; }
         public Guid? FatherId { get; private set; }
@@ -261,7 +262,14 @@ namespace Aethera.Domain.Entities.Characters
                 _spells.Add(spell);
             }
         }
-
+        public void UnlearnSpell(Guid spellId)
+        {
+            _spells.RemoveAll(s => s.Id == spellId);
+        }
+        public void SetDenomination(Guid denominationId)
+        {
+            DenominationId = denominationId;
+        }   
         public void UpdateTraitsAndFeatures(string? feats, int? heroicInspirationCount, string? backstory, string personality)
         {
             Feats = feats;
@@ -573,8 +581,8 @@ namespace Aethera.Domain.Entities.Characters
         Nature,
         Perception,
         Performance,
-        Persuasion,
-        Religion,
+        Persuasion, 
+        Religion,   
         SleightOfHand,
         Stealth,
         Survival

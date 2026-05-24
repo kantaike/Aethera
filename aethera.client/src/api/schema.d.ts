@@ -963,6 +963,246 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/Denominations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["DenominationDto"][];
+                        "application/json": components["schemas"]["DenominationDto"][];
+                        "text/json": components["schemas"]["DenominationDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["CreateDenominationCommand"];
+                    "application/json": components["schemas"]["CreateDenominationCommand"];
+                    "text/json": components["schemas"]["CreateDenominationCommand"];
+                    "application/*+json": components["schemas"]["CreateDenominationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Denominations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["DenominationDto"];
+                        "application/json": components["schemas"]["DenominationDto"];
+                        "text/json": components["schemas"]["DenominationDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Denominations/AddTranslation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddDenominationTranslationCommand"];
+                    "application/json": components["schemas"]["AddDenominationTranslationCommand"];
+                    "text/json": components["schemas"]["AddDenominationTranslationCommand"];
+                    "application/*+json": components["schemas"]["AddDenominationTranslationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Denominations/relations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["DenominationRelationDto"][];
+                        "application/json": components["schemas"]["DenominationRelationDto"][];
+                        "text/json": components["schemas"]["DenominationRelationDto"][];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["UpsertDenominationRelationCommand"];
+                    "application/json": components["schemas"]["UpsertDenominationRelationCommand"];
+                    "text/json": components["schemas"]["UpsertDenominationRelationCommand"];
+                    "application/*+json": components["schemas"]["UpsertDenominationRelationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Denominations/{id}/relations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["DenominationRelationDto"][];
+                        "application/json": components["schemas"]["DenominationRelationDto"][];
+                        "text/json": components["schemas"]["DenominationRelationDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/Dynasties": {
         parameters: {
             query?: never;
@@ -1123,6 +1363,225 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Factions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["FactionDto"][];
+                        "application/json": components["schemas"]["FactionDto"][];
+                        "text/json": components["schemas"]["FactionDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["CreateFactionCommand"];
+                    "application/json": components["schemas"]["CreateFactionCommand"];
+                    "text/json": components["schemas"]["CreateFactionCommand"];
+                    "application/*+json": components["schemas"]["CreateFactionCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Factions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["FactionDto"];
+                        "application/json": components["schemas"]["FactionDto"];
+                        "text/json": components["schemas"]["FactionDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Factions/AddTranslation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddFactionTranslationCommand"];
+                    "application/json": components["schemas"]["AddFactionTranslationCommand"];
+                    "text/json": components["schemas"]["AddFactionTranslationCommand"];
+                    "application/*+json": components["schemas"]["AddFactionTranslationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Factions/relations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["UpsertFactionRelationCommand"];
+                    "application/json": components["schemas"]["UpsertFactionRelationCommand"];
+                    "text/json": components["schemas"]["UpsertFactionRelationCommand"];
+                    "application/*+json": components["schemas"]["UpsertFactionRelationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Factions/{id}/relations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["FactionRelationDto"][];
+                        "application/json": components["schemas"]["FactionRelationDto"][];
+                        "text/json": components["schemas"]["FactionRelationDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1654,12 +2113,26 @@ export interface components {
             /** Format: int32 */
             priority?: number;
         };
+        AddDenominationTranslationCommand: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            description?: string | null;
+            tenets?: string | null;
+            appearance?: string | null;
+        };
         AddDynastyTranslationCommand: {
             /** Format: uuid */
             id?: string;
             name?: string | null;
             description?: string | null;
             motto?: string | null;
+        };
+        AddFactionTranslationCommand: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            description?: string | null;
         };
         AddItemModifierCommand: {
             /** Format: uuid */
@@ -1775,6 +2248,8 @@ export interface components {
             backstory?: string | null;
             personality?: string | null;
             status?: components["schemas"]["CharacterStatus"];
+            /** Format: uuid */
+            userId?: string | null;
             relatives?: components["schemas"]["RelativeDto"][] | null;
         };
         CharacterModifiersDto: {
@@ -1796,6 +2271,8 @@ export interface components {
             art?: components["schemas"]["Art"];
             /** Format: uuid */
             dynastyId?: string | null;
+            /** Format: uuid */
+            userId?: string | null;
         };
         /** @enum {string} */
         CharacterStatus: "Alive" | "Dead" | "Unknown";
@@ -1826,9 +2303,26 @@ export interface components {
                 [key: string]: number;
             } | null;
         };
+        CreateDenominationCommand: {
+            name?: string | null;
+            description?: string | null;
+            tenets?: string | null;
+            appearance?: string | null;
+            religion?: components["schemas"]["Religion"];
+            /** Format: uuid */
+            leaderId?: string | null;
+        };
         CreateDynastyCommand: {
             name?: string | null;
             description?: string | null;
+        };
+        CreateFactionCommand: {
+            name?: string | null;
+            description?: string | null;
+            /** Format: uuid */
+            denominationId?: string | null;
+            /** Format: uuid */
+            leaderId?: string | null;
         };
         CreateItemCommand: {
             name?: string | null;
@@ -1860,6 +2354,26 @@ export interface components {
             content?: string | null;
             /** Format: uuid */
             authorId?: string;
+        };
+        DenominationDto: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            description?: string | null;
+            tenets?: string | null;
+            appearance?: string | null;
+            religion?: components["schemas"]["Religion"];
+            /** Format: uuid */
+            leaderId?: string | null;
+        };
+        DenominationRelationDto: {
+            /** Format: uuid */
+            sourceId?: string;
+            /** Format: uuid */
+            targetId?: string;
+            /** Format: int32 */
+            value?: number;
+            context?: string | null;
         };
         Dice: {
             /** Format: int32 */
@@ -1897,6 +2411,25 @@ export interface components {
             characterId?: string;
             /** Format: uuid */
             itemId?: string;
+        };
+        FactionDto: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            description?: string | null;
+            /** Format: uuid */
+            denominationId?: string | null;
+            /** Format: uuid */
+            leaderId?: string | null;
+        };
+        FactionRelationDto: {
+            /** Format: uuid */
+            sourceId?: string;
+            /** Format: uuid */
+            targetId?: string;
+            /** Format: int32 */
+            value?: number;
+            context?: string | null;
         };
         HitPoints: {
             /** Format: int32 */
@@ -2014,6 +2547,8 @@ export interface components {
             /** Format: uuid */
             motherId?: string | null;
         };
+        /** @enum {string} */
+        Religion: "Sun" | "Moon" | "Heathen";
         SetParentsCommand: {
             /** Format: uuid */
             characterId?: string;
@@ -2081,6 +2616,24 @@ export interface components {
             heroicInspirationCount?: number | null;
             backstory?: string | null;
             personality?: string | null;
+        };
+        UpsertDenominationRelationCommand: {
+            /** Format: uuid */
+            sourceId?: string;
+            /** Format: uuid */
+            targetId?: string;
+            /** Format: int32 */
+            value?: number;
+            context?: string | null;
+        };
+        UpsertFactionRelationCommand: {
+            /** Format: uuid */
+            sourceId?: string;
+            /** Format: uuid */
+            targetId?: string;
+            /** Format: int32 */
+            value?: number;
+            context?: string | null;
         };
     };
     responses: never;

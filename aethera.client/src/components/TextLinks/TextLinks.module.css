@@ -58,6 +58,28 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+.previewImagePlaceholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.2), transparent 45%),
+    linear-gradient(145deg, rgba(69, 88, 117, 0.85), rgba(26, 34, 48, 0.92));
+}
+
+.previewIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
 .previewTitle {
   font-weight: 700;
   font-size: 0.95rem;

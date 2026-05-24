@@ -10,6 +10,10 @@ namespace Aethera.Domain.Entities.Items
 {
     public class Item : Entity, IHasArt
     {
+        protected Item()
+        {
+        }
+
         public string? Name { get; protected set; }
         public string? Description { get; protected set; }
         public int? Weight { get; protected set; }

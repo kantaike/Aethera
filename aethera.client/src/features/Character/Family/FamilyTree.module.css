@@ -11,27 +11,107 @@
     radial-gradient(circle at 25% 90%, rgba(88, 166, 255, 0.07), transparent 55%),
     rgba(11, 14, 20, 0.45);
   min-height: 420px;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: visible;
 }
 
-.title {
-  color: var(--border-gold-bright);
-  font-family: serif;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin-bottom: 50px;
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-}
-
-.branch {
+.scaleViewport {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 60px;
+  overflow: visible;
+}
+
+.scaleContent {
+  width: max-content;
+  transform: scale(var(--tree-scale, 1));
+  transform-origin: top center;
+}
+
+.generationsColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
   width: fit-content;
   min-width: 100%;
   padding: 8px 4px;
+}
+
+.generationRow {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+  width: max-content;
+  min-width: 100%;
+  position: relative;
+}
+
+.branchRow {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  gap: 22px;
+  align-items: start;
+  width: max-content;
+  min-width: 100%;
+  justify-content: center;
+}
+
+.branchColumn {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 68px;
+  min-width: max-content;
+}
+
+.branchPaternal {
+  justify-content: flex-end;
+}
+
+.branchMaternal {
+  justify-content: flex-start;
+}
+
+.generationRow::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 18%;
+  right: 18%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0), rgba(212, 175, 55, 0.45), rgba(212, 175, 55, 0));
+}
+
+.generationRow:last-child::after,
+.rowChild::after {
+  display: none;
+}
+
+.rowGreatGrand {
+  opacity: 0.9;
+}
+
+.rowGrand {
+  opacity: 0.95;
+}
+
+.rowParent {
+  opacity: 1;
+}
+
+.rowSelf {
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.rowChild {
+  margin-top: 6px;
 }
 
 @media (max-width: 1024px) {
@@ -40,8 +120,13 @@
     min-height: 350px;
   }
 
-  .branch {
-    gap: 36px;
+  .generationsColumn {
+    gap: 12px;
+  }
+
+  .branchRow {
+    grid-template-columns: max-content max-content;
+    gap: 14px;
   }
 }
 
@@ -52,9 +137,27 @@
     min-height: 280px;
   }
 
-  .branch {
-    justify-content: flex-start;
-    gap: 24px;
+  .generationsColumn {
+    align-items: stretch;
     min-width: max-content;
+  }
+
+  .generationRow {
+    justify-content: flex-start;
+  }
+
+  .branchRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .branchPaternal,
+  .branchMaternal {
+    justify-content: flex-start;
+  }
+
+  .generationRow::after {
+    left: 6%;
+    right: 6%;
   }
 }
